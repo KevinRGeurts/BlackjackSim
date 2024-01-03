@@ -91,8 +91,20 @@ class Hand(object):
         count = 0
         
         # TTD: Could use a lamda function maybe to compact this?
-        for  x in self.cards:
+        for x in self.cards:
             count += x.count_card()
                 
         return count
+    
+    def print_hand(self):
+        """
+        Returns a string representation of the hand.
+        :return: The string representing the hand.
+        """
+        s = ''
+        for x in self.cards:
+            s += x.print_card() + ' '
+        # Remove unneeded trailing space
+        s = s[0:len(s)-1]
+        return s
         

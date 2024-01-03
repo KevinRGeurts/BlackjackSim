@@ -130,3 +130,15 @@ class Test_Hand(unittest.TestCase):
         exp_val = 18
         act_val = info['Count_Other']
         self.assertEqual(exp_val, act_val)
+        
+    
+    def test_print_hand(self):
+        
+        h = Hand()
+        cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+        h.add_cards(cards)
+        
+        exp_val = 'JS 3H 5S AD AC'
+        act_val = h.print_hand()
+        self.assertEqual(exp_val, act_val)
+
