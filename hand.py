@@ -35,6 +35,15 @@ class Hand(object):
         ah = Hand()
         ah.add_cards(aces)
         return ah
+ 
+    
+    def get_num_aces(self):
+        """
+        Return the number of aces in the Hand.
+        :return: The integer number of aces in the Hand.
+        """
+        h = self.get_aces()
+        return len(h.cards)
     
     
     def get_non_aces(self):
@@ -49,27 +58,41 @@ class Hand(object):
         h.add_cards(non_aces)
         return h
 
+    
+    def get_num_non_aces(self):
+        """
+        Return the number of cards that are not aces in the Hand.
+        :return: The integer number of cards that are not aces in the Hand.
+        """
+        h = self.get_non_aces()
+        return len(h.cards)
+
+
+    def hand_info(self):
+        """
+        Return in a dictionary useful information for playing the hand in black jack.
+            Num_Aces = How many cards in the hand are aces, int
+            Num_Other = How many cards in the had are not aces, int
+            Count_Other = Sum of the pip values of the cards that are not aces, int
+        :return: A dictionary of useful information about the hand
+        """
+        info={}
+        info['Num_Aces'] = self.get_num_aces()
+        info['Num_Other'] = self.get_num_non_aces()
+        info['Count_Other'] = self.get_non_aces().count_hand()
+        return info
+    
 
     def count_hand(self):
         """
-        Count the hand using black jack rules.
+        Count the hand.
         :return: The integer count value of the cards in the hand.
         """
         count = 0
-        # Extract the list of any aces in the hand, since they must be counted as high or low depending on the other cards in the hand
-        # Do the extraction using a "list comprehension"
-        aces=[x for x in self.cards if x.pips == 'A']
-        # Extract the list of non ace cards in the hand
-        other=[x for x in self.cards if x.pips != 'A']
-        # Count the non ace cards in the hand
-        for x in other:
+        
+        # TTD: Could use a lamda function maybe to compact this?
+        for  x in self.cards:
             count += x.count_card()
-        
-        # Count any aces in the hand to keep the total count of all cards <= 21
-        for  x in aces:
-            if count <= (21-11):
-                count += x.count_card(ace_high = True)
-        
-        
+                
         return count
         

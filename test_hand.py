@@ -27,7 +27,34 @@ class Test_Hand(unittest.TestCase):
         act_val = (h.cards[1].suit, h.cards[1].pips)
         self.assertTupleEqual(exp_val, act_val)
     
+    def test_get_num_aces(self):
+        
+        h1 = Hand()
+        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        h1.add_cards(cards)
+        
+        h2 = h1.get_aces()
     
+        # Do we have the expected number, 2, of ace cards in the hand?
+        exp_val = 2
+        act_val = h2.get_num_aces()
+        self.assertEqual(exp_val, act_val)
+
+     
+    def test_get_num_non_aces(self):
+        
+        h1 = Hand()
+        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        h1.add_cards(cards)
+        
+        h2 = h1.get_non_aces()
+    
+        # Do we have the expected number, 2, of ace cards in the hand?
+        exp_val = 2
+        act_val = h2.get_num_non_aces()
+        self.assertEqual(exp_val, act_val)      
+    
+       
     def test_get_non_aces(self):
         
         h1 = Hand()
@@ -82,3 +109,24 @@ class Test_Hand(unittest.TestCase):
         act_val = h.count_hand()
         self.assertEqual(exp_val, act_val)
         
+    
+    def test_hand_info(self):
+        
+        h = Hand()
+        cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+        h.add_cards(cards)
+        
+        info = h.hand_info()
+        
+        # Do we have the expected number, 2, of ace cards in the hand?
+        exp_val = 2
+        act_val = info['Num_Aces']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expect number, 3 of non ace cards in the hand?
+        exp_val = 3
+        act_val = info['Num_Other']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expect value of summed up pips of the cards in the hand that are not aces?
+        exp_val = 18
+        act_val = info['Count_Other']
+        self.assertEqual(exp_val, act_val)
