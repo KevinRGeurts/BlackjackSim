@@ -27,10 +27,16 @@
   <ItemGroup>
     <Compile Include="BlackJackSim.py" />
     <Compile Include="card.py" />
+    <Compile Include="hand.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="deck.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_hand.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_deck.py">
