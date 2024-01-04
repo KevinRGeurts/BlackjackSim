@@ -73,7 +73,7 @@ class Hand(object):
 
     def hand_info(self):
         """
-        Return in a dictionary useful information for playing the hand in black jack.
+        Return in a dictionary of useful information for playing the hand in black jack.
             Num_Aces = How many cards in the hand are aces, int
             Num_Other = How many cards in the had are not aces, int
             Count_Other = Sum of the pip values of the cards that are not aces, int

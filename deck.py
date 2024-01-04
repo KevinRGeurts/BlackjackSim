@@ -8,7 +8,7 @@ class Deck:
     
     def __init__(self, isInfinite = False):
         """
-        Construct a deck from a list of Card's.
+        Construct a deck as a list of Card's.
         If isInfinite, then when drawing cards from the deck, the deck will not be used up.
         """
         self.isInfinite = isInfinite
@@ -75,6 +75,7 @@ class Deck:
         """
         return len(self.deck)
     
+    
     def draw(self, number = 1):
         """
         Draw Card(s) at random from the deck. If deck isInfinte = False, then the drawn Card(s) will be removed from deck.
@@ -94,6 +95,44 @@ class Deck:
             return drawn[0]
         else:
             return drawn
+        
+
+class Stacked_Deck(Deck):
+    """
+    Represents a stacked deck of playing cards. Where the deck can be ordered by the caller and cards will always be drawn top to bottom.
+    Primary purpose of this special Deck is to facilitate unit testing of hand play.
+    """
+    
+    def __init__(self):
+        """
+        Construct a deck as an empty list of Card's.
+        Assumption here is that user will populate the list themselves, before calling any methods on an object.
+        Otherwise, draw() will assert.
+        Set isInfinite to False, so that when drawing cards from the deck, the deck will be used up.
+        """
+        self.isInfinite = False
+        # Create an empty deck of playing cards as a list
+        self.deck=[]
+        
+    def draw(self, number = 1):
+        """
+        Draw Card(s) in order from the deck, and remove them from the deck.
+        :param number: The number of c\Cards to draw from the deck
+        :return: A single Card or a list of Card(s)
+        """
+        drawn=[]
+        for c in range(number):
+            assert self.cards_remaining() >= 1
+            # Add 0th card to the list of drawn cards
+            drawn.append(self.deck[0])
+            if self.isInfinite == False:
+                # Remove 0th card from the deck
+                del self.deck[0]
+        if number == 1:
+            return drawn[0]
+        else:
+            return drawn
+ 
         
             
             

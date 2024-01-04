@@ -4,8 +4,6 @@ from card import Card
 
 class Test_Hand(unittest.TestCase):
    
-    if __name__ == '__main__':
-        unittest.main()
 
     def test_add_card(self):
         
@@ -165,4 +163,9 @@ class Test_Hand(unittest.TestCase):
         exp_val = 'JS 3H 5S AD AC'
         act_val = h.print_hand()
         self.assertEqual(exp_val, act_val)
+        
+
+if __name__ == '__main__':
+    unittest.main()
+
 
