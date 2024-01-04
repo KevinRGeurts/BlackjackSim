@@ -54,6 +54,7 @@ class BlackJackSim(object):
                     
         # Determine game outcome, and add to game info
         # TTD: Extract this logic into a method so it can be reused and unit tested
+        # TTD: Write unit tests for the method to test each branch in the logic
         if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
             info['Game_Outcome'] = 'player wins'
         elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
