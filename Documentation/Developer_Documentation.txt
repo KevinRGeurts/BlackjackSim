@@ -1,0 +1,23 @@
+BlackJackSim Python Project Developer Documentation
+
+Dealer hand play logic:
+
+Count_Max = First ace counts 11, any remaining aces count 1
+Count_Min = All aces count 1
+
+Dealer must hit on 16 or less and stand on 17 or more. Dealer busts on greater than 21.
+
+	If Count_Max <= 16, dealer must hit
+
+	If Count_Max >= 17, dealer must stand
+
+	If Count_Max > 21, that would be a bust, so then
+		If Count_Min <= 16, dealer must hit
+		if Count_Min >= 17, dealer must stand
+		if Count_Min > 21, then dealer busts
+
+	So, proceed to stand or bust using Count_Max,
+		If stand, then done, and report out Count_Max as final hand count
+		If bust, then proceed to stand or bust using Count_Min
+			If stand, then done, and report out Count_Min as final hand count
+			If bust, then report hand status as bust
