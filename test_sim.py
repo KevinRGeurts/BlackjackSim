@@ -5,7 +5,7 @@ from card import Card
 
 class Test_Sim(unittest.TestCase):
 
-    # TTD: Need many more test cases of play_dealer_hand to fully test the possibilities of the while looping and conditional branches
+    # TODO: Need many more test cases of play_dealer_hand to fully test the possibilities of the while looping and conditional branches
 
     def test_play_dealer_hand(self):
         
