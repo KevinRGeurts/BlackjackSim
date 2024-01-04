@@ -16,11 +16,14 @@ class Hand(object):
     
     def add_cards(self, newCards=[]):
         """
-        Add a list of one or more new Card(s) to the hand.
-        :param newCards: The lisf of new Card(s) to be added to the hand
+        Add a list of one or more new Card(s), or a single Card to the hand.
+        :param newCards: The lisf of new Card(s), or a single Card to be added to the hand
         :return: A list of the cards in the hand.
         """
-        self.cards.extend(newCards)
+        if type(newCards) == type(Card()):
+            self.cards.append(newCards)
+        elif type(newCards) == type([]):  
+            self.cards.extend(newCards)
         return self.cards
     
     
@@ -74,25 +77,46 @@ class Hand(object):
             Num_Aces = How many cards in the hand are aces, int
             Num_Other = How many cards in the had are not aces, int
             Count_Other = Sum of the pip values of the cards that are not aces, int
+            Count_Min = Sum of the pip values of all the cards, treating any aces as having 1 pip, int
+            Count_Max = Sum of the pip values of all the cards, treating the first ace as having 11 pips, and any remaining
+                as having 1 pip, int
         :return: A dictionary of useful information about the hand
         """
         info={}
-        info['Num_Aces'] = self.get_num_aces()
+        num_aces = self.get_num_aces()
+        info['Num_Aces'] = num_aces
         info['Num_Other'] = self.get_num_non_aces()
         info['Count_Other'] = self.get_non_aces().count_hand()
+        
+        # Determine Count_Min
+        # Count all aces in the hand has "low", that is, having 1 pip.
+        info['Count_Min'] = self.count_hand()
+        
+        # Determine Count_Max
+        # Count aces in the hand. The first ace if any will be counted as "high" (i.e. 11), while any remaining will be counted as "low" (i.e. 1)
+        # This is based on the logic that two (or more) aces all counted "high" will allways bust the hand.
+        count_aces = 0
+        if num_aces > 0:
+            # There is at least one ace. Add one ace counted "high" (i.e. 11) to the count value of aces in the hand
+            count_aces += self.get_aces().cards[0].count_card(ace_high=True)
+        if (num_aces - 1) > 0:
+            # There is more than one ace. Add a "low" (i.e. 1) ace value to the count value of aces in the hand for each ace beyond one
+            count_aces += (num_aces - 1) * self.get_aces().cards[0].count_card(ace_high=False)
+        info['Count_Max'] = info['Count_Other'] + count_aces
+
         return info
     
 
     def count_hand(self):
         """
-        Count the hand.
+        Count the hand, with any aces treated as "low".
         :return: The integer count value of the cards in the hand.
         """
         count = 0
         
         # TTD: Could use a lamda function maybe to compact this?
         for x in self.cards:
-            count += x.count_card()
+            count += x.count_card(ace_high=False)
                 
         return count
     
