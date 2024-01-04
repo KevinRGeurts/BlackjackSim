@@ -10,35 +10,58 @@ if __name__ == '__main__':
     Used currently to set up what ever situation is needed for debugging, since I can't seem to debug unit tests.
     """
     
-    # Debug creating a drawing from a Stacked_Deck
-    sd = Stacked_Deck()
-    sd.deck = [Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
-    c = sd.draw()
-    print('Stacked Deck Draw:', c.print_card())
+    # # Debug creating a drawing from a Stacked_Deck
+    # sd = Stacked_Deck()
+    # sd.deck = [Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+    # c = sd.draw()
+    # print('Stacked Deck Draw:', c.print_card())
 
-    # Debug adding a single card to a hand
-    h = Hand()
-    c = Card('S','J',10)
-    h.add_cards(c)   
+    # # Debug adding a single card to a hand
+    # h = Hand()
+    # c = Card('S','J',10)
+    # h.add_cards(c)   
     
-    # Debug drawing from a dec of cards
+    # # Debug drawing from a dec of cards
 
-    d = Deck()
-    c = d.draw()
+    # d = Deck()
+    # c = d.draw()
     
-    # Debug printing a hand to a string
+    # # Debug printing a hand to a string
     
-    h = Hand()
-    cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
-    h.add_cards(cards)
+    # h = Hand()
+    # cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+    # h.add_cards(cards)
         
-    act_val = h.print_hand()
+    # act_val = h.print_hand()
     
-    print(act_val + '\n')
+    # print(act_val + '\n')
     
-    # Use BlackJackSim to play a hand as a dealer
+    
+    # Use BlackJackSim to play a game
+
+    # Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
+    # Dealer_Status = 'bust' or 'stand', string
+    # Dealer_Count = Final count of dealer's hand, int
+    # Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
+    # Player_Status = 'bust' or 'stand', string
+    # Player_Count = Final count of Player's hand, int
+    # Game_Outcome = 'player wins', 'dealer wins', or 'push' (both bust or stand with a tie count)
+
     sim = BlackJackSim()
-    sim.play_game()
+    print('Starting a game of black jack...')
+    info = sim.play_game()
+    print('     Winner:', info['Game_Outcome'])
+    print('     Player Status:', info['Player_Status'])
+    print('     Player Count:', info['Player_Count'])
+    print('     Player Hand:', info['Player_Final_Hand'])
+    print('     Dealer Status:', info['Dealer_Status'])
+    print('     Dealer Count:', info['Dealer_Count'])
+    print('     Dealer Hand:', info['Dealer_Final_Hand'])
+  
+    
+    # # Use BlackJackSim to play a hand as a dealer
+    # sim = BlackJackSim()
+    # sim.play_game()
     
     
     # # Work out the logic for playing a hand as a dealer
