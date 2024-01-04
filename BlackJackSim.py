@@ -15,7 +15,10 @@ class BlackJackSim(object):
         self.dealer_hand = Hand()
         self.player_hand = Hand()
     
-    
+    # TODO: Enable ability to play a specified number of games and track/report statistics like % of different game outcomes across those games.
+    # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
+    # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
+
     def play_game(self):
         """
         Play one game of black jack, returning a dictionary of information about the outcome of the game.
@@ -37,6 +40,9 @@ class BlackJackSim(object):
         # Initial deal for dealer and player
         self.dealer_hand.add_cards(self.deck.draw(2))
         self.player_hand.add_cards(self.deck.draw(2))
+
+        # TODO: Write logic to handle one or both player and/or dealer having black jack (should check write after deal and skip play). Should have new type of game outcome.
+        # TODO: Should I handle splitting hands when the player gets a pair on the deal?
         
         # Play player hand, and add hand outcome info to game info
         player_info = {}
@@ -131,6 +137,8 @@ class BlackJackSim(object):
             
         return outcome_info
         
+    # TODO: Create another play_player_hand using player guidelines from Hoyle.
+    # TODO: Implement a design pattern allowing abstraction and swapping out of playing rules for player and possibly dealer.
     
     def play_player_hand(self):
         """
