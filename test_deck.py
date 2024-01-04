@@ -52,6 +52,7 @@ class Test_Deck(unittest.TestCase):
         self.assertTrue(dc in d.deck)
         
     def test_draw_too_many_cards(self):
+        # TODO: Fix this test which always fails. Probably something wrong with my understanding of asserts/exceptions in Python.
         from random import seed
         seed(1234567890)
         d = Deck()

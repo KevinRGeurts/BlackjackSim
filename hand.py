@@ -114,7 +114,7 @@ class Hand(object):
         """
         count = 0
         
-        # TTD: Could use a lamda function maybe to compact this?
+        # TODO: Could use a lamda function maybe to compact this?
         for x in self.cards:
             count += x.count_card(ace_high=False)
                 
