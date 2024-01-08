@@ -40,12 +40,12 @@ if __name__ == '__main__':
     # Use BlackJackSim to play a game
 
     # Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
-    # Dealer_Status = 'bust' or 'stand', string
+    # Dealer_Status = 'bust', 'stand', or 'blackjack', string
     # Dealer_Count = Final count of dealer's hand, int
     # Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
-    # Player_Status = 'bust' or 'stand', string
+    # Player_Status = 'bust', 'stand', or 'blackjack', string
     # Player_Count = Final count of Player's hand, int
-    # Game_Outcome = 'player wins', 'dealer wins', or 'push' (both bust or stand with a tie count)
+    # Game_Outcome = 'player wins', 'dealer wins', or 'push' (both blackjack, bust, or stand with a tie count)
 
     sim = BlackJackSim()
     print('Starting a game of black jack...')
@@ -57,6 +57,28 @@ if __name__ == '__main__':
     print('     Dealer Status:', info['Dealer_Status'])
     print('     Dealer Count:', info['Dealer_Count'])
     print('     Dealer Hand:', info['Dealer_Final_Hand'])
+    
+    # # Use BlackJackSim to play a game with a stacked deck to produce a desired outcome
+
+    # bjs = BlackJackSim()
+    # print('Starting a game of black jack with a stacked deck to have player and dealer get blackjack...')
+        
+    # # Replace sim's deck with Stacked_Deck
+    # # Create a Stacked_Deck
+    # sd = Stacked_Deck()
+    # # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
+    # sd.deck = [Card('C','A',1), Card('D','K',10), Card('S','10',10), Card('H','A',1)]
+    # # Replace sim's deck with the Stacked_Deck
+    # bjs.deck = sd
+       
+    # info = bjs.play_game()
+    # print('     Winner:', info['Game_Outcome'])
+    # print('     Player Status:', info['Player_Status'])
+    # print('     Player Count:', info['Player_Count'])
+    # print('     Player Hand:', info['Player_Final_Hand'])
+    # print('     Dealer Status:', info['Dealer_Status'])
+    # print('     Dealer Count:', info['Dealer_Count'])
+    # print('     Dealer Hand:', info['Dealer_Final_Hand'])
   
     
     # # Use BlackJackSim to play a hand as a dealer

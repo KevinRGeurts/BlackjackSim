@@ -1,4 +1,3 @@
-from operator import indexOf
 from deck import Deck
 from hand import Hand
 
@@ -23,12 +22,12 @@ class BlackJackSim(object):
         """
         Play one game of black jack, returning a dictionary of information about the outcome of the game.
             Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
-            Dealer_Status = 'bust' or 'stand', string
-            Dealer_Count = Final count of dealer's hand, int
+            Dealer_Status = 'bust', 'stand', 'blackjack', or 'none' (player blackjacked, dealer didn't), string
+            Dealer_Count = Final count of dealer's hand (0 if player blackjacked and dealer didn't), int
             Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
-            Player_Status = 'bust' or 'stand', string
-            Player_Count = Final count of Player's hand, int
-            Game_Outcome = 'player wins', 'dealer wins', or 'push' (both bust or stand with a tie count)
+            Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), string
+            Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
+            Game_Outcome = 'player wins', 'dealer wins', or 'push' (both blackjack, bust, or stand with a tie count)
         :return: Dictionary of information about the outcome of the game.
         """
         info = {}
@@ -41,47 +40,101 @@ class BlackJackSim(object):
         self.dealer_hand.add_cards(self.deck.draw(2))
         self.player_hand.add_cards(self.deck.draw(2))
 
-        # TODO: Write logic to handle one or both player and/or dealer having black jack (should check write after deal and skip play). Should have new type of game outcome.
         # TODO: Should I handle splitting hands when the player gets a pair on the deal?
         
-        # Play player hand, and add hand outcome info to game info
-        player_info = {}
-        player_info = self.play_player_hand()
-        info['Player_Final_Hand'] = player_info['Final_Hand']
-        info['Player_Status'] = player_info['Status']
-        info['Player_Count'] = player_info['Count']       
+        check_info = self.check_for_blackjack()
+        if check_info['Status'] == 'play on':
         
-        # Play dealer hand, and add hand outcome info to game info
-        dealer_info = {}
-        dealer_info = self.play_dealer_hand()
-        info['Dealer_Final_Hand'] = dealer_info['Final_Hand']
-        info['Dealer_Status'] = dealer_info['Status']
-        info['Dealer_Count'] = dealer_info['Count']
+            # Neither dealer nor player have blackjack, on deal, so play the hands.
+            
+            # Play player hand, and add hand outcome info to game info
+            player_info = {}
+            player_info = self.play_player_hand()
+            info['Player_Final_Hand'] = player_info['Final_Hand']
+            info['Player_Status'] = player_info['Status']
+            info['Player_Count'] = player_info['Count']       
+        
+            # Play dealer hand, and add hand outcome info to game info
+            dealer_info = {}
+            dealer_info = self.play_dealer_hand()
+            info['Dealer_Final_Hand'] = dealer_info['Final_Hand']
+            info['Dealer_Status'] = dealer_info['Status']
+            info['Dealer_Count'] = dealer_info['Count']
                     
-        # Determine game outcome, and add to game info
-        # TODO: Extract this logic into a method so it can be reused and unit tested
-        # TODO: Write unit tests for the method to test each branch in the logic
-        if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
-            info['Game_Outcome'] = 'player wins'
-        elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
-            info['Game_Outcome'] = 'dealer wins'
-        elif (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'stand'):
-            # Higher score wins
-            if info['Player_Count'] > info['Dealer_Count']:
-                # Player wins
+            # Determine game outcome, and add to game info
+            # TODO: Extract this logic into a method so it can be reused and unit tested
+            # TODO: Write unit tests for the method to test each branch in the logic
+            if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
                 info['Game_Outcome'] = 'player wins'
-            elif info['Player_Count'] < info['Dealer_Count']:
-                # Dealer wins
+            elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
                 info['Game_Outcome'] = 'dealer wins'
+            elif (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'stand'):
+                # Higher score wins
+                if info['Player_Count'] > info['Dealer_Count']:
+                    # Player wins
+                    info['Game_Outcome'] = 'player wins'
+                elif info['Player_Count'] < info['Dealer_Count']:
+                    # Dealer wins
+                    info['Game_Outcome'] = 'dealer wins'
+                else:
+                    # It's a tie score, and a push
+                    info['Game_Outcome'] = 'push'
             else:
+                # Both player and dealer busted, so its a push
+                info['Game_Outcome'] = 'push'
+        
+        else:
+            
+            # One or both of dealer or/and player have blackjack. Set game outcome, etc. in game info
+
+            info['Player_Final_Hand'] = self.player_hand.print_hand()
+            info['Dealer_Final_Hand'] = self.dealer_hand.print_hand()
+            
+            if check_info['Status'] == 'both blackjack':
                 # It's a tie score, and a push
                 info['Game_Outcome'] = 'push'
-        else:
-            # Both player and dealer busted, so its a push
-            info['Game_Outcome'] = 'push'
+                info['Player_Status'] = 'blackjack'
+                info['Player_Count'] = 21
+                info['Dealer_Status'] = 'blackjack'
+                info['Dealer_Count'] = 21
+            elif check_info['Status'] == 'dealer blackjack':
+                info['Game_Outcome'] = 'dealer wins'
+                info['Player_Status'] = 'none'
+                info['Player_Count'] = 0
+                info['Dealer_Status'] = 'blackjack'
+                info['Dealer_Count'] = 21
+            elif check_info['Status'] == 'player blackjack':
+                info['Game_Outcome'] = 'player wins'
+                info['Player_Status'] = 'blackjack'
+                info['Player_Count'] = 21
+                info['Dealer_Status'] = 'none'
+                info['Dealer_Count'] = 0
 
         return info
         
+    
+    def check_for_blackjack(self):
+        """
+        Check both the dealer's and player's hand for black jack, and declare a winner (one hand has blackjack) or a push (both hands have blackjack). 
+        Play the dealer's hand of black jack, returning a dictionary of information about the outcome of the hand.
+            Status = 'play on', 'dealer blackjack', 'player blackjack', 'both blackjack', string
+        :return: Dictionary of information about the outcome of the blackjack check.
+        """      
+        check_info = {}
+        
+        dealer_info = self.dealer_hand.hand_info()
+        player_info = self.player_hand.hand_info()
+        
+        if dealer_info['Count_Max'] == 21 and player_info['Count_Max'] == 21:
+            check_info['Status'] = 'both blackjack'
+        elif dealer_info['Count_Max'] == 21:
+            check_info['Status'] = 'dealer blackjack'
+        elif player_info['Count_Max'] == 21:
+            check_info['Status'] = 'player blackjack'
+        else:
+            check_info['Status'] = 'play on'
+            
+        return check_info
     
     def play_dealer_hand(self):
         """
