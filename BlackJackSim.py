@@ -174,7 +174,7 @@ class BlackJackSim(object):
         return outcome_info
         
     # TODO: Create another play_player_hand using player guidelines from Hoyle.
-    # TODO: Implement a design pattern allowing abstraction and swapping out of playing rules for player and possibly dealer.
+    # TODO: Implement a design pattern (strategy pattern?) allowing abstraction and swapping out of playing rules for player and possibly dealer.
     
     def play_player_hand(self):
         """

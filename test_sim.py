@@ -80,7 +80,7 @@ class Test_Sim(unittest.TestCase):
     
     # TODO: Need many more test cases of play_dealer_hand to fully test the possibilities of the while looping and conditional branches
 
-    def test_play_dealer_hand(self):
+    def test_play_dealer_hand_hit_to_stand(self):
         
         bjs = BlackJackSim()
         info = {}
@@ -111,7 +111,102 @@ class Test_Sim(unittest.TestCase):
         act_val = info['Count']
         self.assertEqual(exp_val, act_val)
 
+    
+    def test_play_dealer_hand_hit_to_bust_max_stand_min(self):
+        
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.deck = [Card('C','A',1), Card('D','J',10)]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        # Set up dealer hand
+        bjs.dealer_hand.add_cards([Card('S','7',7), Card('H','9',9)])
+        
+        # Play the dealer hand
+        info = bjs.play_dealer_hand()
+        
+        # Do we have the expected final hand?
+        exp_val = '7S 9H AC'
+        act_val = info['Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected status?
+        exp_val = 'stand'
+        act_val = info['Status']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected final count?
+        exp_val = 17
+        act_val = info['Count']
+        self.assertEqual(exp_val, act_val)
 
+    
+    def test_play_dealer_hand_hit_to_bust_max_hit_to_stand_min(self):
+        
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.deck = [Card('C','A',1), Card('D','3',3)]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        # Set up dealer hand
+        bjs.dealer_hand.add_cards([Card('S','7',7), Card('H','8',8)])
+        
+        # Play the dealer hand
+        info = bjs.play_dealer_hand()
+        
+        # Do we have the expected final hand?
+        exp_val = '7S 8H AC 3D'
+        act_val = info['Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected status?
+        exp_val = 'stand'
+        act_val = info['Status']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected final count?
+        exp_val = 19
+        act_val = info['Count']
+        self.assertEqual(exp_val, act_val)
+
+    def test_play_dealer_hand_hit_to_bust_max_hit_to_bust_min(self):
+        
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.deck = [Card('C','A',1), Card('D','J',10)]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        # Set up dealer hand
+        bjs.dealer_hand.add_cards([Card('S','7',7), Card('H','8',8)])
+        
+        # Play the dealer hand
+        info = bjs.play_dealer_hand()
+        
+        # Do we have the expected final hand?
+        exp_val = '7S 8H AC JD'
+        act_val = info['Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected status?
+        exp_val = 'bust'
+        act_val = info['Status']
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected final count?
+        exp_val = 26
+        act_val = info['Count']
+        self.assertEqual(exp_val, act_val)
+    
+    
     def test_play_player_hand(self):
         
         bjs = BlackJackSim()
