@@ -286,6 +286,93 @@ class Test_Sim(unittest.TestCase):
         exp_val = 21
         act_val = info['Dealer_Count']
         self.assertEqual(exp_val, act_val)
+        
+    
+    def test_determine_game_outcome(self):
+        
+        sim = BlackJackSim()
+        
+        info = {}
+
+        # Test dealer busts...
+
+        info['Player_Status'] = 'stand'
+        info['Player_Count'] = 0
+        info['Dealer_Status'] = 'bust'
+        info['Dealer_Count'] = 0
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'player wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+ 
+        # Test player busts...
+
+        info['Player_Status'] = 'bust'
+        info['Player_Count'] = 0
+        info['Dealer_Status'] = 'stand'
+        info['Dealer_Count'] = 0
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'dealer wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+        
+        # Test both stand, player has high score...
+        info['Player_Status'] = 'stand'
+        info['Player_Count'] = 19
+        info['Dealer_Status'] = 'stand'
+        info['Dealer_Count'] = 17
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'player wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+
+        # Test both stand, dealer has high score...
+        info['Player_Status'] = 'stand'
+        info['Player_Count'] = 19
+        info['Dealer_Status'] = 'stand'
+        info['Dealer_Count'] = 20
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'dealer wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+
+        # Test both stand, tie score...
+        info['Player_Status'] = 'stand'
+        info['Player_Count'] = 19
+        info['Dealer_Status'] = 'stand'
+        info['Dealer_Count'] = 19
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'push'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+        
+        # Test both bust, it's a push...
+        info['Player_Status'] = 'bust'
+        info['Player_Count'] = 0
+        info['Dealer_Status'] = 'bust'
+        info['Dealer_Count'] = 0
+        
+        sim.determine_game_outcome(info)
+            
+        # Do we have the expected game outcome?
+        exp_val = 'push'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
 
@@ -62,27 +63,9 @@ class BlackJackSim(object):
             info['Dealer_Count'] = dealer_info['Count']
                     
             # Determine game outcome, and add to game info
-            # TODO: Extract this logic into a method so it can be reused and unit tested
-            # TODO: Write unit tests for the method to test each branch in the logic
-            if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
-                info['Game_Outcome'] = 'player wins'
-            elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
-                info['Game_Outcome'] = 'dealer wins'
-            elif (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'stand'):
-                # Higher score wins
-                if info['Player_Count'] > info['Dealer_Count']:
-                    # Player wins
-                    info['Game_Outcome'] = 'player wins'
-                elif info['Player_Count'] < info['Dealer_Count']:
-                    # Dealer wins
-                    info['Game_Outcome'] = 'dealer wins'
-                else:
-                    # It's a tie score, and a push
-                    info['Game_Outcome'] = 'push'
-            else:
-                # Both player and dealer busted, so its a push
-                info['Game_Outcome'] = 'push'
-        
+ 
+            self.determine_game_outcome()
+         
         else:
             
             # One or both of dealer or/and player have blackjack. Set game outcome, etc. in game info
@@ -248,5 +231,34 @@ class BlackJackSim(object):
         outcome_info['Count'] = final_count
             
         return outcome_info
+    
+
+    def determine_game_outcome(self, info = {}):
+        """
+        Complete the argument info dictionary after determing the game winner.
+        Assumes that Player_Status, Dealer_Status, Player_Count, and Dealer_Count exist in the info dictionary upon entry to this method.
+        :param info: same info object returned by play_game(), dictionary
+        :return: NULL
+        """
+        if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
+            info['Game_Outcome'] = 'player wins'
+        elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
+            info['Game_Outcome'] = 'dealer wins'
+        elif (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'stand'):
+            # Higher score wins
+            if info['Player_Count'] > info['Dealer_Count']:
+                # Player wins
+                info['Game_Outcome'] = 'player wins'
+            elif info['Player_Count'] < info['Dealer_Count']:
+                # Dealer wins
+                info['Game_Outcome'] = 'dealer wins'
+            else:
+                # It's a tie score, and a push
+                info['Game_Outcome'] = 'push'
+        else:
+            # Both player and dealer busted, so its a push
+            info['Game_Outcome'] = 'push'
+       
+        return NULL;
     
 
