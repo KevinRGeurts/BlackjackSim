@@ -1,8 +1,9 @@
 from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
+from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy
 
-class BlackJackSim(object):
+class BlackJackSim:
     """
     Logic for playing a game of black jack.\n
     """
@@ -13,7 +14,11 @@ class BlackJackSim(object):
         """
         self.deck = Deck(isInfinite = True)
         self.dealer_hand = Hand()
+        #self.dealer_play_strategy = PlayStrategy()
+        self.dealer_play_strategy = CasinoDealerPlayStrategy()
         self.player_hand = Hand()
+        #self.player_play_strategy = PlayStrategy()
+        self.player_play_strategy = CasinoDealerPlayStrategy()
     
     # TODO: Enable ability to play a specified number of games and track/report statistics like % of different game outcomes across those games.
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
@@ -64,7 +69,7 @@ class BlackJackSim(object):
                     
             # Determine game outcome, and add to game info
  
-            self.determine_game_outcome()
+            self.determine_game_outcome(info)
          
         else:
             
@@ -121,7 +126,8 @@ class BlackJackSim(object):
     
     def play_dealer_hand(self):
         """
-        Play the dealer's hand of black jack, returning a dictionary of information about the outcome of the hand.
+        Play the dealer's hand of black jack, using the dealer play strategy, and returning
+        a dictionary of information about the outcome of the hand.
             Final_Hand = String representation of dealer's hand of cards at the end of the game, string
             Status = 'bust' or 'stand', string
             Count = Final count of dealer's hand, int
@@ -129,56 +135,58 @@ class BlackJackSim(object):
         """
         outcome_info = {}
         
-        info = self.dealer_hand.hand_info()
+        outcome_info = self.dealer_play_strategy.play(self.dealer_hand, self.deck)
         
-        hand_status = ''
-        final_count = 0
-        # Hit as many times as needed until Count_Max exceeds 16
-        while info['Count_Max'] <= 16:
-            # Hit
-            hand_status = 'hit'
-            self.dealer_hand.add_cards(self.deck.draw(1))
-            # print('Dealer Hand After Hitting on Max Count: ' + self.dealer_hand.print_hand())
-            info = self.dealer_hand.hand_info()
-            # print(info) 
-        count_max = info['Count_Max']
-        if (count_max >= 17) and (count_max <= 21):
-            # Stand on Count_Max
-            hand_status = 'stand'
-            final_count = count_max
-        elif count_max > 21:
-            # We've busted on Count_Max, switch to Count_Min
-            while info['Count_Min'] <= 16:
-                # Hit
-                hand_status = 'hit'
-                self.dealer_hand.add_cards(self.deck.draw(1))
-                # print('Dealer Hand After Hiting on Count_Min: ' + self.dealer_hand.print_hand())
-                info = self.dealer_hand.hand_info()
-                # print(info)
-            count_min = info['Count_Min']
-            if (count_min >= 17) and (count_min <= 21):
-                # Stand on Count_Min
-                hand_status = 'stand'
-                final_count = count_min
-            elif count_min > 21:
-                # If we've busted on Count_Min, and the hand
-                hand_status = 'bust'
-                final_count = count_min
-        # print('Dealer Hand Outcome:', hand_status, final_count)
+        # info = self.dealer_hand.hand_info()
+        
+        # hand_status = ''
+        # final_count = 0
+        # # Hit as many times as needed until Count_Max exceeds 16
+        # while info['Count_Max'] <= 16:
+        #     # Hit
+        #     hand_status = 'hit'
+        #     self.dealer_hand.add_cards(self.deck.draw(1))
+        #     # print('Dealer Hand After Hitting on Max Count: ' + self.dealer_hand.print_hand())
+        #     info = self.dealer_hand.hand_info()
+        #     # print(info) 
+        # count_max = info['Count_Max']
+        # if (count_max >= 17) and (count_max <= 21):
+        #     # Stand on Count_Max
+        #     hand_status = 'stand'
+        #     final_count = count_max
+        # elif count_max > 21:
+        #     # We've busted on Count_Max, switch to Count_Min
+        #     while info['Count_Min'] <= 16:
+        #         # Hit
+        #         hand_status = 'hit'
+        #         self.dealer_hand.add_cards(self.deck.draw(1))
+        #         # print('Dealer Hand After Hiting on Count_Min: ' + self.dealer_hand.print_hand())
+        #         info = self.dealer_hand.hand_info()
+        #         # print(info)
+        #     count_min = info['Count_Min']
+        #     if (count_min >= 17) and (count_min <= 21):
+        #         # Stand on Count_Min
+        #         hand_status = 'stand'
+        #         final_count = count_min
+        #     elif count_min > 21:
+        #         # If we've busted on Count_Min, and the hand
+        #         hand_status = 'bust'
+        #         final_count = count_min
+        # # print('Dealer Hand Outcome:', hand_status, final_count)
 
-        # Assemble outcome info for the hand
-        outcome_info['Final_Hand'] = self.dealer_hand.print_hand()
-        outcome_info['Status'] = hand_status
-        outcome_info['Count'] = final_count
+        # # Assemble outcome info for the hand
+        # outcome_info['Final_Hand'] = self.dealer_hand.print_hand()
+        # outcome_info['Status'] = hand_status
+        # outcome_info['Count'] = final_count
             
         return outcome_info
         
     # TODO: Create another play_player_hand using player guidelines from Hoyle.
-    # TODO: Implement a design pattern (strategy pattern?) allowing abstraction and swapping out of playing rules for player and possibly dealer.
     
     def play_player_hand(self):
         """
-        Play the player's hand of black jack, returning a dictionary of information about the outcome of the hand.
+        Play the player's hand of black jack, using the player play strategy, and returning
+        a dictionary of information about the outcome of the hand.
             Final_Hand = String representation of player's hand of cards at the end of the game, string
             Status = 'bust' or 'stand', string
             Count = Final count of player's hand, int
@@ -188,47 +196,49 @@ class BlackJackSim(object):
         """
         outcome_info = {}
         
-        info = self.player_hand.hand_info()
+        outcome_info = self.player_play_strategy.play(self.player_hand, self.deck)
         
-        hand_status = ''
-        final_count = 0
-        # Hit as many times as needed until Count_Max exceeds 16
-        while info['Count_Max'] <= 16:
-            # Hit
-            hand_status = 'hit'
-            self.player_hand.add_cards(self.deck.draw(1))
-            # print('Player Hand After Hitting on Max Count: ' + self.player_hand.print_hand())
-            info = self.player_hand.hand_info()
-            # print(info) 
-        count_max = info['Count_Max']
-        if (count_max >= 17) and (count_max <= 21):
-            # Stand on Count_Max
-            hand_status = 'stand'
-            final_count = count_max
-        elif count_max > 21:
-            # If we've busted on Count_Max, switch to Count_Min
-            while info['Count_Min'] <= 16:
-                # Hit
-                hand_status = 'hit'
-                self.player_hand.add_cards(self.deck.draw(1))
-                # print('Player Hand After Hiting on Count_Min: ' + self.player_hand.print_hand())
-                info = self.player_hand.hand_info()
-                # print(info)
-            count_min = info['Count_Min']
-            if (count_min >= 17) and (count_min <= 21):
-                # Stand on Count_Min
-                hand_status = 'stand'
-                final_count = count_min
-            elif count_min > 21:
-                # We've busted on Count_Min, and the hand
-                hand_status = 'bust'
-                final_count = count_min
-        # print('Player Hand Outcome:', hand_status, final_count)
+        # info = self.player_hand.hand_info()
+        
+        # hand_status = ''
+        # final_count = 0
+        # # Hit as many times as needed until Count_Max exceeds 16
+        # while info['Count_Max'] <= 16:
+        #     # Hit
+        #     hand_status = 'hit'
+        #     self.player_hand.add_cards(self.deck.draw(1))
+        #     # print('Player Hand After Hitting on Max Count: ' + self.player_hand.print_hand())
+        #     info = self.player_hand.hand_info()
+        #     # print(info) 
+        # count_max = info['Count_Max']
+        # if (count_max >= 17) and (count_max <= 21):
+        #     # Stand on Count_Max
+        #     hand_status = 'stand'
+        #     final_count = count_max
+        # elif count_max > 21:
+        #     # If we've busted on Count_Max, switch to Count_Min
+        #     while info['Count_Min'] <= 16:
+        #         # Hit
+        #         hand_status = 'hit'
+        #         self.player_hand.add_cards(self.deck.draw(1))
+        #         # print('Player Hand After Hiting on Count_Min: ' + self.player_hand.print_hand())
+        #         info = self.player_hand.hand_info()
+        #         # print(info)
+        #     count_min = info['Count_Min']
+        #     if (count_min >= 17) and (count_min <= 21):
+        #         # Stand on Count_Min
+        #         hand_status = 'stand'
+        #         final_count = count_min
+        #     elif count_min > 21:
+        #         # We've busted on Count_Min, and the hand
+        #         hand_status = 'bust'
+        #         final_count = count_min
+        # # print('Player Hand Outcome:', hand_status, final_count)
 
-        # Assemble outcome info for the hand
-        outcome_info['Final_Hand'] = self.player_hand.print_hand()
-        outcome_info['Status'] = hand_status
-        outcome_info['Count'] = final_count
+        # # Assemble outcome info for the hand
+        # outcome_info['Final_Hand'] = self.player_hand.print_hand()
+        # outcome_info['Status'] = hand_status
+        # outcome_info['Count'] = final_count
             
         return outcome_info
     

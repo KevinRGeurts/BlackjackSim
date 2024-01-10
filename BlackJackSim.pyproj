@@ -27,6 +27,9 @@
   <ItemGroup>
     <Compile Include="BlackJackSim.py" />
     <Compile Include="card.py" />
+    <Compile Include="PlayStrategy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="hand.py">
       <SubType>Code</SubType>
     </Compile>
@@ -34,6 +37,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_CasinoDealerPlayStrategy.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_stacked_deck.py">

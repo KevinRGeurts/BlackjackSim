@@ -78,8 +78,6 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)        
 
     
-    # TODO: Need many more test cases of play_dealer_hand to fully test the possibilities of the while looping and conditional branches
-
     def test_play_dealer_hand_hit_to_stand(self):
         
         bjs = BlackJackSim()

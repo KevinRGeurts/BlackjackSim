@@ -2,6 +2,7 @@ from deck import Deck, Stacked_Deck
 from hand import Hand
 from card import Card
 from BlackJackSim import BlackJackSim
+from PlayStrategy import CasinoDealerPlayStrategy
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -10,23 +11,23 @@ if __name__ == '__main__':
     Used currently to set up what ever situation is needed for debugging, since I can't seem to debug unit tests.
     """
     
-    # # Debug creating a drawing from a Stacked_Deck
+    # # *** Debug creating a drawing from a Stacked_Deck ***
     # sd = Stacked_Deck()
     # sd.deck = [Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
     # c = sd.draw()
     # print('Stacked Deck Draw:', c.print_card())
 
-    # # Debug adding a single card to a hand
+    # # *** Debug adding a single card to a hand ***
     # h = Hand()
     # c = Card('S','J',10)
     # h.add_cards(c)   
     
-    # # Debug drawing from a dec of cards
+    # # *** Debug drawing from a dec of cards ***
 
     # d = Deck()
     # c = d.draw()
     
-    # # Debug printing a hand to a string
+    # # *** Debug printing a hand to a string ***
     
     # h = Hand()
     # cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     # print(act_val + '\n')
     
     
-    # Use BlackJackSim to play a game
+    # *** Use BlackJackSim to play a game ***
 
     # Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
     # Dealer_Status = 'bust', 'stand', or 'blackjack', string
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     print('     Dealer Count:', info['Dealer_Count'])
     print('     Dealer Hand:', info['Dealer_Final_Hand'])
     
-    # # Use BlackJackSim to play a game with a stacked deck to produce a desired outcome
+    # # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
 
     # bjs = BlackJackSim()
     # print('Starting a game of black jack with a stacked deck to have player and dealer get blackjack...')
@@ -145,6 +146,23 @@ if __name__ == '__main__':
     
     #if count > 21 and info['Num_Aces'] == 1:
     #   count = info['Count_Other'] + info['Num_Aces'] * 1
+
+    # # *** Debug playing srategy ***
+    
+    # ps = CasinoDealerPlayStrategy()
+    # info = {}      
+       
+    # # Create a Stacked_Deck
+    # sd = Stacked_Deck()
+    # sd.deck = [Card('C','A',1), Card('D','3',3)]
+       
+    # # Set up hand
+    # h = Hand()
+    # h.add_cards([Card('S','7',7), Card('H','8',8)])
+        
+    # # Play the hand
+    # info = ps.play(h, sd)
+
         
         
         

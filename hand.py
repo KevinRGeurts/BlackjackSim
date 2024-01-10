@@ -1,6 +1,6 @@
 from card import Card
 
-class Hand(object):
+class Hand:
     """
     Represents a hand of playing cards.\n
     """
