@@ -1,5 +1,7 @@
+from re import I
 from hand import Hand
 from deck import Deck
+from card import Card
 
 class PlayStrategy:
     """
@@ -12,15 +14,16 @@ class CasinoDealerPlayStrategy(PlayStrategy):
     Implements strategy for (casino) dealer play.
     """
     
-    def play(self, hand = Hand(), deck = Deck()):
+    def play(self, hand = Hand(), deck = Deck(), show = Card()):
         """
         The method called to invoke the hand playing strategy.
-        Play the dealer's hand of black jack, returning a dictionary of information about the outcome of the hand.
+        Play the hand of black jack, returning a dictionary of information about the outcome of the hand.
             Final_Hand = String representation of dealer's hand of cards at the end of the game, string
             Status = 'bust' or 'stand', string
             Count = Final count of dealer's hand, int
         :parameter hand: The Hand to be played.
         :parameter deck: The Deck from which to draw cards.
+        :paramter show: The dealer's face up card, Card
         :return: Dictionary of information about the outcome of the hand. 
         """
         outcome_info = {}
@@ -68,4 +71,78 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         outcome_info['Count'] = final_count
             
         return outcome_info
+    
+
+class HoylePlayerPlayStrategy(PlayStrategy):
+    """
+    Implements strategy for player play, based on recommendations in Hoyle's Rules of Games.
+    """
+	# Check Count_Max
+	# 	If Count_Max > 17 and <= 21, then stand [done]
+	# 	If Count_Max <= 17 or > 21, then
+	# Check Count_Min
+	# 	If Count_Min > 21, then bust [done]
+	# 	If Count_Min >= 17, then stand [done]
+	# 	If Count_Min <= 12, then hit [done]
+	# 	If Count_Min >=13 and <= 16, then
+	# 		If dealer shows <= 6 (their one face up card), then stand (expecting dealer to hit and bust) [done]
+	# 		If dealer shows 7 - 10, J, Q, K, A, then hit [done]
+	# After hitting, return to Check Count_Max [done]    
+    
+    def play(self, hand = Hand(), deck = Deck(), show = Card()):
+        """
+        The method called to invoke the hand playing strategy.
+        Play the hand of black jack, returning a dictionary of information about the outcome of the hand.
+            Final_Hand = String representation of dealer's hand of cards at the end of the game, string
+            Status = 'bust' or 'stand', string
+            Count = Final count of dealer's hand, int
+        :parameter hand: The Hand to be played.
+        :parameter deck: The Deck from which to draw cards.
+        :return: Dictionary of information about the outcome of the hand. 
+        """
+        outcome_info = {}
+        
+        hand_status = 'hit'
+        final_count = 0
+        
+        while hand_status == 'hit':
+        
+            info = hand.hand_info()
+            
+            if info['Count_Max'] <= 17 or info['Count_Max'] > 21:
+                # Need to check Count_Min
+                if info['Count_Min'] > 21:
+                    # Bust
+                    hand_status = 'bust'
+                    final_count = info['Count_Min']
+                elif info['Count_Min'] >= 17:
+                    # Stand
+                    hand_status = 'stand'
+                    final_count = info['Count_Min']
+                elif info ['Count_Min'] <= 12:
+                    # Hit
+                    hand_status = 'hit'
+                    hand.add_cards(deck.draw(1))
+                else:
+                    # Hand counts between 13 and 16 inclusive. Decide to hit or stand based on dealer's face up card.
+                    if show.count_card(ace_high = True) <= 6:
+                        # Dealer shows 2 - 6, so stand (hoping dealer will have to hit and will bust)
+                        hand_status = 'stand'
+                        final_count = info['Count_Min']
+                    else:
+                        # Dealer shows 7 - 10, J, Q, K, or A, so hit
+                        hand_status = 'hit'
+                        hand.add_cards(deck.draw(1))
+            else:
+                # Stand, because Count_Max is > 17, and we haven't busted
+                hand_status = 'stand'
+                final_count = info['count_max']
+                
+        # Assemble outcome info for the hand
+        outcome_info['Final_Hand'] = hand.print_hand()
+        outcome_info['Status'] = hand_status
+        outcome_info['Count'] = final_count
+            
+        return outcome_info
+
 

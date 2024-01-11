@@ -416,6 +416,7 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         
         # Test both stand, player has high score...
+
         info['Player_Status'] = 'stand'
         info['Player_Count'] = 19
         info['Dealer_Status'] = 'stand'
@@ -429,6 +430,7 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
 
         # Test both stand, dealer has high score...
+
         info['Player_Status'] = 'stand'
         info['Player_Count'] = 19
         info['Dealer_Status'] = 'stand'
@@ -442,6 +444,7 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
 
         # Test both stand, tie score...
+
         info['Player_Status'] = 'stand'
         info['Player_Count'] = 19
         info['Dealer_Status'] = 'stand'
@@ -454,7 +457,8 @@ class Test_Sim(unittest.TestCase):
         act_val = info['Game_Outcome']
         self.assertEqual(exp_val, act_val)
         
-        # Test both bust, it's a push...
+        # Test both bust, it's a win by the dealer...
+
         info['Player_Status'] = 'bust'
         info['Player_Count'] = 0
         info['Dealer_Status'] = 'bust'
@@ -463,7 +467,7 @@ class Test_Sim(unittest.TestCase):
         sim.determine_game_outcome(info)
             
         # Do we have the expected game outcome?
-        exp_val = 'push'
+        exp_val = 'dealer wins'
         act_val = info['Game_Outcome']
         self.assertEqual(exp_val, act_val)
 

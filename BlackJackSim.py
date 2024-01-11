@@ -275,6 +275,8 @@ class BlackJackSim:
         return outcome_info
     
 
+    # TODO: Check Hoyle rules. Think that if player busts, then player loses, even if dealer busts, because player busted first.
+    # This is probably the house's advantage.
     def determine_game_outcome(self, info = {}):
         """
         Complete the argument info dictionary after determing the game winner.
@@ -282,12 +284,13 @@ class BlackJackSim:
         :param info: same info object returned by play_game(), dictionary
         :return: NULL
         """
-        if (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'bust'):
-            info['Game_Outcome'] = 'player wins'
-        elif (info['Player_Status']) == 'bust' and (info['Dealer_Status'] == 'stand'):
+        if (info['Player_Status'] == 'bust'):
+            # If player busts, then it doesn't matter what the dealer status is, the dealer wins
             info['Game_Outcome'] = 'dealer wins'
-        elif (info['Player_Status']) == 'stand' and (info['Dealer_Status'] == 'stand'):
-            # Higher score wins
+        elif (info['Player_Status'] == 'stand') and (info['Dealer_Status'] == 'bust'):
+            info['Game_Outcome'] = 'player wins'
+        else:
+            # Both player and dealer stood, yigher score wins
             if info['Player_Count'] > info['Dealer_Count']:
                 # Player wins
                 info['Game_Outcome'] = 'player wins'
@@ -297,9 +300,6 @@ class BlackJackSim:
             else:
                 # It's a tie score, and a push
                 info['Game_Outcome'] = 'push'
-        else:
-            # Both player and dealer busted, so its a push
-            info['Game_Outcome'] = 'push'
        
         return NULL;
     

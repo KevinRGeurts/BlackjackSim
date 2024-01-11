@@ -1,6 +1,6 @@
 BlackJackSim Python Project Developer Documentation
 
-Dealer hand play logic:
+*** Casino Dealer hand play logic:
 
 Count_Max = First ace counts 11, any remaining aces count 1
 Count_Min = All aces count 1
@@ -21,3 +21,42 @@ Dealer must hit on 16 or less and stand on 17 or more. Dealer busts on greater t
 		If bust, then proceed to stand or bust using Count_Min
 			If stand, then done, and report out Count_Min as final hand count
 			If bust, then report hand status as bust
+
+*** Holye Player hand play logic:
+
+Always stand on 17
+
+Always hit on 12 and under
+
+For 13 - 16:
+	Stand, if dealer shows 6 or lower
+	Hit, if dealer shows 7 - 10, J, Q, K, or A
+
+Count an Ace as 1 up to 17 (e.g., hit 2-4-A, counting it as 7)
+
+So, trying to put all this together into a workflow...
+
+	Test hands for each outcome are shown in [].
+
+	Check Count_Max
+		If Count_Max > 17 and <= 21, then stand [A 7] Test 1
+		If Count_Max <= 17 or > 21, then check Count_Min [A 6]; [A 6 5] Test 2
+	Check Count_Min
+		If Count_Min > 21, then bust [A 6 5 K] Test 2
+		If Count_Min >= 17, then stand [A 6 5 7] Test 3
+		If Count_Min <= 12, then hit [A 6 5] Test 2
+		If Count_Min >=13 and <= 16, then [A 6 5 2] Test 4
+			If dealer shows <= 6 (their one face up card), then stand (expecting dealer to hit and bust) [show = 6] Test 4
+			If dealer shows 7 - 10, J, Q, K, A, then hit [A 6 5 2 3] [show = 7] Test 5
+	After hitting, return to Check Count_Max
+
+	Construct the following test cases
+	Test 1: Hand[A 7] Deck[...] show[...] Stand
+	Test 2: Hand[A 6] Deck[5 K] show[...] Hit Bust
+	Test 3: Hand[A 6] Deck[5 7] show[...] Hit Stand
+	Test 4: Hand[A 6] Deck[5 2] show[6] Hit Stand
+	Test 5: Hand[A 6] Deck[5 2 3] show[7] Stand
+	
+
+	
+	
