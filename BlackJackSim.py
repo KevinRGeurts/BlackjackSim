@@ -19,7 +19,8 @@ class BlackJackSim:
         self.player_hand = Hand()
         #self.player_play_strategy = PlayStrategy()
         self.player_play_strategy = HoylePlayerPlayStrategy()
-    
+        #self.player_play_strategy = CasinoDealerPlayStrategy()
+        
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
 

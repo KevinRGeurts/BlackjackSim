@@ -56,7 +56,12 @@ class Test_Deck(unittest.TestCase):
         from random import seed
         seed(1234567890)
         d = Deck()
-        self.assertRaises(AssertionError, d.draw(53))     
+        # Note that the second argument to assertRaises(...) must be a callable, with its argument list then following.
+        # Or it might be easier to use the second sytax that has the "with".
+        self.assertRaises(AssertionError, d.draw, 53)
+        # Alternatively, this syntax also works.
+        #with self.assertRaises(AssertionError):
+        #    d.draw(53)
         
 
 if __name__ == '__main__':
