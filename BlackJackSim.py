@@ -24,6 +24,38 @@ class BlackJackSim:
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
 
+    def play_games(self, num_games = 1):
+        """
+        Play multiple games of blackjack, returning a dictionary of statistics of outcomes across the set of games.
+            Dealer_Wins = The number of games won by the dealer, int
+            Player_WIns = The number of games won by the player, int
+            Pushes = The number of tie (push) games, int
+        :parameter num_games: The number of games to play, int
+        :return: Dictionary of statistics for the set of games.
+        """
+        game_stats = {}
+        
+        dealer_wins = 0
+        player_wins = 0
+        pushes = 0
+        
+        for g in range(num_games):
+            print('Playing game:', g)
+            info = self.play_game()
+            if info['Game_Outcome'] == 'dealer wins':
+                dealer_wins += 1
+            elif info['Game_Outcome'] == 'player wins':
+                player_wins += 1
+            elif info['Game_Outcome'] == 'push':
+                pushes += 1
+        
+        game_stats['Dealer_Wins'] = dealer_wins
+        game_stats['Player_Wins'] = player_wins
+        game_stats['Pushes'] = pushes
+               
+        return game_stats
+
+    
     def play_game(self):
         """
         Play one game of black jack, returning a dictionary of information about the outcome of the game.

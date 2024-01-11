@@ -59,6 +59,28 @@ if __name__ == '__main__':
     print('     Dealer Count:', info['Dealer_Count'])
     print('     Dealer Hand:', info['Dealer_Final_Hand'])
     
+    # *** Use BlackJackSim to play a bunch of games ***
+
+    # Dealer_Wins = The number of games won by the dealer, int
+    # Player_WIns = The number of games won by the player, int
+    # Pushes = The number of tie (push) games, int
+    
+    print('Starting a bunch of games of black jack to generate win statistics...')
+    info = sim.play_games(100000)
+    dw = info['Dealer_Wins']
+    pw = info['Player_Wins']
+    pu = info['Pushes']
+    tg = dw + pw + pu
+    print('     Dealer Wins:', dw)
+    print('     Player Wins:', pw)
+    print('     Pushes:', pu)
+    print('     Games Played:', tg)
+    print('     Dealer % Wins:', ((100.0 * dw) / tg))
+    print('     Player % Wins:', ((100.0 * pw) / tg))
+    print('     Push %:', ((100.0 * pu) / tg))
+
+    
+    
     # # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
 
     # bjs = BlackJackSim()
