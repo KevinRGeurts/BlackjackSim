@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
-from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy
+from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 
 class BlackJackSim:
     """
@@ -18,9 +18,8 @@ class BlackJackSim:
         self.dealer_play_strategy = CasinoDealerPlayStrategy()
         self.player_hand = Hand()
         #self.player_play_strategy = PlayStrategy()
-        self.player_play_strategy = CasinoDealerPlayStrategy()
+        self.player_play_strategy = HoylePlayerPlayStrategy()
     
-    # TODO: Enable ability to play a specified number of games and track/report statistics like % of different game outcomes across those games.
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
 
@@ -156,6 +155,7 @@ class BlackJackSim:
             
         return check_info
     
+    
     def play_dealer_hand(self):
         """
         Play the dealer's hand of black jack, using the dealer play strategy, and returning
@@ -168,53 +168,9 @@ class BlackJackSim:
         outcome_info = {}
         
         outcome_info = self.dealer_play_strategy.play(self.dealer_hand, self.deck)
-        
-        # info = self.dealer_hand.hand_info()
-        
-        # hand_status = ''
-        # final_count = 0
-        # # Hit as many times as needed until Count_Max exceeds 16
-        # while info['Count_Max'] <= 16:
-        #     # Hit
-        #     hand_status = 'hit'
-        #     self.dealer_hand.add_cards(self.deck.draw(1))
-        #     # print('Dealer Hand After Hitting on Max Count: ' + self.dealer_hand.print_hand())
-        #     info = self.dealer_hand.hand_info()
-        #     # print(info) 
-        # count_max = info['Count_Max']
-        # if (count_max >= 17) and (count_max <= 21):
-        #     # Stand on Count_Max
-        #     hand_status = 'stand'
-        #     final_count = count_max
-        # elif count_max > 21:
-        #     # We've busted on Count_Max, switch to Count_Min
-        #     while info['Count_Min'] <= 16:
-        #         # Hit
-        #         hand_status = 'hit'
-        #         self.dealer_hand.add_cards(self.deck.draw(1))
-        #         # print('Dealer Hand After Hiting on Count_Min: ' + self.dealer_hand.print_hand())
-        #         info = self.dealer_hand.hand_info()
-        #         # print(info)
-        #     count_min = info['Count_Min']
-        #     if (count_min >= 17) and (count_min <= 21):
-        #         # Stand on Count_Min
-        #         hand_status = 'stand'
-        #         final_count = count_min
-        #     elif count_min > 21:
-        #         # If we've busted on Count_Min, and the hand
-        #         hand_status = 'bust'
-        #         final_count = count_min
-        # # print('Dealer Hand Outcome:', hand_status, final_count)
-
-        # # Assemble outcome info for the hand
-        # outcome_info['Final_Hand'] = self.dealer_hand.print_hand()
-        # outcome_info['Status'] = hand_status
-        # outcome_info['Count'] = final_count
-            
+                  
         return outcome_info
         
-    # TODO: Create another play_player_hand using player guidelines from Hoyle.
-    
     def play_player_hand(self):
         """
         Play the player's hand of black jack, using the player play strategy, and returning
@@ -228,55 +184,14 @@ class BlackJackSim:
         """
         outcome_info = {}
         
-        outcome_info = self.player_play_strategy.play(self.player_hand, self.deck)
+        # Get the first card in the dealer's hand, which is the face up card
+        show = self.dealer_hand.cards[0]
         
-        # info = self.player_hand.hand_info()
-        
-        # hand_status = ''
-        # final_count = 0
-        # # Hit as many times as needed until Count_Max exceeds 16
-        # while info['Count_Max'] <= 16:
-        #     # Hit
-        #     hand_status = 'hit'
-        #     self.player_hand.add_cards(self.deck.draw(1))
-        #     # print('Player Hand After Hitting on Max Count: ' + self.player_hand.print_hand())
-        #     info = self.player_hand.hand_info()
-        #     # print(info) 
-        # count_max = info['Count_Max']
-        # if (count_max >= 17) and (count_max <= 21):
-        #     # Stand on Count_Max
-        #     hand_status = 'stand'
-        #     final_count = count_max
-        # elif count_max > 21:
-        #     # If we've busted on Count_Max, switch to Count_Min
-        #     while info['Count_Min'] <= 16:
-        #         # Hit
-        #         hand_status = 'hit'
-        #         self.player_hand.add_cards(self.deck.draw(1))
-        #         # print('Player Hand After Hiting on Count_Min: ' + self.player_hand.print_hand())
-        #         info = self.player_hand.hand_info()
-        #         # print(info)
-        #     count_min = info['Count_Min']
-        #     if (count_min >= 17) and (count_min <= 21):
-        #         # Stand on Count_Min
-        #         hand_status = 'stand'
-        #         final_count = count_min
-        #     elif count_min > 21:
-        #         # We've busted on Count_Min, and the hand
-        #         hand_status = 'bust'
-        #         final_count = count_min
-        # # print('Player Hand Outcome:', hand_status, final_count)
-
-        # # Assemble outcome info for the hand
-        # outcome_info['Final_Hand'] = self.player_hand.print_hand()
-        # outcome_info['Status'] = hand_status
-        # outcome_info['Count'] = final_count
-            
+        outcome_info = self.player_play_strategy.play(self.player_hand, self.deck, show)
+                    
         return outcome_info
     
 
-    # TODO: Check Hoyle rules. Think that if player busts, then player loses, even if dealer busts, because player busted first.
-    # This is probably the house's advantage.
     def determine_game_outcome(self, info = {}):
         """
         Complete the argument info dictionary after determing the game winner.
@@ -285,12 +200,13 @@ class BlackJackSim:
         :return: NULL
         """
         if (info['Player_Status'] == 'bust'):
-            # If player busts, then it doesn't matter what the dealer status is, the dealer wins
+            # If player busts, then it doesn't matter what the dealer status is, the dealer wins.
+            # This is the house's advantage in the game.
             info['Game_Outcome'] = 'dealer wins'
         elif (info['Player_Status'] == 'stand') and (info['Dealer_Status'] == 'bust'):
             info['Game_Outcome'] = 'player wins'
         else:
-            # Both player and dealer stood, yigher score wins
+            # Both player and dealer stood, higher score wins
             if info['Player_Count'] > info['Dealer_Count']:
                 # Player wins
                 info['Game_Outcome'] = 'player wins'
@@ -301,6 +217,6 @@ class BlackJackSim:
                 # It's a tie score, and a push
                 info['Game_Outcome'] = 'push'
        
-        return NULL;
+        return None;
     
 

@@ -7,7 +7,7 @@ class Card:
     # of inconsistency (done). Update as needed through the solution construction of cards to use this new method (not done).
     # One option would be to default count to 0, and if count is 0 then set it based on pips (done). This would I think keep all existing
     # card constructions working without issue, until they could be updated.
-    def __init__(self, suit='H', pips='J', count=10):
+    def __init__(self, suit='H', pips='J', count=0):
         """
         Construct a Card with given suit, pips, and count value.
         If count=0 (the default), then count will be automatically set based on pips.

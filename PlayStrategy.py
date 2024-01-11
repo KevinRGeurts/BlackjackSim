@@ -136,7 +136,7 @@ class HoylePlayerPlayStrategy(PlayStrategy):
             else:
                 # Stand, because Count_Max is > 17, and we haven't busted
                 hand_status = 'stand'
-                final_count = info['count_max']
+                final_count = info['Count_Max']
                 
         # Assemble outcome info for the hand
         outcome_info['Final_Hand'] = hand.print_hand()

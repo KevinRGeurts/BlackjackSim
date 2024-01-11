@@ -217,10 +217,13 @@ class Test_Sim(unittest.TestCase):
         # Replace sim's deck with the Stacked_Deck
         bjs.deck = sd
        
+        # Set up dealer hand because play strategy may need a show Card
+        bjs.dealer_hand.add_cards([Card('S','10'), Card('H','7')])
+        
         # Set up player hand
         bjs.player_hand.add_cards([Card('S','5',5), Card('H','2',2)])
         
-        # Play the dealer hand
+        # Play the player's hand
         info = bjs.play_player_hand()
         
         # Do we have the expected final hand?

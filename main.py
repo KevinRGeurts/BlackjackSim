@@ -2,7 +2,7 @@ from deck import Deck, Stacked_Deck
 from hand import Hand
 from card import Card
 from BlackJackSim import BlackJackSim
-from PlayStrategy import CasinoDealerPlayStrategy
+from PlayStrategy import CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -65,19 +65,19 @@ if __name__ == '__main__':
     # Player_WIns = The number of games won by the player, int
     # Pushes = The number of tie (push) games, int
     
-    print('Starting a bunch of games of black jack to generate win statistics...')
-    info = sim.play_games(100000)
-    dw = info['Dealer_Wins']
-    pw = info['Player_Wins']
-    pu = info['Pushes']
-    tg = dw + pw + pu
-    print('     Dealer Wins:', dw)
-    print('     Player Wins:', pw)
-    print('     Pushes:', pu)
-    print('     Games Played:', tg)
-    print('     Dealer % Wins:', ((100.0 * dw) / tg))
-    print('     Player % Wins:', ((100.0 * pw) / tg))
-    print('     Push %:', ((100.0 * pu) / tg))
+    # print('Starting a bunch of games of black jack to generate win statistics...')
+    # info = sim.play_games(100000)
+    # dw = info['Dealer_Wins']
+    # pw = info['Player_Wins']
+    # pu = info['Pushes']
+    # tg = dw + pw + pu
+    # print('     Dealer Wins:', dw)
+    # print('     Player Wins:', pw)
+    # print('     Pushes:', pu)
+    # print('     Games Played:', tg)
+    # print('     Dealer % Wins:', ((100.0 * dw) / tg))
+    # print('     Player % Wins:', ((100.0 * pw) / tg))
+    # print('     Push %:', ((100.0 * pu) / tg))
 
     
     
@@ -185,7 +185,33 @@ if __name__ == '__main__':
     # # Play the hand
     # info = ps.play(h, sd)
 
-        
-        
-        
     
+    ## *** Debug test cases for Hoyle Player Play Stratgegy
+
+    # ps = HoylePlayerPlayStrategy()
+    # info = {}
+        
+    # # Create a Stacked_Deck (Doesn't matter what. Their should be no draws.)
+    # sd = Stacked_Deck()
+    # sd.deck = [Card('S','5'), Card('H','2')]
+        
+    # # Set up the hand
+    # h = Hand()
+    # h.add_cards([Card('C','A'), Card('D','7')])
+        
+    # # Play the hand
+    # info = ps.play(h, sd)
+        
+    # # Do we have the expected final hand?
+    # exp_val = 'AC 7D'
+    # act_val = info['Final_Hand']
+    # # Do we have the expected status?
+    # exp_val = 'stand'
+    # act_val = info['Status']
+    # # Do we have the expected final count?
+    # exp_val = 18
+    # act_val = info['Count']
+
+
+
+ 

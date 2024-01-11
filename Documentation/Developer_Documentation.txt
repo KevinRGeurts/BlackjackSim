@@ -44,18 +44,18 @@ So, trying to put all this together into a workflow...
 	Check Count_Min
 		If Count_Min > 21, then bust [A 6 5 K] Test 2
 		If Count_Min >= 17, then stand [A 6 5 7] Test 3
-		If Count_Min <= 12, then hit [A 6 5] Test 2
+		If Count_Min <= 12, then hit [A 6 5] Test 2, Test 3
 		If Count_Min >=13 and <= 16, then [A 6 5 2] Test 4
 			If dealer shows <= 6 (their one face up card), then stand (expecting dealer to hit and bust) [show = 6] Test 4
 			If dealer shows 7 - 10, J, Q, K, A, then hit [A 6 5 2 3] [show = 7] Test 5
 	After hitting, return to Check Count_Max
 
 	Construct the following test cases
-	Test 1: Hand[A 7] Deck[...] show[...] Stand
-	Test 2: Hand[A 6] Deck[5 K] show[...] Hit Bust
-	Test 3: Hand[A 6] Deck[5 7] show[...] Hit Stand
-	Test 4: Hand[A 6] Deck[5 2] show[6] Hit Stand
-	Test 5: Hand[A 6] Deck[5 2 3] show[7] Stand
+	Test 1 "Stand Max": Hand[A 7] Deck[...] show[...] Stand
+	Test 2 "Bust Min": Hand[A 6] Deck[5 K] show[...] Hit Hit Bust
+	Test 3 "stand min over seventeen": Hand[A 6] Deck[5 7] show[...] Hit Hit Stand
+	Test 4 "stand min on show six or under": Hand[A 6] Deck[5 2] show[6] Hit Hit Stand
+	Test 5 "stand min on show over six": Hand[A 6] Deck[5 2 3] show[7] Hit Hit Hit Stand
 	
 
 	
