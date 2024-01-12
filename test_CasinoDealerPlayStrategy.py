@@ -13,11 +13,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5',5), Card('H','2',2)]
+        sd.deck = [Card('S','5'), Card('H','2')]
         
         # Set up the hand
         h = Hand()
-        h.add_cards([Card('C','8',8), Card('D','J',10)])
+        h.add_cards([Card('C','8'), Card('D','J')])
         
         # Play the hand
         info = ps.play(h, sd)
@@ -43,11 +43,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5',5), Card('H','2',2)]
+        sd.deck = [Card('S','5'), Card('H','2')]
         
         # Set up the hand
         h = Hand()
-        h.add_cards([Card('C','A',1), Card('D','J',10)])
+        h.add_cards([Card('C','A'), Card('D','J')])
         
         # Play the hand
         info = ps.play(h, sd)
@@ -73,11 +73,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A',1), Card('D','J',10)]
+        sd.deck = [Card('C','A'), Card('D','J')]
         
         # Set up the hand
         h = Hand()
-        h.add_cards([Card('S','5',5), Card('H','2',2)])
+        h.add_cards([Card('S','5'), Card('H','2')])
         
         # Play the hand
         info = ps.play(h, sd)
@@ -103,11 +103,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
        
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A',1), Card('D','J',10)]
+        sd.deck = [Card('C','A'), Card('D','J')]
        
         # Set up hand
         h = Hand()
-        h.add_cards([Card('S','7',7), Card('H','9',9)])
+        h.add_cards([Card('S','7'), Card('H','9')])
         
         # Play the hand
         info = ps.play(h, sd)
@@ -133,11 +133,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
        
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A',1), Card('D','3',3)]
+        sd.deck = [Card('C','A'), Card('D','3')]
        
         # Set up hand
         h = Hand()
-        h.add_cards([Card('S','7',7), Card('H','8',8)])
+        h.add_cards([Card('S','7'), Card('H','8')])
         
         # Play the hand
         info = ps.play(h, sd)
@@ -162,11 +162,11 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A',1), Card('D','J',10)]
+        sd.deck = [Card('C','A'), Card('D','J')]
        
         # Set up hand
         h = Hand()
-        h.add_cards([Card('S','7',7), Card('H','8',8)])
+        h.add_cards([Card('S','7'), Card('H','8')])
         
         # Play the hand
         info = ps.play(h, sd)

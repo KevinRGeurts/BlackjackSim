@@ -8,7 +8,7 @@ class Test_Hand(unittest.TestCase):
     def test_add_card(self):
         
         h = Hand()
-        c = Card('S','J',10)
+        c = Card('S','J')
         h.add_cards(c)
     
         # Do we have the expected number, 1, of cards in the hand?
@@ -24,7 +24,7 @@ class Test_Hand(unittest.TestCase):
     def test_add_cards(self):
     
         h = Hand()
-        cards=[Card('S','J',10), Card('H','3',3)]
+        cards=[Card('S','J'), Card('H','3')]
         h.add_cards(cards)
     
         # Do we have the expected number, 2, of cards in the hand?
@@ -43,7 +43,7 @@ class Test_Hand(unittest.TestCase):
     def test_get_num_aces(self):
         
         h1 = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card("D","A"),  Card("C","A")]
         h1.add_cards(cards)
         
         h2 = h1.get_aces()
@@ -57,7 +57,7 @@ class Test_Hand(unittest.TestCase):
     def test_get_num_non_aces(self):
         
         h1 = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card("D","A"),  Card("C","A")]
         h1.add_cards(cards)
         
         h2 = h1.get_non_aces()
@@ -71,7 +71,7 @@ class Test_Hand(unittest.TestCase):
     def test_get_non_aces(self):
         
         h1 = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card("D","A"),  Card("C","A")]
         h1.add_cards(cards)
         
         h2 = h1.get_non_aces()
@@ -93,7 +93,7 @@ class Test_Hand(unittest.TestCase):
     def test_get_aces(self):
         
         h1 = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card("D","A"),  Card("C","A")]
         h1.add_cards(cards)
         
         h2 = h1.get_aces()
@@ -115,7 +115,7 @@ class Test_Hand(unittest.TestCase):
     def test_count_hand(self):
     
         h = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card("D","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card("D","A")]
         h.add_cards(cards)
     
         exp_val = 14
@@ -126,7 +126,7 @@ class Test_Hand(unittest.TestCase):
     def test_hand_info(self):
         
         h = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
         h.add_cards(cards)
         
         info = h.hand_info()
@@ -157,7 +157,7 @@ class Test_Hand(unittest.TestCase):
     def test_print_hand(self):
         
         h = Hand()
-        cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
         h.add_cards(cards)
         
         exp_val = 'JS 3H 5S AD AC'

@@ -18,7 +18,7 @@ class Test_Deck(unittest.TestCase):
         # Has the number of cards decreased by 1?
         self.assertEqual(51, d.cards_remaining())
         # Has the expected card been drawn?
-        c = Card('H', 'Q', 10)
+        c = Card('H', 'Q')
         exp_val = (c.suit, c.pips)
         act_val = (dc.suit, dc.pips)
         self.assertTupleEqual(exp_val, act_val)
@@ -44,7 +44,7 @@ class Test_Deck(unittest.TestCase):
         # Has the number of cards remained 52?
         self.assertEqual(52, d.cards_remaining())
         # Has the expected card been drawn?
-        c = Card('H', 'Q', 10)
+        c = Card('H', 'Q')
         exp_val = (c.suit, c.pips)
         act_val = (dc.suit, dc.pips)
         self.assertTupleEqual(exp_val, act_val)

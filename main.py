@@ -13,7 +13,7 @@ if __name__ == '__main__':
     
     # # *** Debug creating a drawing from a Stacked_Deck ***
     # sd = Stacked_Deck()
-    # sd.deck = [Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+    # sd.deck = [Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
     # c = sd.draw()
     # print('Stacked Deck Draw:', c.print_card())
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # # *** Debug printing a hand to a string ***
     
     # h = Hand()
-    # cards=[Card('S','J',10), Card('H','3',3), Card('S','5',5), Card("D","A",1),  Card("C","A",1)]
+    # cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
     # h.add_cards(cards)
         
     # act_val = h.print_hand()
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # # Create a Stacked_Deck
     # sd = Stacked_Deck()
     # # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
-    # sd.deck = [Card('C','A',1), Card('D','K',10), Card('S','10',10), Card('H','A',1)]
+    # sd.deck = [Card('C','A'), Card('D','K'), Card('S','10'), Card('H','A')]
     # # Replace sim's deck with the Stacked_Deck
     # bjs.deck = sd
        
@@ -176,11 +176,11 @@ if __name__ == '__main__':
        
     # # Create a Stacked_Deck
     # sd = Stacked_Deck()
-    # sd.deck = [Card('C','A',1), Card('D','3',3)]
+    # sd.deck = [Card('C','A'), Card('D','3')]
        
     # # Set up hand
     # h = Hand()
-    # h.add_cards([Card('S','7',7), Card('H','8',8)])
+    # h.add_cards([Card('S','7'), Card('H','8')])
         
     # # Play the hand
     # info = ps.play(h, sd)

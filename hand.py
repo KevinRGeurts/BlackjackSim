@@ -130,6 +130,8 @@ class Hand:
         return s       
     
     
+    # TODO: With __str__() implemented, this shouldn't be needed. Find all calls to it in the solution, update them to rely on str() or print()
+    # and then delete this method.
     def print_hand(self):
         """
         Returns a string representation of the hand.
