@@ -13,7 +13,7 @@ class Test_Hand(unittest.TestCase):
     
         # Do we have the expected number, 1, of cards in the hand?
         exp_val = 1
-        act_val = len(h.cards)
+        act_val = h.get_num_cards()
         self.assertEqual(exp_val, act_val)
         # Is the first card in the hand the card we expect?
         exp_val = (c.get_suit(), c.get_pips())
@@ -29,7 +29,7 @@ class Test_Hand(unittest.TestCase):
     
         # Do we have the expected number, 2, of cards in the hand?
         exp_val = 2
-        act_val = len(h.cards)
+        act_val = h.get_num_cards()
         self.assertEqual(exp_val, act_val)
         # Is the first card in the hand the card we expect?
         exp_val = (cards[0].get_suit(), cards[0].get_pips())
@@ -65,7 +65,18 @@ class Test_Hand(unittest.TestCase):
         # Do we have the expected number, 2, of ace cards in the hand?
         exp_val = 2
         act_val = h2.get_num_non_aces()
-        self.assertEqual(exp_val, act_val)      
+        self.assertEqual(exp_val, act_val)
+        
+    def test_get_num_cards(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3'), Card("D","A"),  Card("C","A")]
+        h.add_cards(cards)
+        
+        # Do we have the expected number, 4, of cards in the hand?
+        exp_val = 4
+        act_val = h.get_num_cards()
+        self.assertEqual(exp_val, act_val)
     
        
     def test_get_non_aces(self):
@@ -78,7 +89,7 @@ class Test_Hand(unittest.TestCase):
     
         # Do we have the expected number, 2, of non ace cards in the hand?
         exp_val = 2
-        act_val = len(h2.cards)
+        act_val = h2.get_num_cards()
         self.assertEqual(exp_val, act_val)
         # Is the first card in the new non aces hand the card we expect?
         exp_val = (cards[0].get_suit(), cards[0].get_pips())
@@ -100,7 +111,7 @@ class Test_Hand(unittest.TestCase):
     
         # Do we have the expected number, 2, of ace cards in the hand?
         exp_val = 2
-        act_val = len(h2.cards)
+        act_val = h2.get_num_cards()
         self.assertEqual(exp_val, act_val)
         # Is the first card in the new aces hand the card we expect?
         exp_val = (cards[2].get_suit(), cards[2].get_pips())

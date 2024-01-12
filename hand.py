@@ -69,6 +69,15 @@ class Hand:
         """
         h = self.get_non_aces()
         return len(h.cards)
+    
+   
+    def get_num_cards(self):
+        """
+        Return the total number of cards in the Hand. By convention, this method should be used, rather than 
+        directly accessing the Hand's cards data member and using len(), to insulate the outside world from the details Hand's data model.
+        "return: Total number of cards in the hand, int
+        """
+        return len(self.cards)
 
 
     def hand_info(self):
