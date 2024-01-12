@@ -33,16 +33,6 @@ class Card:
         return self.pips + self.suit
         
     
-    # TODO: With __str__() implemented, this shouldn't be needed. Find all calls to it in the solution, update them to rely on str() or print()
-    # and then delete this method.
-    def print_card(self):
-        """
-        Returns a string representation of the card.
-        :return: The string representing the card.
-        """
-        return str(self)
-    
-    
     def get_count_from_pips(self, pips=''):
         """
         Intended to be called by __init__(...) as a helper function to automatically determine the card count based on the pips.

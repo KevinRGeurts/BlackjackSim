@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # sd = Stacked_Deck()
     # sd.deck = [Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
     # c = sd.draw()
-    # print('Stacked Deck Draw:', c.print_card())
+    # print('Stacked Deck Draw:', c)
 
     # # *** Debug adding a single card to a hand ***
     # h = Hand()

@@ -26,10 +26,10 @@ class Test_Card(unittest.TestCase):
         act_val = c.count_card()
         self.assertEqual(exp_val, act_val)
         
-    def test_print_card(self):
+    def test_str(self):
         exp_val = '7D' #Seven of diamonds
         c = Card(suit='D', pips='7')
-        act_val = c.print_card()
+        act_val = str(c)
         self.assertEqual(exp_val, act_val)
         
     
