@@ -19,8 +19,8 @@ class Test_Deck(unittest.TestCase):
         self.assertEqual(51, d.cards_remaining())
         # Has the expected card been drawn?
         c = Card('H', 'Q')
-        exp_val = (c.suit, c.pips)
-        act_val = (dc.suit, dc.pips)
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the drawn card gone from the deck?
         self.assertTrue(dc not in d.deck)
@@ -45,8 +45,8 @@ class Test_Deck(unittest.TestCase):
         self.assertEqual(52, d.cards_remaining())
         # Has the expected card been drawn?
         c = Card('H', 'Q')
-        exp_val = (c.suit, c.pips)
-        act_val = (dc.suit, dc.pips)
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the drawn card still in the deck?
         self.assertTrue(dc in d.deck)

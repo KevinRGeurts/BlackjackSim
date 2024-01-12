@@ -16,8 +16,8 @@ class Test_Hand(unittest.TestCase):
         act_val = len(h.cards)
         self.assertEqual(exp_val, act_val)
         # Is the first card in the hand the card we expect?
-        exp_val = (c.suit, c.pips)
-        act_val = (h.cards[0].suit, h.cards[0].pips)
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (h.cards[0].get_suit(), h.cards[0].get_pips())
         self.assertTupleEqual(exp_val, act_val)
  
 
@@ -32,12 +32,12 @@ class Test_Hand(unittest.TestCase):
         act_val = len(h.cards)
         self.assertEqual(exp_val, act_val)
         # Is the first card in the hand the card we expect?
-        exp_val = (cards[0].suit, cards[0].pips)
-        act_val = (h.cards[0].suit, h.cards[0].pips)
+        exp_val = (cards[0].get_suit(), cards[0].get_pips())
+        act_val = (h.cards[0].get_suit(), h.cards[0].get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the second card in the hand the card we expect?
-        exp_val = (cards[1].suit, cards[1].pips)
-        act_val = (h.cards[1].suit, h.cards[1].pips)
+        exp_val = (cards[1].get_suit(), cards[1].get_pips())
+        act_val = (h.cards[1].get_suit(), h.cards[1].get_pips())
         self.assertTupleEqual(exp_val, act_val)
     
     def test_get_num_aces(self):
@@ -81,12 +81,12 @@ class Test_Hand(unittest.TestCase):
         act_val = len(h2.cards)
         self.assertEqual(exp_val, act_val)
         # Is the first card in the new non aces hand the card we expect?
-        exp_val = (cards[0].suit, cards[0].pips)
-        act_val = (h2.cards[0].suit, h2.cards[0].pips)
+        exp_val = (cards[0].get_suit(), cards[0].get_pips())
+        act_val = (h2.cards[0].get_suit(), h2.cards[0].get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the second card in the non aces hand the card we expect?
-        exp_val = (cards[1].suit, cards[1].pips)
-        act_val = (h2.cards[1].suit, h2.cards[1].pips)
+        exp_val = (cards[1].get_suit(), cards[1].get_pips())
+        act_val = (h2.cards[1].get_suit(), h2.cards[1].get_pips())
         self.assertTupleEqual(exp_val, act_val)
        
    
@@ -103,12 +103,12 @@ class Test_Hand(unittest.TestCase):
         act_val = len(h2.cards)
         self.assertEqual(exp_val, act_val)
         # Is the first card in the new aces hand the card we expect?
-        exp_val = (cards[2].suit, cards[2].pips)
-        act_val = (h2.cards[0].suit, h2.cards[0].pips)
+        exp_val = (cards[2].get_suit(), cards[2].get_pips())
+        act_val = (h2.cards[0].get_suit(), h2.cards[0].get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the second card in the new aces hand the card we expect?
-        exp_val = (cards[3].suit, cards[3].pips)
-        act_val = (h2.cards[1].suit, h2.cards[1].pips)
+        exp_val = (cards[3].get_suit(), cards[3].get_pips())
+        act_val = (h2.cards[1].get_suit(), h2.cards[1].get_pips())
         self.assertTupleEqual(exp_val, act_val)
 
     

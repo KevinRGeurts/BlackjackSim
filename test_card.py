@@ -60,6 +60,18 @@ class Test_Card(unittest.TestCase):
         act_val = Card().get_count_from_pips('6')
         self.assertEqual(exp_val, act_val)
 
+        
+    def test_get_pips(self):
+        exp_val = 'Q'
+        act_val = Card('S','Q').get_pips()
+        self.assertEqual(exp_val, act_val)
+        
+
+    def test_get_suit(self):
+        exp_val = 'S'
+        act_val = Card('S','Q').get_suit()
+        self.assertEqual(exp_val, act_val)
+
 
 if __name__ == '__main__':
     unittest.main()

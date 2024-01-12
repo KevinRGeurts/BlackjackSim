@@ -34,7 +34,7 @@ class Hand:
         """
         # Extract the list of any aces in the hand.
         # Do the extraction using a "list comprehension"
-        aces=[x for x in self.cards if x.pips == 'A']
+        aces=[x for x in self.cards if x.get_pips() == 'A']
         ah = Hand()
         ah.add_cards(aces)
         return ah
@@ -56,7 +56,7 @@ class Hand:
         """
         # Extract the list of any aces in the hand.
         # Do the extraction using a "list comprehension"
-        non_aces=[x for x in self.cards if x.pips != 'A']
+        non_aces=[x for x in self.cards if x.get_pips() != 'A']
         h = Hand()
         h.add_cards(non_aces)
         return h

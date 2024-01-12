@@ -47,3 +47,20 @@ class Card:
         else:
             card_count = int(pips)
         return card_count
+
+    def get_pips(self):
+        """
+        Return the Card's pips as a string. By convention, this method should be used to get a Card's pips, rather than 
+        directly accessing the pips data member, to insulate the outside world from the details Card's data model.
+        "return: Card's pips, string
+        """
+        return self.pips
+    
+
+    def get_suit(self):
+        """
+        Return the Card's suit as a string. By convention, this method should be used to get a Card's suit, rather than 
+        directly accessing the suit data member, to insulate the outside world from the details Card's data model.
+        "return: Card's suit, string
+        """
+        return self.suit
