@@ -33,12 +33,18 @@ class Card:
             card_count = self.count
         return card_count
     
+    
+    def __str__(self):
+        return self.pips + self.suit
+        
+    
     def print_card(self):
         """
         Returns a string representation of the card.
         :return: The string representing the card.
         """
-        return self.pips + self.suit
+        return str(self)
+    
     
     def get_count_from_pips(self, pips=''):
         """

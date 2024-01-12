@@ -14,58 +14,58 @@ class Deck:
         self.isInfinite = isInfinite
         # Build a standard deck of 52 playing cards as a list
         self.deck=[]
-        self.deck.append(Card('S','A',1))
-        self.deck.append(Card('S','2',2))
-        self.deck.append(Card('S','3',3))
-        self.deck.append(Card('S','4',4))
-        self.deck.append(Card('S','5',5))
-        self.deck.append(Card('S','6',6))
-        self.deck.append(Card('S','7',7))
-        self.deck.append(Card('S','8',8))
-        self.deck.append(Card('S','9',9))
-        self.deck.append(Card('S','10',10))
-        self.deck.append(Card('S','J',10))
-        self.deck.append(Card('S','Q',10))
-        self.deck.append(Card('S','K',10))
-        self.deck.append(Card('C','A',1))
-        self.deck.append(Card('C','2',2))
-        self.deck.append(Card('C','3',3))
-        self.deck.append(Card('C','4',4))
-        self.deck.append(Card('C','5',5))
-        self.deck.append(Card('C','6',6))
-        self.deck.append(Card('C','7',7))
-        self.deck.append(Card('C','8',8))
-        self.deck.append(Card('C','9',9))
-        self.deck.append(Card('C','10',10))
-        self.deck.append(Card('C','J',10))
-        self.deck.append(Card('C','Q',10))
-        self.deck.append(Card('C','K',10))       
-        self.deck.append(Card('H','A',1))
-        self.deck.append(Card('H','2',2))
-        self.deck.append(Card('H','3',3))
-        self.deck.append(Card('H','4',4))
-        self.deck.append(Card('H','5',5))
-        self.deck.append(Card('H','6',6))
-        self.deck.append(Card('H','7',7))
-        self.deck.append(Card('H','8',8))
-        self.deck.append(Card('H','9',9))
-        self.deck.append(Card('H','10',10))
-        self.deck.append(Card('H','J',10))
-        self.deck.append(Card('H','Q',10))
-        self.deck.append(Card('H','K',10))
-        self.deck.append(Card('D','A',1))
-        self.deck.append(Card('D','2',2))
-        self.deck.append(Card('D','3',3))
-        self.deck.append(Card('D','4',4))
-        self.deck.append(Card('D','5',5))
-        self.deck.append(Card('D','6',6))
-        self.deck.append(Card('D','7',7))
-        self.deck.append(Card('D','8',8))
-        self.deck.append(Card('D','9',9))
-        self.deck.append(Card('D','10',10))
-        self.deck.append(Card('D','J',10))
-        self.deck.append(Card('D','Q',10))
-        self.deck.append(Card('D','K',10))
+        self.deck.append(Card('S','A'))
+        self.deck.append(Card('S','2'))
+        self.deck.append(Card('S','3'))
+        self.deck.append(Card('S','4'))
+        self.deck.append(Card('S','5'))
+        self.deck.append(Card('S','6'))
+        self.deck.append(Card('S','7'))
+        self.deck.append(Card('S','8'))
+        self.deck.append(Card('S','9'))
+        self.deck.append(Card('S','10'))
+        self.deck.append(Card('S','J'))
+        self.deck.append(Card('S','Q'))
+        self.deck.append(Card('S','K'))
+        self.deck.append(Card('C','A'))
+        self.deck.append(Card('C','2'))
+        self.deck.append(Card('C','3'))
+        self.deck.append(Card('C','4'))
+        self.deck.append(Card('C','5'))
+        self.deck.append(Card('C','6'))
+        self.deck.append(Card('C','7'))
+        self.deck.append(Card('C','8'))
+        self.deck.append(Card('C','9'))
+        self.deck.append(Card('C','10'))
+        self.deck.append(Card('C','J'))
+        self.deck.append(Card('C','Q'))
+        self.deck.append(Card('C','K'))       
+        self.deck.append(Card('H','A'))
+        self.deck.append(Card('H','2'))
+        self.deck.append(Card('H','3'))
+        self.deck.append(Card('H','4'))
+        self.deck.append(Card('H','5'))
+        self.deck.append(Card('H','6'))
+        self.deck.append(Card('H','7'))
+        self.deck.append(Card('H','8'))
+        self.deck.append(Card('H','9'))
+        self.deck.append(Card('H','10'))
+        self.deck.append(Card('H','J'))
+        self.deck.append(Card('H','Q'))
+        self.deck.append(Card('H','K'))
+        self.deck.append(Card('D','A'))
+        self.deck.append(Card('D','2'))
+        self.deck.append(Card('D','3'))
+        self.deck.append(Card('D','4'))
+        self.deck.append(Card('D','5'))
+        self.deck.append(Card('D','6'))
+        self.deck.append(Card('D','7'))
+        self.deck.append(Card('D','8'))
+        self.deck.append(Card('D','9'))
+        self.deck.append(Card('D','10'))
+        self.deck.append(Card('D','J'))
+        self.deck.append(Card('D','Q'))
+        self.deck.append(Card('D','K'))
 
 
     def cards_remaining(self):
@@ -97,6 +97,13 @@ class Deck:
             return drawn
         
 
+    def __str__(self):
+        s = ''
+        for c in self.deck:
+            s += (str(c) + ' ')
+        return s[0:len(s)-1]
+        
+
 class Stacked_Deck(Deck):
     """
     Represents a stacked deck of playing cards. Where the deck can be ordered by the caller and cards will always be drawn top to bottom.
@@ -113,6 +120,7 @@ class Stacked_Deck(Deck):
         self.isInfinite = False
         # Create an empty deck of playing cards as a list
         self.deck=[]
+ 
         
     def draw(self, number = 1):
         """

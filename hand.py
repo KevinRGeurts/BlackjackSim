@@ -120,15 +120,20 @@ class Hand:
                 
         return count
     
+    
+    def __str__(self):
+        s = ''
+        for x in self.cards:
+            s += str(x) + ' '
+        # Remove unneeded trailing space
+        s = s[0:len(s)-1]
+        return s       
+    
+    
     def print_hand(self):
         """
         Returns a string representation of the hand.
         :return: The string representing the hand.
         """
-        s = ''
-        for x in self.cards:
-            s += x.print_card() + ' '
-        # Remove unneeded trailing space
-        s = s[0:len(s)-1]
-        return s
+        return str(self)
         
