@@ -107,8 +107,8 @@ class BlackJackSim:
             
             # One or both of dealer or/and player have blackjack. Set game outcome, etc. in game info
 
-            info['Player_Final_Hand'] = self.player_hand.print_hand()
-            info['Dealer_Final_Hand'] = self.dealer_hand.print_hand()
+            info['Player_Final_Hand'] = str(self.player_hand)
+            info['Dealer_Final_Hand'] = str(self.dealer_hand)
             
             if check_info['Status'] == 'both blackjack':
                 # It's a tie score, and a push

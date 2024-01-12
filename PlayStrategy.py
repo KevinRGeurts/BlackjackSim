@@ -37,7 +37,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
             # Hit
             hand_status = 'hit'
             hand.add_cards(deck.draw(1))
-            # print('Dealer Hand After Hitting on Max Count: ' + hand.print_hand())
+            # print('Dealer Hand After Hitting on Max Count: ', hand)
             info = hand.hand_info()
             # print(info) 
         count_max = info['Count_Max']
@@ -51,7 +51,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
                 # Hit
                 hand_status = 'hit'
                 hand.add_cards(deck.draw(1))
-                # print('Dealer Hand After Hiting on Count_Min: ' + hand.print_hand())
+                # print('Dealer Hand After Hiting on Count_Min: ', hand)
                 info = hand.hand_info()
                 # print(info)
             count_min = info['Count_Min']
@@ -66,7 +66,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         # print('Dealer Hand Outcome:', hand_status, final_count)
 
         # Assemble outcome info for the hand
-        outcome_info['Final_Hand'] = hand.print_hand()
+        outcome_info['Final_Hand'] = str(hand)
         outcome_info['Status'] = hand_status
         outcome_info['Count'] = final_count
             
@@ -139,7 +139,7 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                 final_count = info['Count_Max']
                 
         # Assemble outcome info for the hand
-        outcome_info['Final_Hand'] = hand.print_hand()
+        outcome_info['Final_Hand'] = str(hand)
         outcome_info['Status'] = hand_status
         outcome_info['Count'] = final_count
             

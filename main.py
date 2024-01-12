@@ -33,7 +33,7 @@ if __name__ == '__main__':
     # cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
     # h.add_cards(cards)
         
-    # act_val = h.print_hand()
+    # act_val = str(h)
     
     # print(act_val + '\n')
     
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     # d = Deck(isInfinite = True)
     # h = Hand()
     # h.add_cards(d.draw(2))
-    # print('Initial Dealer Hand: ' + h.print_hand())
+    # print('Initial Dealer Hand: ', h)
     # info = h.hand_info()
     # print(info)
     
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     #     # Hit
     #     hand_status = 'hit'
     #     h.add_cards(d.draw(1))
-    #     print('Dealer Hand After Hitting on Max Count: ' + h.print_hand())
+    #     print('Dealer Hand After Hitting on Max Count: ', h)
     #     info = h.hand_info()
     #     print(info) 
     # count_max = info['Count_Max']
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     #         # Hit
     #         hand_status = 'hit'
     #         h.add_cards(d.draw(1))
-    #         print('Dealer Hand After Hiting on Count_Min: ' + h.print_hand())
+    #         print('Dealer Hand After Hiting on Count_Min: ', h)
     #         info = h.hand_info()
     #         print(info)
     #     count_min = info['Count_Min']
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     # count = info['Count_Other'] + info['Num_Aces'] * 11
     # while count <= 16:
     #     h.add_cards(d.draw(1))
-    #     print('Dealer Hand After Draw: ' + h.print_hand())
+    #     print('Dealer Hand After Draw: ', h)
     #     info = h.hand_info()
     #     print(info)
     #     count = info['Count_Other'] + info['Num_Aces'] * 11

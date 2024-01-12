@@ -128,14 +128,5 @@ class Hand:
         # Remove unneeded trailing space
         s = s[0:len(s)-1]
         return s       
-    
-    
-    # TODO: With __str__() implemented, this shouldn't be needed. Find all calls to it in the solution, update them to rely on str() or print()
-    # and then delete this method.
-    def print_hand(self):
-        """
-        Returns a string representation of the hand.
-        :return: The string representing the hand.
-        """
-        return str(self)
+
         

@@ -154,14 +154,14 @@ class Test_Hand(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         
     
-    def test_print_hand(self):
+    def test_str(self):
         
         h = Hand()
         cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
         h.add_cards(cards)
         
         exp_val = 'JS 3H 5S AD AC'
-        act_val = h.print_hand()
+        act_val = str(h)
         self.assertEqual(exp_val, act_val)
         
 
