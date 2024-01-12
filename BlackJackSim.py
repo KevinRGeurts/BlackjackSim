@@ -186,7 +186,7 @@ class BlackJackSim:
         outcome_info = {}
         
         # Get the first card in the dealer's hand, which is the face up card
-        show = self.dealer_hand.cards[0]
+        show = self.dealer_hand.get_cards()[0]
         
         outcome_info = self.player_play_strategy.play(self.player_hand, self.deck, show)
                     
