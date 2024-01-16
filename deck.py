@@ -78,7 +78,19 @@ class Deck:
         """
         self.deck.append(card)
         return self.deck
-        
+    
+    # TODO: Determine if the return is a copy of the list of cards or if it is returning a reference to the internal list
+    # of cards, since the later would allow corruption of the internal data store and by convention should be avoided.
+    def add_cards(self, cards = []):
+        """
+        Add a list of Card()s to the deck.
+        :paramter cards: Card()s to be added to the deck.
+        :return: The current list of cards in the deck, list
+        """
+        for c in cards:
+            self.add_card(c)
+        return self.deck
+            
     
     def cards_remaining(self):
         """

@@ -22,8 +22,16 @@ class BlackJackSim:
         #self.player_play_strategy = CasinoDealerPlayStrategy()
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
-    # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
-
+    
+    def switch_deck(self, new_deck = Deck(isInfinite = True)):
+        """
+        Replace the current deck with a new deck. Intended mainly to faciliatate testing, where it is helpful to use a StackedDeck().
+        :parameter new_deck: The new Deck() to assign to the simulator, Deck()
+        :return: None
+        """
+        self.deck = new_deck
+        return None
+        
     
     def draw_for_dealer(self, number=1):
         """
@@ -31,7 +39,7 @@ class BlackJackSim:
         :parameter number: How many cards to draw into dealer's hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        return self.dealer_hand.add_cards(self.deck.draws(number))
+        return self.dealer_hand.add_cards(self.deck.draw(number))
     
         
     def draw_for_player(self, number=1):
@@ -40,7 +48,7 @@ class BlackJackSim:
         :parameter number: How many cards to draw into player's hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        self.player_hand.add_cards(self.deck.draws(number))   
+        return self.player_hand.add_cards(self.deck.draw(number))   
     
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):

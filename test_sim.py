@@ -5,6 +5,48 @@ from card import Card
 
 class Test_Sim(unittest.TestCase):
 
+    def test_draw_for_dealer(self):
+        bjs = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','4')])
+        
+        # Replace sim's deck with Stacked_Deck
+        bjs.switch_deck(sd)
+
+        # Draw a card
+        dc = bjs.draw_for_dealer(1)
+        dc = dc[0]
+        
+        # Did we get the one we expected?
+        c = Card('C', 'A')
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc.get_suit(), dc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+        
+
+    def test_draw_for_player(self):
+        bjs = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','4')])
+        
+        # Replace sim's deck with Stacked_Deck
+        bjs.switch_deck(sd)
+
+        # Draw a card
+        dc = bjs.draw_for_player(1)
+        dc = dc[0]
+        
+        # Did we get the one we expected?
+        c = Card('C', 'A')
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc.get_suit(), dc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+    
+    
     def test_check_blackjack_neither(self):
         
         bjs = BlackJackSim()
@@ -88,7 +130,7 @@ class Test_Sim(unittest.TestCase):
         sd = Stacked_Deck()
         sd.deck = [Card('C','A'), Card('D','J')]
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
@@ -143,9 +185,9 @@ class Test_Sim(unittest.TestCase):
         # Create a Stacked_Deck
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show
-        sd.deck = [Card('D','J'), Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('D','J'), Card('S','5'), Card('H','2')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game(dealer_show=Card('C','A'))
  
@@ -192,9 +234,9 @@ class Test_Sim(unittest.TestCase):
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show,
         # and no cards in deck to player to supplement player_deal.
-        sd.deck = [Card('D','J')]
+        sd.add_cards([Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game(player_deal=[Card('S','5'), Card('H','2')],dealer_show=Card('C','A'))
  
@@ -241,9 +283,9 @@ class Test_Sim(unittest.TestCase):
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show,
         # and second card in deck to player to supplement player_deal.
-        sd.deck = [Card('D','J'), Card('H','2')]
+        sd.add_cards([Card('D','J'), Card('H','2')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game(player_deal=[Card('S','5')],dealer_show=Card('C','A'))
  
@@ -288,9 +330,9 @@ class Test_Sim(unittest.TestCase):
         # Replace sim's deck with Stacked_Deck
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('C','A'), Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','7'), Card('H','9')])
@@ -320,9 +362,9 @@ class Test_Sim(unittest.TestCase):
         # Replace sim's deck with Stacked_Deck
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','3')]
+        sd.add_cards([Card('C','A'), Card('D','3')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','7'), Card('H','8')])
@@ -351,9 +393,9 @@ class Test_Sim(unittest.TestCase):
         # Replace sim's deck with Stacked_Deck
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('C','A'), Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','7'), Card('H','8')])
@@ -383,9 +425,9 @@ class Test_Sim(unittest.TestCase):
         # Replace sim's deck with Stacked_Deck
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('C','A'), Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         # Set up dealer hand because play strategy may need a show Card
         bjs.dealer_hand.add_cards([Card('S','10'), Card('H','7')])
@@ -419,9 +461,9 @@ class Test_Sim(unittest.TestCase):
         # Create a Stacked_Deck
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
-        sd.deck = [Card('C','A'), Card('D','J'), Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','5'), Card('H','2')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game()
  
@@ -467,9 +509,9 @@ class Test_Sim(unittest.TestCase):
         # Create a Stacked_Deck
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
-        sd.deck = [Card('S','5'), Card('H','2'), Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('S','5'), Card('H','2'), Card('C','A'), Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game()
  
@@ -515,9 +557,9 @@ class Test_Sim(unittest.TestCase):
         # Create a Stacked_Deck
         sd = Stacked_Deck()
         # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
-        sd.deck = [Card('S','10'), Card('H','A'), Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('S','10'), Card('H','A'), Card('C','A'), Card('D','J')])
         # Replace sim's deck with the Stacked_Deck
-        bjs.deck = sd
+        bjs.switch_deck(sd)
        
         info = bjs.play_game()
  
