@@ -23,6 +23,26 @@ class BlackJackSim:
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     
+    def set_player_play_strategy(self, ps = PlayStrategy()):
+        """
+        Set the player play strategy.
+        :parameter ps: The player play strategy, PlayerPlayStrategy()
+        :return: None
+        """
+        self.player_play_strategy = ps
+        return None
+            
+    
+    def set_dealer_play_strategy(self, ps = PlayStrategy()):
+        """
+        Set the dealer play strategy.
+        :parameter ps: The dealer play strategy, PlayerPlayStrategy()
+        :return: None
+        """
+        self.dealer_play_strategy = ps
+        return None
+                
+    
     def switch_deck(self, new_deck = Deck(isInfinite = True)):
         """
         Replace the current deck with a new deck. Intended mainly to faciliatate testing, where it is helpful to use a StackedDeck().
