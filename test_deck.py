@@ -4,6 +4,15 @@ from card import Card
 
 class Test_Deck(unittest.TestCase):
     
+    def test_add_card(self):
+        d1 = Deck()
+        exp_val = Card('C','Q')
+        d2 = d1.add_card(exp_val)
+        act_val = d2[len(d2)-1]
+        self.assertEqual(exp_val.get_suit(), act_val.get_suit())
+        self.assertEqual(exp_val.get_pips(), act_val.get_pips())
+        
+    
     def test_cards_remaining(self):
         exp_val = 52
         d = Deck()
@@ -52,7 +61,6 @@ class Test_Deck(unittest.TestCase):
         self.assertTrue(dc in d.deck)
         
     def test_draw_too_many_cards(self):
-        # TODO: Fix this test which always fails. Probably something wrong with my understanding of asserts/exceptions in Python.
         from random import seed
         seed(1234567890)
         d = Deck()

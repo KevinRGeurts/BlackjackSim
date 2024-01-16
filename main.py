@@ -2,7 +2,7 @@ from deck import Deck, Stacked_Deck
 from hand import Hand
 from card import Card
 from BlackJackSim import BlackJackSim
-from PlayStrategy import CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from PlayStrategy import CasinoDealerPlayStrategy, HoylePlayerPlayStrategy, InteractivePlayerPlayStrategy
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -38,6 +38,21 @@ if __name__ == '__main__':
     # print(act_val + '\n')
     
     
+    # *** Use BlackJackSim to play an interactive game ***
+
+    sim = BlackJackSim()
+    sim.player_play_strategy = InteractivePlayerPlayStrategy()
+    print('Starting an interactive game of black jack...')
+    info = sim.play_game()
+    print('     Winner:', info['Game_Outcome'])
+    print('     Player Status:', info['Player_Status'])
+    print('     Player Count:', info['Player_Count'])
+    print('     Player Hand:', info['Player_Final_Hand'])
+    print('     Dealer Status:', info['Dealer_Status'])
+    print('     Dealer Count:', info['Dealer_Count'])
+    print('     Dealer Hand:', info['Dealer_Final_Hand'])    
+    
+    
     # *** Use BlackJackSim to play a game ***
 
     # Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
@@ -48,16 +63,16 @@ if __name__ == '__main__':
     # Player_Count = Final count of Player's hand, int
     # Game_Outcome = 'player wins', 'dealer wins', or 'push' (both blackjack, bust, or stand with a tie count)
 
-    sim = BlackJackSim()
-    print('Starting a game of black jack...')
-    info = sim.play_game()
-    print('     Winner:', info['Game_Outcome'])
-    print('     Player Status:', info['Player_Status'])
-    print('     Player Count:', info['Player_Count'])
-    print('     Player Hand:', info['Player_Final_Hand'])
-    print('     Dealer Status:', info['Dealer_Status'])
-    print('     Dealer Count:', info['Dealer_Count'])
-    print('     Dealer Hand:', info['Dealer_Final_Hand'])
+    # sim = BlackJackSim()
+    # print('Starting a game of black jack...')
+    # info = sim.play_game()
+    # print('     Winner:', info['Game_Outcome'])
+    # print('     Player Status:', info['Player_Status'])
+    # print('     Player Count:', info['Player_Count'])
+    # print('     Player Hand:', info['Player_Final_Hand'])
+    # print('     Dealer Status:', info['Dealer_Status'])
+    # print('     Dealer Count:', info['Dealer_Count'])
+    # print('     Dealer Hand:', info['Dealer_Final_Hand'])
     
     # *** Use BlackJackSim to play a bunch of games ***
 
@@ -65,19 +80,19 @@ if __name__ == '__main__':
     # Player_WIns = The number of games won by the player, int
     # Pushes = The number of tie (push) games, int
     
-    print('Starting a bunch of games of black jack to generate win statistics...')
-    info = sim.play_games(100000)
-    dw = info['Dealer_Wins']
-    pw = info['Player_Wins']
-    pu = info['Pushes']
-    tg = dw + pw + pu
-    print('     Dealer Wins:', dw)
-    print('     Player Wins:', pw)
-    print('     Pushes:', pu)
-    print('     Games Played:', tg)
-    print('     Dealer % Wins:', ((100.0 * dw) / tg))
-    print('     Player % Wins:', ((100.0 * pw) / tg))
-    print('     Push %:', ((100.0 * pu) / tg))
+    # print('Starting a bunch of games of black jack to generate win statistics...')
+    # info = sim.play_games(1000)
+    # dw = info['Dealer_Wins']
+    # pw = info['Player_Wins']
+    # pu = info['Pushes']
+    # tg = dw + pw + pu
+    # print('     Dealer Wins:', dw)
+    # print('     Player Wins:', pw)
+    # print('     Pushes:', pu)
+    # print('     Games Played:', tg)
+    # print('     Dealer % Wins:', ((100.0 * dw) / tg))
+    # print('     Player % Wins:', ((100.0 * pw) / tg))
+    # print('     Push %:', ((100.0 * pu) / tg))
 
     
     

@@ -71,7 +71,57 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         outcome_info['Count'] = final_count
             
         return outcome_info
-    
+
+
+class InteractivePlayerPlayStrategy(PlayStrategy):
+    """
+    Implements strategy for player play, based on asking a human whether to hit or stand.
+    """
+
+    def play(self, hand = Hand(), deck = Deck(), show = Card()):
+        """
+        The method called to invoke the hand playing strategy.
+        Play the hand of black jack, returning a dictionary of information about the outcome of the hand.
+            Final_Hand = String representation of dealer's hand of cards at the end of the game, string
+            Status = 'bust' or 'stand', string
+            Count = Final count of dealer's hand, int
+        :parameter hand: The Hand to be played.
+        :parameter deck: The Deck from which to draw cards.
+        :return: Dictionary of information about the outcome of the hand. 
+        """
+        outcome_info = {}
+        
+        hand_status = 'hit'
+        final_count = 0
+        
+        info = hand.hand_info()       
+        
+        print('Playing an interactive hand of blackjack...')
+        print('Player''s hand:', str(hand), '     Dealer shows:', str(show))
+        response = input('(H)it or (S)tand?')
+        while response == 'H' or response == 'h':
+            hand.add_cards(deck.draw(1))
+            info = hand.hand_info()
+            if info['Count_Min'] > 21:
+                hand_status = 'bust'
+                final_count = info['Count_Min']
+                break
+            print('Player''s hand:', str(hand), '     Dealer shows:', str(show))
+            response = input('(H)it or (S)tand?')
+        
+        
+        hand_status = 'stand'
+        final_count =  info['Count_Max']
+        if final_count > 21:
+            final_count = info['Count_Min']
+                
+        # Assemble outcome info for the hand
+        outcome_info['Final_Hand'] = str(hand)
+        outcome_info['Status'] = hand_status
+        outcome_info['Count'] = final_count
+            
+        return outcome_info    
+
 
 class HoylePlayerPlayStrategy(PlayStrategy):
     """

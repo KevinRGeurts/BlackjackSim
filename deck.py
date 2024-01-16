@@ -68,6 +68,18 @@ class Deck:
         self.deck.append(Card('D','K'))
 
 
+    # TODO: Determine if the return is a copy of the list of cards or if it is returning a reference to the internal list
+    # of cards, since the later would allow corruption of the internal data store and by convention should be avoided.
+    def add_card(self, card = Card()):
+        """
+        Add the argument Card to the deck.
+        :parameter card: The Card to add to the deck, Card
+        :return: The current list of cards in the deck, list
+        """
+        self.deck.append(card)
+        return self.deck
+        
+    
     def cards_remaining(self):
         """
         Return the number of cards left in the deck.

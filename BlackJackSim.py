@@ -24,6 +24,25 @@ class BlackJackSim:
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     # TODO: Add a type of game play where the player and/or dealer hand has some consistent initial partial or full deal before play begins. (To simulate specific situations sitting at the table where the player can't see the dealer's second card and is curious about the odds.)    
 
+    
+    def draw_for_dealer(self, number=1):
+        """
+        Draw one or more cards from deck into dealer's hand.
+        :parameter number: How many cards to draw into dealer's hand, int
+        :return: A list of Card(s) in the hand after the draw
+        """
+        return self.dealer_hand.add_cards(self.deck.draws(number))
+    
+        
+    def draw_for_player(self, number=1):
+        """
+        Draw one or more cards from deck into player's hand.
+        :parameter number: How many cards to draw into player's hand, int
+        :return: A list of Card(s) in the hand after the draw
+        """
+        self.player_hand.add_cards(self.deck.draws(number))   
+    
+    
     def play_games(self, num_games = 1):
         """
         Play multiple games of blackjack, returning a dictionary of statistics of outcomes across the set of games.
