@@ -108,7 +108,177 @@ class Test_Sim(unittest.TestCase):
         exp_val = 18
         act_val = info['Count']
         self.assertEqual(exp_val, act_val)
+        
 
+    def test_play_games(self):
+        from random import seed
+        seed(1234567890)
+        sim = BlackJackSim()
+        player_deal=[Card('H','J'), Card('S','9')]
+        dealer_show=Card('D','7')
+        info = sim.play_games(100, player_deal, dealer_show)
+        dw = info['Dealer_Wins']
+        pw = info['Player_Wins']
+        pu = info['Pushes']
+        # Do we have the expected dealer wins?
+        exp_val = 7
+        act_val = dw
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected player wins?
+        exp_val = 79
+        act_val = pw
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected pushes?
+        exp_val = 14
+        act_val = pu
+        self.assertEqual(exp_val, act_val)
+        
+        
+    def test_play_game_with_dealer_show_specified(self):
+            
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show
+        sd.deck = [Card('D','J'), Card('S','5'), Card('H','2')]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        info = bjs.play_game(dealer_show=Card('C','A'))
+ 
+        # Do we have the expected game outcome?
+        exp_val = 'dealer wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final hands?
+        exp_val = 'AC JD'
+        act_val = info['Dealer_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+       
+        exp_val = '5S 2H'
+        act_val = info['Player_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected statuses?
+        exp_val = 'blackjack'
+        act_val = info['Dealer_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 'none'
+        act_val = info['Player_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final counts?
+        exp_val = 21
+        act_val = info['Dealer_Count']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 0
+        act_val = info['Player_Count']
+        self.assertEqual(exp_val, act_val)
+
+    
+    def test_play_game_with_dealer_show_and_player_deal_all_specified(self):
+            
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show,
+        # and no cards in deck to player to supplement player_deal.
+        sd.deck = [Card('D','J')]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        info = bjs.play_game(player_deal=[Card('S','5'), Card('H','2')],dealer_show=Card('C','A'))
+ 
+        # Do we have the expected game outcome?
+        exp_val = 'dealer wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final hands?
+        exp_val = 'AC JD'
+        act_val = info['Dealer_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+       
+        exp_val = '5S 2H'
+        act_val = info['Player_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected statuses?
+        exp_val = 'blackjack'
+        act_val = info['Dealer_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 'none'
+        act_val = info['Player_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final counts?
+        exp_val = 21
+        act_val = info['Dealer_Count']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 0
+        act_val = info['Player_Count']
+        self.assertEqual(exp_val, act_val)
+
+        
+    def test_play_game_with_dealer_show_and_player_deal_part_specified(self):
+            
+        bjs = BlackJackSim()
+        info = {}
+        
+        # Replace sim's deck with Stacked_Deck
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # It's assumed that BlackJackSim.play_game() will give the first card in deck to dealer, to supplement dealer_show,
+        # and second card in deck to player to supplement player_deal.
+        sd.deck = [Card('D','J'), Card('H','2')]
+        # Replace sim's deck with the Stacked_Deck
+        bjs.deck = sd
+       
+        info = bjs.play_game(player_deal=[Card('S','5')],dealer_show=Card('C','A'))
+ 
+        # Do we have the expected game outcome?
+        exp_val = 'dealer wins'
+        act_val = info['Game_Outcome']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final hands?
+        exp_val = 'AC JD'
+        act_val = info['Dealer_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+       
+        exp_val = '5S 2H'
+        act_val = info['Player_Final_Hand']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected statuses?
+        exp_val = 'blackjack'
+        act_val = info['Dealer_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 'none'
+        act_val = info['Player_Status']
+        self.assertEqual(exp_val, act_val)
+        
+        # Do we have the expected final counts?
+        exp_val = 21
+        act_val = info['Dealer_Count']
+        self.assertEqual(exp_val, act_val)
+        
+        exp_val = 0
+        act_val = info['Player_Count']
+        self.assertEqual(exp_val, act_val)
+       
     
     def test_play_dealer_hand_hit_to_bust_max_stand_min(self):
         

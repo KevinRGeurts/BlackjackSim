@@ -43,13 +43,18 @@ class BlackJackSim:
         self.player_hand.add_cards(self.deck.draws(number))   
     
     
-    def play_games(self, num_games = 1):
+    def play_games(self, num_games = 1, player_deal = [], dealer_show = None):
         """
         Play multiple games of blackjack, returning a dictionary of statistics of outcomes across the set of games.
             Dealer_Wins = The number of games won by the dealer, int
             Player_WIns = The number of games won by the player, int
             Pushes = The number of tie (push) games, int
         :parameter num_games: The number of games to play, int
+        :parameter player_deal: A list of no, one, or two Card()s dealt to the player. The deal will be completed with 2, 1, or no
+            cards. This is intended to enable fixing part or all of the initial player hand.
+        :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
+            drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
+            is visible to the player.
         :return: Dictionary of statistics for the set of games.
         """
         game_stats = {}
@@ -58,9 +63,9 @@ class BlackJackSim:
         player_wins = 0
         pushes = 0
         
-        for g in range(num_games):
+        for g in range(num_games):  
             print('Playing game:', g)
-            info = self.play_game()
+            info = self.play_game(player_deal, dealer_show)
             if info['Game_Outcome'] == 'dealer wins':
                 dealer_wins += 1
             elif info['Game_Outcome'] == 'player wins':
@@ -75,7 +80,7 @@ class BlackJackSim:
         return game_stats
 
     
-    def play_game(self):
+    def play_game(self, player_deal = [], dealer_show = None):
         """
         Play one game of black jack, returning a dictionary of information about the outcome of the game.
             Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
@@ -85,6 +90,11 @@ class BlackJackSim:
             Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), string
             Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
             Game_Outcome = 'player wins', 'dealer wins', or 'push' (both blackjack, bust, or stand with a tie count)
+        :parameter player_deal: A list of no, one, or two Card()s dealt to the player. The deal will be completed with 2, 1, or no
+            cards. This is intended to enable fixing part or all of the initial player hand.
+        :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
+            drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
+            is visible to the player.
         :return: Dictionary of information about the outcome of the game.
         """
         info = {}
@@ -93,10 +103,21 @@ class BlackJackSim:
         self.dealer_hand = Hand()
         self.player_hand = Hand()
         
-        # Initial deal for dealer and player
-        self.dealer_hand.add_cards(self.deck.draw(2))
-        self.player_hand.add_cards(self.deck.draw(2))
-
+        # Build the dealer's initial hand, drawing as needed
+        if dealer_show is None:
+            self.dealer_hand.add_cards(self.deck.draw(2))
+        else:
+            self.dealer_hand.add_cards(dealer_show)
+            self.dealer_hand.add_cards(self.deck.draw(1))
+            
+        # Build the player's inital hand, drawing as needed
+        assert(len(player_deal) <=2)
+        self.player_hand.add_cards(player_deal)
+        if len(player_deal) == 0:
+            self.player_hand.add_cards(self.deck.draw(2))
+        elif len(player_deal) == 1:
+            self.player_hand.add_cards(self.deck.draw(1))
+        
         # TODO: Should I handle splitting hands when the player gets a pair on the deal?
         
         check_info = self.check_for_blackjack()
