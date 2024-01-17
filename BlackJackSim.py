@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
-from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy, BlackJackPlayStatus
 from enum import Enum
 
 
@@ -13,7 +13,7 @@ class BlackJackCheck(Enum):
     DEALER_BLACKJACK = 2
     PLAYER_BLACKJACK = 3
     BOTH_BLACKJACK = 4
-
+    
 
 class BlackJackSim:
     """
@@ -166,18 +166,16 @@ class BlackJackSim:
             # Neither dealer nor player have blackjack, on deal, so play the hands.
             
             # Play player hand, and add hand outcome info to game info
-            player_info = {}
             player_info = self.play_player_hand()
-            info['Player_Final_Hand'] = player_info['Final_Hand']
-            info['Player_Status'] = player_info['Status']
-            info['Player_Count'] = player_info['Count']       
+            info['Player_Final_Hand'] = player_info.Final_Hand
+            info['Player_Status'] = player_info.Status
+            info['Player_Count'] = player_info.Count      
         
             # Play dealer hand, and add hand outcome info to game info
-            dealer_info = {}
             dealer_info = self.play_dealer_hand()
-            info['Dealer_Final_Hand'] = dealer_info['Final_Hand']
-            info['Dealer_Status'] = dealer_info['Status']
-            info['Dealer_Count'] = dealer_info['Count']
+            info['Dealer_Final_Hand'] = dealer_info.Final_Hand
+            info['Dealer_Status'] = dealer_info.Status
+            info['Dealer_Count'] = dealer_info.Count
                     
             # Determine game outcome, and add to game info
  
@@ -237,32 +235,21 @@ class BlackJackSim:
     
     def play_dealer_hand(self):
         """
-        Play the dealer's hand of black jack, using the dealer play strategy, and returning
-        a dictionary of information about the outcome of the hand.
-            Final_Hand = String representation of dealer's hand of cards at the end of the game, string
-            Status = 'bust' or 'stand', string
-            Count = Final count of dealer's hand, int
-        :return: Dictionary of information about the outcome of the hand.
+        Play the dealer's hand of black jack, using the dealer play strategy, and returning a HandPlayOutcome() object with
+        information about the outcome of playing the hand.
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = {}
-        
         outcome_info = self.dealer_play_strategy.play(self.dealer_hand, self.deck)
                   
         return outcome_info
         
+ 
     def play_player_hand(self):
         """
-        Play the player's hand of black jack, using the player play strategy, and returning
-        a dictionary of information about the outcome of the hand.
-            Final_Hand = String representation of player's hand of cards at the end of the game, string
-            Status = 'bust' or 'stand', string
-            Count = Final count of player's hand, int
-        *** Play logic is currently the same as for dealer, which is not the ultimate goal, and is likely to end up with
-        a poor outcome statistically for the player, since the player will tend to bust first due to order of play when using same logic. ***
-        :return: Dictionary of information about the outcome of the hand.
+        Play the player's hand of black jack, using the player play strategy, and returning a HandPlayOutcome() object with
+        information about the outcome of playing the hand.
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = {}
-        
         # Get the first card in the dealer's hand, which is the face up card
         show = self.dealer_hand.get_cards()[0]
         
@@ -278,11 +265,11 @@ class BlackJackSim:
         :param info: same info object returned by play_game(), dictionary
         :return: NULL
         """
-        if (info['Player_Status'] == 'bust'):
+        if (info['Player_Status'] == BlackJackPlayStatus.BUST):
             # If player busts, then it doesn't matter what the dealer status is, the dealer wins.
             # This is the house's advantage in the game.
             info['Game_Outcome'] = 'dealer wins'
-        elif (info['Player_Status'] == 'stand') and (info['Dealer_Status'] == 'bust'):
+        elif (info['Player_Status'] == BlackJackPlayStatus.STAND) and (info['Dealer_Status'] == BlackJackPlayStatus.BUST):
             info['Game_Outcome'] = 'player wins'
         else:
             # Both player and dealer stood, higher score wins

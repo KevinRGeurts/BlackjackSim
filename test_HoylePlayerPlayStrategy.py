@@ -1,5 +1,5 @@
 import unittest
-from PlayStrategy import HoylePlayerPlayStrategy
+from PlayStrategy import BlackJackPlayStatus, HoylePlayerPlayStrategy
 from hand import Hand
 from deck import Stacked_Deck
 from card import Card
@@ -27,7 +27,6 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
     def test_play_stand_max(self):
         
         ps = HoylePlayerPlayStrategy()
-        info = {}
         
         # Create a Stacked_Deck (Doesn't matter what. Their should be no draws.)
         sd = Stacked_Deck()
@@ -42,22 +41,21 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         
         # Do we have the expected final hand?
         exp_val = 'AC 7D'
-        act_val = info['Final_Hand']
+        act_val = info.Final_Hand
         self.assertEqual(exp_val, act_val)
         # Do we have the expected status?
-        exp_val = 'stand'
-        act_val = info['Status']
+        exp_val = BlackJackPlayStatus.STAND
+        act_val = info.Status
         self.assertEqual(exp_val, act_val)
         # Do we have the expected final count?
         exp_val = 18
-        act_val = info['Count']
+        act_val = info.Count
         self.assertEqual(exp_val, act_val)
 
 
     def test_play_bust_min(self):
         
         ps = HoylePlayerPlayStrategy()
-        info = {}
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
@@ -72,22 +70,21 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S KH'
-        act_val = info['Final_Hand']
+        act_val = info.Final_Hand
         self.assertEqual(exp_val, act_val)
         # Do we have the expected status?
-        exp_val = 'bust'
-        act_val = info['Status']
+        exp_val = BlackJackPlayStatus.BUST
+        act_val = info.Status
         self.assertEqual(exp_val, act_val)
         # Do we have the expected final count?
         exp_val = 22
-        act_val = info['Count']
+        act_val = info.Count
         self.assertEqual(exp_val, act_val)
 
     
     def test_play_stand_min_over_seventeen(self):
         
         ps = HoylePlayerPlayStrategy()
-        info = {}
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
@@ -102,22 +99,21 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 7H'
-        act_val = info['Final_Hand']
+        act_val = info.Final_Hand
         self.assertEqual(exp_val, act_val)
         # Do we have the expected status?
-        exp_val = 'stand'
-        act_val = info['Status']
+        exp_val = BlackJackPlayStatus.STAND
+        act_val = info.Status
         self.assertEqual(exp_val, act_val)
         # Do we have the expected final count?
         exp_val = 19
-        act_val = info['Count']
+        act_val = info.Count
         self.assertEqual(exp_val, act_val)
 
 
     def test_play_stand_min_on_show_six_or_under(self):
         
         ps = HoylePlayerPlayStrategy()
-        info = {}
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
@@ -132,22 +128,21 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 2H'
-        act_val = info['Final_Hand']
+        act_val = info.Final_Hand
         self.assertEqual(exp_val, act_val)
         # Do we have the expected status?
-        exp_val = 'stand'
-        act_val = info['Status']
+        exp_val = BlackJackPlayStatus.STAND
+        act_val = info.Status
         self.assertEqual(exp_val, act_val)
         # Do we have the expected final count?
         exp_val = 14
-        act_val = info['Count']
+        act_val = info.Count
         self.assertEqual(exp_val, act_val)
 
  
     def test_play_stand_min_on_show_over_six(self):
         
         ps = HoylePlayerPlayStrategy()
-        info = {}
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
@@ -162,15 +157,15 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 2H 3H'
-        act_val = info['Final_Hand']
+        act_val = info.Final_Hand
         self.assertEqual(exp_val, act_val)
         # Do we have the expected status?
-        exp_val = 'stand'
-        act_val = info['Status']
+        exp_val = BlackJackPlayStatus.STAND
+        act_val = info.Status
         self.assertEqual(exp_val, act_val)
         # Do we have the expected final count?
         exp_val = 17
-        act_val = info['Count']
+        act_val = info.Count
         self.assertEqual(exp_val, act_val)
 
 
