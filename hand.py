@@ -1,5 +1,32 @@
 from card import Card
 
+class HandInfo:
+    """
+    This class is a structured way of returning information from Hand.hand_info(). Think of this as a C struct, where it is
+    expected that data members will be direcly accessed, because this class has no methods, beyound __init__().
+    """
+    def __init__(self):
+        """
+        Create the data members of structured info.
+            Num_Aces = How many cards in the hand are aces, int
+            Num_Other = How many cards in the had are not aces, int
+            Count_Other = Sum of the pip values of the cards that are not aces, int
+            Count_Min = Sum of the pip values of all the cards, treating any aces as having 1 pip, int
+            Count_Max = Sum of the pip values of all the cards, treating the first ace as having 11 pips, and any remaining
+                as having 1 pip, int
+        """
+        self.Num_Aces = 0
+        self.Num_Other = 0
+        self.Count_Other = 0
+        self.Count_Min = 0
+        self.Count_Max = 0
+        
+    
+    def __str__(self):
+        s = 'Num_Aces = ' + str(self.Num_Aces) + ' Num_Other = ' + str(self.Num_Other) + ' Count_Other = ' + str(self.Count_Other) + ' Count_Min = ' + str(self.Count_Min) + ' Count_Max = ' + str(self.Count_Max)
+        return s
+
+
 class Hand:
     """
     Represents a hand of playing cards.\n
@@ -90,27 +117,21 @@ class Hand:
         """
         return self.cards
 
-
+ 
     def hand_info(self):
         """
-        Return in a dictionary of useful information for playing the hand in black jack.
-            Num_Aces = How many cards in the hand are aces, int
-            Num_Other = How many cards in the had are not aces, int
-            Count_Other = Sum of the pip values of the cards that are not aces, int
-            Count_Min = Sum of the pip values of all the cards, treating any aces as having 1 pip, int
-            Count_Max = Sum of the pip values of all the cards, treating the first ace as having 11 pips, and any remaining
-                as having 1 pip, int
-        :return: A dictionary of useful information about the hand
+        Return a HandInfo object, with useful information for playing the hand in black jack.
+        :return: A HandInfo object of useful information about the hand
         """
-        info={}
+        info=HandInfo()
         num_aces = self.get_num_aces()
-        info['Num_Aces'] = num_aces
-        info['Num_Other'] = self.get_num_non_aces()
-        info['Count_Other'] = self.get_non_aces().count_hand()
+        info.Num_Aces = num_aces
+        info.Num_Other = self.get_num_non_aces()
+        info.Count_Other = self.get_non_aces().count_hand()
         
         # Determine Count_Min
         # Count all aces in the hand has "low", that is, having 1 pip.
-        info['Count_Min'] = self.count_hand()
+        info.Count_Min = self.count_hand()
         
         # Determine Count_Max
         # Count aces in the hand. The first ace if any will be counted as "high" (i.e. 11), while any remaining will be counted as "low" (i.e. 1)
@@ -122,7 +143,7 @@ class Hand:
         if (num_aces - 1) > 0:
             # There is more than one ace. Add a "low" (i.e. 1) ace value to the count value of aces in the hand for each ace beyond one
             count_aces += (num_aces - 1) * self.get_aces().cards[0].count_card(ace_high=False)
-        info['Count_Max'] = info['Count_Other'] + count_aces
+        info.Count_Max = info.Count_Other + count_aces
 
         return info
     

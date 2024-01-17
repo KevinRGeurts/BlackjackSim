@@ -33,28 +33,28 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         hand_status = ''
         final_count = 0
         # Hit as many times as needed until Count_Max exceeds 16
-        while info['Count_Max'] <= 16:
+        while info.Count_Max <= 16:
             # Hit
             hand_status = 'hit'
             hand.add_cards(deck.draw(1))
             # print('Dealer Hand After Hitting on Max Count: ', hand)
             info = hand.hand_info()
             # print(info) 
-        count_max = info['Count_Max']
+        count_max = info.Count_Max
         if (count_max >= 17) and (count_max <= 21):
             # Stand on Count_Max
             hand_status = 'stand'
             final_count = count_max
         elif count_max > 21:
             # We've busted on Count_Max, switch to Count_Min
-            while info['Count_Min'] <= 16:
+            while info.Count_Min <= 16:
                 # Hit
                 hand_status = 'hit'
                 hand.add_cards(deck.draw(1))
                 # print('Dealer Hand After Hiting on Count_Min: ', hand)
                 info = hand.hand_info()
                 # print(info)
-            count_min = info['Count_Min']
+            count_min = info.Count_Min
             if (count_min >= 17) and (count_min <= 21):
                 # Stand on Count_Min
                 hand_status = 'stand'
@@ -102,18 +102,18 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         while response == 'H' or response == 'h':
             hand.add_cards(deck.draw(1))
             info = hand.hand_info()
-            if info['Count_Min'] > 21:
+            if info.Count_Min > 21:
                 hand_status = 'bust'
-                final_count = info['Count_Min']
+                final_count = info.Count_Min
                 break
             print('Player''s hand:', str(hand), '     Dealer shows:', str(show))
             response = input('(H)it or (S)tand?')
         
         
         hand_status = 'stand'
-        final_count =  info['Count_Max']
+        final_count =  info.Count_Max
         if final_count > 21:
-            final_count = info['Count_Min']
+            final_count = info.Count_Min
                 
         # Assemble outcome info for the hand
         outcome_info['Final_Hand'] = str(hand)
@@ -159,17 +159,17 @@ class HoylePlayerPlayStrategy(PlayStrategy):
         
             info = hand.hand_info()
             
-            if info['Count_Max'] <= 17 or info['Count_Max'] > 21:
+            if info.Count_Max <= 17 or info.Count_Max > 21:
                 # Need to check Count_Min
-                if info['Count_Min'] > 21:
+                if info.Count_Min > 21:
                     # Bust
                     hand_status = 'bust'
-                    final_count = info['Count_Min']
-                elif info['Count_Min'] >= 17:
+                    final_count = info.Count_Min
+                elif info.Count_Min >= 17:
                     # Stand
                     hand_status = 'stand'
-                    final_count = info['Count_Min']
-                elif info ['Count_Min'] <= 12:
+                    final_count = info.Count_Min
+                elif info.Count_Min <= 12:
                     # Hit
                     hand_status = 'hit'
                     hand.add_cards(deck.draw(1))
@@ -178,7 +178,7 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                     if show.count_card(ace_high = True) <= 6:
                         # Dealer shows 2 - 6, so stand (hoping dealer will have to hit and will bust)
                         hand_status = 'stand'
-                        final_count = info['Count_Min']
+                        final_count = info.Count_Min
                     else:
                         # Dealer shows 7 - 10, J, Q, K, or A, so hit
                         hand_status = 'hit'
@@ -186,7 +186,7 @@ class HoylePlayerPlayStrategy(PlayStrategy):
             else:
                 # Stand, because Count_Max is > 17, and we haven't busted
                 hand_status = 'stand'
-                final_count = info['Count_Max']
+                final_count = info.Count_Max
                 
         # Assemble outcome info for the hand
         outcome_info['Final_Hand'] = str(hand)

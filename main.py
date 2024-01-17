@@ -8,35 +8,8 @@ from PlayStrategy import CasinoDealerPlayStrategy, HoylePlayerPlayStrategy, Inte
 if __name__ == '__main__':
     
     """
-    Used currently to set up what ever situation is needed for debugging, since I can't seem to debug unit tests.
+    Used currently to set up what ever situation is needed for playing or debugging, since I can't seem to debug unit tests.
     """
-    
-    # # *** Debug creating a drawing from a Stacked_Deck ***
-    # sd = Stacked_Deck()
-    # sd.add_cards([Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')])
-    # c = sd.draw()
-    # print('Stacked Deck Draw:', c)
-
-    # # *** Debug adding a single card to a hand ***
-    # h = Hand()
-    # c = Card('S','J',10)
-    # h.add_cards(c)   
-    
-    # # *** Debug drawing from a dec of cards ***
-
-    # d = Deck()
-    # c = d.draw()
-    
-    # # *** Debug printing a hand to a string ***
-    
-    # h = Hand()
-    # cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
-    # h.add_cards(cards)
-        
-    # act_val = str(h)
-    
-    # print(act_val + '\n')
-    
     
     # *** Use BlackJackSim to play an interactive game ***
 
@@ -74,6 +47,7 @@ if __name__ == '__main__':
     # print('     Dealer Count:', info['Dealer_Count'])
     # print('     Dealer Hand:', info['Dealer_Final_Hand'])
     
+    
     # *** Use BlackJackSim to play a bunch of games ***
 
     # Dealer_Wins = The number of games won by the dealer, int
@@ -105,7 +79,6 @@ if __name__ == '__main__':
     # print('     Dealer % Wins:', ((100.0 * dw) / tg))
     # print('     Player % Wins:', ((100.0 * pw) / tg))
     # print('     Push %:', ((100.0 * pu) / tg))
-
     
     
     # # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
@@ -129,116 +102,3 @@ if __name__ == '__main__':
     # print('     Dealer Status:', info['Dealer_Status'])
     # print('     Dealer Count:', info['Dealer_Count'])
     # print('     Dealer Hand:', info['Dealer_Final_Hand'])
-  
-    
-    # # Use BlackJackSim to play a hand as a dealer
-    # sim = BlackJackSim()
-    # sim.play_game()
-    
-    
-    # # Work out the logic for playing a hand as a dealer
-    
-    # print('Starting dealer hand play...')
-    
-    # d = Deck(isInfinite = True)
-    # h = Hand()
-    # h.add_cards(d.draw(2))
-    # print('Initial Dealer Hand: ', h)
-    # info = h.hand_info()
-    # print(info)
-    
-    # hand_status = ''
-    # final_count = 0
-    # # Hit as many times as needed until Count_Max exceeds 16
-    # while info['Count_Max'] <= 16:
-    #     # Hit
-    #     hand_status = 'hit'
-    #     h.add_cards(d.draw(1))
-    #     print('Dealer Hand After Hitting on Max Count: ', h)
-    #     info = h.hand_info()
-    #     print(info) 
-    # count_max = info['Count_Max']
-    # if (count_max >= 17) and (count_max <= 21):
-    #     # Stand on Count_Max
-    #     hand_status = 'stand'
-    #     final_count = count_max
-    # elif count_max > 21:
-    #     # If we've busted on Count_Max, switch to Count_Min
-    #     while info['Count_Min'] <= 16:
-    #         # Hit
-    #         hand_status = 'hit'
-    #         h.add_cards(d.draw(1))
-    #         print('Dealer Hand After Hiting on Count_Min: ', h)
-    #         info = h.hand_info()
-    #         print(info)
-    #     count_min = info['Count_Min']
-    #     if (count_min >= 17) and (count_min <= 21):
-    #         # Stand on Count_Min
-    #         hand_status = 'stand'
-    #         final_count = count_min
-    #     elif count_min > 21:
-    #         # If we've busted on Count_Min, and the hand
-    #         hand_status = 'bust'
-    #         final_count = count_min
-    # print('Dealer Hand Outcome:', hand_status, final_count)
-
-
-    # count = info['Count_Other'] + info['Num_Aces'] * 11
-    # while count <= 16:
-    #     h.add_cards(d.draw(1))
-    #     print('Dealer Hand After Draw: ', h)
-    #     info = h.hand_info()
-    #     print(info)
-    #     count = info['Count_Other'] + info['Num_Aces'] * 11
-    # if count > 21:
-    #     print('Dealer Busts')
-    
-    #if count > 21 and info['Num_Aces'] == 1:
-    #   count = info['Count_Other'] + info['Num_Aces'] * 1
-
-    # # *** Debug playing srategy ***
-    
-    # ps = CasinoDealerPlayStrategy()
-    # info = {}      
-       
-    # # Create a Stacked_Deck
-    # sd = Stacked_Deck()
-    # sd.add_cards([Card('C','A'), Card('D','3')])
-       
-    # # Set up hand
-    # h = Hand()
-    # h.add_cards([Card('S','7'), Card('H','8')])
-        
-    # # Play the hand
-    # info = ps.play(h, sd)
-
-    
-    ## *** Debug test cases for Hoyle Player Play Stratgegy
-
-    # ps = HoylePlayerPlayStrategy()
-    # info = {}
-        
-    # # Create a Stacked_Deck (Doesn't matter what. Their should be no draws.)
-    # sd = Stacked_Deck()
-    # sd.add_cards([Card('S','5'), Card('H','2')])
-        
-    # # Set up the hand
-    # h = Hand()
-    # h.add_cards([Card('C','A'), Card('D','7')])
-        
-    # # Play the hand
-    # info = ps.play(h, sd)
-        
-    # # Do we have the expected final hand?
-    # exp_val = 'AC 7D'
-    # act_val = info['Final_Hand']
-    # # Do we have the expected status?
-    # exp_val = 'stand'
-    # act_val = info['Status']
-    # # Do we have the expected final count?
-    # exp_val = 18
-    # act_val = info['Count']
-
-
-
- 

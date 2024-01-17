@@ -144,24 +144,24 @@ class Test_Hand(unittest.TestCase):
         
         # Do we have the expected number, 2, of ace cards in the hand?
         exp_val = 2
-        act_val = info['Num_Aces']
+        act_val = info.Num_Aces
         self.assertEqual(exp_val, act_val)
         # Do we have the expected number, 3 of non ace cards in the hand?
         exp_val = 3
-        act_val = info['Num_Other']
+        act_val = info.Num_Other
         self.assertEqual(exp_val, act_val)
         # Do we have the expected value of summed up pips of the cards in the hand that are not aces?
         exp_val = 18
-        act_val = info['Count_Other']
+        act_val = info.Count_Other
         self.assertEqual(exp_val, act_val)
         # Do we have the expected value of summed up pips of all cards in the hand, with any aces treated as "low"
         exp_val = 20
-        act_val = info['Count_Min']
+        act_val = info.Count_Min
         self.assertEqual(exp_val, act_val)
         # Do we have the expected value of summed up pips of all cards in the hand, with the first ace if any treated as "high"
         # and any additional aces treated as "low"
         exp_val = 30
-        act_val = info['Count_Max']
+        act_val = info.Count_Max
         self.assertEqual(exp_val, act_val)
         
     

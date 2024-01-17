@@ -213,11 +213,11 @@ class BlackJackSim:
         dealer_info = self.dealer_hand.hand_info()
         player_info = self.player_hand.hand_info()
         
-        if dealer_info['Count_Max'] == 21 and player_info['Count_Max'] == 21:
+        if dealer_info.Count_Max == 21 and player_info.Count_Max == 21:
             check_info['Status'] = 'both blackjack'
-        elif dealer_info['Count_Max'] == 21:
+        elif dealer_info.Count_Max == 21:
             check_info['Status'] = 'dealer blackjack'
-        elif player_info['Count_Max'] == 21:
+        elif player_info.Count_Max == 21:
             check_info['Status'] = 'player blackjack'
         else:
             check_info['Status'] = 'play on'
