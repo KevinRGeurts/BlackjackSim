@@ -58,9 +58,9 @@ if __name__ == '__main__':
     # from random import seed
     # seed(1234567890)
     # info = sim.play_games(100, player_deal, dealer_show)
-    # dw = info['Dealer_Wins']
-    # pw = info['Player_Wins']
-    # pu = info['Pushes']
+    # dw = info.Dealer_Wins
+    # pw = info.Player_Wins
+    # pu = info.Pushes
     # tg = dw + pw + pu
     # print('     Dealer shows:', str(dealer_show))
     # print('     Player initial hand:', player_init_hand)

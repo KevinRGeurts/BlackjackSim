@@ -50,6 +50,23 @@ class GamePlayOutcome:
         self.Game_Outcome = BlackJackGameOutcome.PUSH
     
 
+class BlackJackStats:
+    """
+    This class is a structured way of returning information about the outcome of playing many games of black jack, e.g., from play_games().
+    Think of this as a C struct, where it is expected that data members will be direcly accessed, because this class has no methods, beyound __init__().
+    """
+    def __init__(self):
+        """
+        Create the data members of structured info.
+            Dealer_Wins = The number of games won by the dealer, int
+            Player_WIns = The number of games won by the player, int
+            Pushes = The number of tie (push) games, int
+        """
+        self.Dealer_Wins = 0
+        self.Player_Wins = 0
+        self.Pushes = 0
+
+
 class BlackJackSim:
     """
     Logic for playing a game of black jack.\n
@@ -120,19 +137,16 @@ class BlackJackSim:
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):
         """
-        Play multiple games of blackjack, returning a dictionary of statistics of outcomes across the set of games.
-            Dealer_Wins = The number of games won by the dealer, int
-            Player_WIns = The number of games won by the player, int
-            Pushes = The number of tie (push) games, int
+        Play multiple games of blackjack, returning a BlackJackStats() object of statistics of outcomes across the set of games.
         :parameter num_games: The number of games to play, int
         :parameter player_deal: A list of no, one, or two Card()s dealt to the player. The deal will be completed with 2, 1, or no
             cards. This is intended to enable fixing part or all of the initial player hand.
         :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
             drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
             is visible to the player.
-        :return: Dictionary of statistics for the set of games.
+        :return: Sstatistics for the set of games, as a BlackJackStats() object
         """
-        game_stats = {}
+        game_stats = BlackJackStats()
         
         dealer_wins = 0
         player_wins = 0
@@ -148,9 +162,9 @@ class BlackJackSim:
             elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
                 pushes += 1
         
-        game_stats['Dealer_Wins'] = dealer_wins
-        game_stats['Player_Wins'] = player_wins
-        game_stats['Pushes'] = pushes
+        game_stats.Dealer_Wins = dealer_wins
+        game_stats.Player_Wins = player_wins
+        game_stats.Pushes = pushes
                
         return game_stats
 

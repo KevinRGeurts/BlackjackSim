@@ -154,9 +154,9 @@ class Test_Sim(unittest.TestCase):
         player_deal=[Card('H','J'), Card('S','9')]
         dealer_show=Card('D','7')
         info = sim.play_games(100, player_deal, dealer_show)
-        dw = info['Dealer_Wins']
-        pw = info['Player_Wins']
-        pu = info['Pushes']
+        dw = info.Dealer_Wins
+        pw = info.Player_Wins
+        pu = info.Pushes
         # Do we have the expected dealer wins?
         exp_val = 7
         act_val = dw
