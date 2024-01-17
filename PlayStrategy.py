@@ -13,6 +13,9 @@ class BlackJackPlayStatus(Enum):
     HIT = 1
     STAND = 2
     BUST = 3
+    BLACKJACK = 4
+    # NONE used if the other game participant blackjacked and this participant didn't
+    NONE = 5
 
 
 class HandPlayOutcome:

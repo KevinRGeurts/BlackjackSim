@@ -13,6 +13,41 @@ class BlackJackCheck(Enum):
     DEALER_BLACKJACK = 2
     PLAYER_BLACKJACK = 3
     BOTH_BLACKJACK = 4
+
+
+class BlackJackGameOutcome(Enum):
+    """
+    An enumeration that is part of the object that represents the outcome of playing a game.
+    """
+    PLAYER_WINS = 1
+    DEALER_WINS = 2
+    # PUSH means both blackjack, bust, or stand with a tie count
+    PUSH = 3
+
+
+class GamePlayOutcome:
+    """
+    This class is a structured way of returning information about the outcome of playing a game of black jack, e.g., from play_game().
+    Think of this as a C struct, where it is expected that data members will be direcly accessed, because this class has no methods, beyound __init__().
+    """
+    def __init__(self):
+        """
+        Create the data members of structured info.
+            Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
+            Dealer_Status = 'bust', 'stand', 'blackjack', or 'none' (player blackjacked, dealer didn't), string
+            Dealer_Count = Final count of dealer's hand (0 if player blackjacked and dealer didn't), int
+            Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
+            Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), string
+            Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
+            Game_Outcome = Who won?, BlackJackGameOutcome() enum
+        """
+        self.Dealer_Final_Hand = ''
+        self.Dealer_Status = BlackJackPlayStatus.STAND
+        self.Dealer_Count = 0
+        self.Player_Final_Hand = ''
+        self.Player_Status = BlackJackPlayStatus.STAND
+        self.Player_Count = 0
+        self.Game_Outcome = BlackJackGameOutcome.PUSH
     
 
 class BlackJackSim:
@@ -106,11 +141,11 @@ class BlackJackSim:
         for g in range(num_games):  
             print('Playing game:', g)
             info = self.play_game(player_deal, dealer_show)
-            if info['Game_Outcome'] == 'dealer wins':
+            if info.Game_Outcome == BlackJackGameOutcome.DEALER_WINS:
                 dealer_wins += 1
-            elif info['Game_Outcome'] == 'player wins':
+            elif info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
                 player_wins += 1
-            elif info['Game_Outcome'] == 'push':
+            elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
                 pushes += 1
         
         game_stats['Dealer_Wins'] = dealer_wins
@@ -122,22 +157,15 @@ class BlackJackSim:
     
     def play_game(self, player_deal = [], dealer_show = None):
         """
-        Play one game of black jack, returning a dictionary of information about the outcome of the game.
-            Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
-            Dealer_Status = 'bust', 'stand', 'blackjack', or 'none' (player blackjacked, dealer didn't), string
-            Dealer_Count = Final count of dealer's hand (0 if player blackjacked and dealer didn't), int
-            Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
-            Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), string
-            Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
-            Game_Outcome = 'player wins', 'dealer wins', or 'push' (both blackjack, bust, or stand with a tie count)
+        Play one game of black jack, returning a GamePlayOutcome() object of information about the outcome of the game.
         :parameter player_deal: A list of no, one, or two Card()s dealt to the player. The deal will be completed with 2, 1, or no
             cards. This is intended to enable fixing part or all of the initial player hand.
         :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
             drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
             is visible to the player.
-        :return: Dictionary of information about the outcome of the game.
+        :return: Information about the outcome of the game, GamePlayOutcome() object
         """
-        info = {}
+        info = GamePlayOutcome()
         
         # Clear dealer and player hands of Cards
         self.dealer_hand = Hand()
@@ -167,15 +195,15 @@ class BlackJackSim:
             
             # Play player hand, and add hand outcome info to game info
             player_info = self.play_player_hand()
-            info['Player_Final_Hand'] = player_info.Final_Hand
-            info['Player_Status'] = player_info.Status
-            info['Player_Count'] = player_info.Count      
+            info.Player_Final_Hand = player_info.Final_Hand
+            info.Player_Status = player_info.Status
+            info.Player_Count = player_info.Count      
         
             # Play dealer hand, and add hand outcome info to game info
             dealer_info = self.play_dealer_hand()
-            info['Dealer_Final_Hand'] = dealer_info.Final_Hand
-            info['Dealer_Status'] = dealer_info.Status
-            info['Dealer_Count'] = dealer_info.Count
+            info.Dealer_Final_Hand = dealer_info.Final_Hand
+            info.Dealer_Status = dealer_info.Status
+            info.Dealer_Count = dealer_info.Count
                     
             # Determine game outcome, and add to game info
  
@@ -185,28 +213,28 @@ class BlackJackSim:
             
             # One or both of dealer or/and player have blackjack. Set game outcome, etc. in game info
 
-            info['Player_Final_Hand'] = str(self.player_hand)
-            info['Dealer_Final_Hand'] = str(self.dealer_hand)
+            info.Player_Final_Hand = str(self.player_hand)
+            info.Dealer_Final_Hand = str(self.dealer_hand)
             
             if check_info == BlackJackCheck.BOTH_BLACKJACK:
                 # It's a tie score, and a push
-                info['Game_Outcome'] = 'push'
-                info['Player_Status'] = 'blackjack'
-                info['Player_Count'] = 21
-                info['Dealer_Status'] = 'blackjack'
-                info['Dealer_Count'] = 21
+                info.Game_Outcome = BlackJackGameOutcome.PUSH
+                info.Player_Status = BlackJackPlayStatus.BLACKJACK
+                info.Player_Count = 21
+                info.Dealer_Status = BlackJackPlayStatus.BLACKJACK
+                info.Dealer_Count = 21
             elif check_info == BlackJackCheck.DEALER_BLACKJACK:
-                info['Game_Outcome'] = 'dealer wins'
-                info['Player_Status'] = 'none'
-                info['Player_Count'] = 0
-                info['Dealer_Status'] = 'blackjack'
-                info['Dealer_Count'] = 21
+                info.Game_Outcome = BlackJackGameOutcome.DEALER_WINS
+                info.Player_Status = BlackJackPlayStatus.NONE
+                info.Player_Count = 0
+                info.Dealer_Status = BlackJackPlayStatus.BLACKJACK
+                info.Dealer_Count = 21
             elif check_info == BlackJackCheck.PLAYER_BLACKJACK:
-                info['Game_Outcome'] = 'player wins'
-                info['Player_Status'] = 'blackjack'
-                info['Player_Count'] = 21
-                info['Dealer_Status'] = 'none'
-                info['Dealer_Count'] = 0
+                info.Game_Outcome = BlackJackGameOutcome.PLAYER_WINS
+                info.Player_Status = BlackJackPlayStatus.BLACKJACK
+                info.Player_Count = 21
+                info.Dealer_Status = BlackJackPlayStatus.NONE
+                info.Dealer_Count = 0
 
         return info
         
@@ -258,31 +286,31 @@ class BlackJackSim:
         return outcome_info
     
 
-    def determine_game_outcome(self, info = {}):
+    def determine_game_outcome(self, info = GamePlayOutcome()):
         """
         Complete the argument info dictionary after determing the game winner.
         Assumes that Player_Status, Dealer_Status, Player_Count, and Dealer_Count exist in the info dictionary upon entry to this method.
-        :param info: same info object returned by play_game(), dictionary
+        :param info: Same info object returned by play_game(), GamePlayOutcome() object
         :return: NULL
         """
-        if (info['Player_Status'] == BlackJackPlayStatus.BUST):
+        if (info.Player_Status == BlackJackPlayStatus.BUST):
             # If player busts, then it doesn't matter what the dealer status is, the dealer wins.
             # This is the house's advantage in the game.
-            info['Game_Outcome'] = 'dealer wins'
-        elif (info['Player_Status'] == BlackJackPlayStatus.STAND) and (info['Dealer_Status'] == BlackJackPlayStatus.BUST):
-            info['Game_Outcome'] = 'player wins'
+            info.Game_Outcome = BlackJackGameOutcome.DEALER_WINS
+        elif (info.Player_Status == BlackJackPlayStatus.STAND) and (info.Dealer_Status == BlackJackPlayStatus.BUST):
+            info.Game_Outcome = BlackJackGameOutcome.PLAYER_WINS
         else:
             # Both player and dealer stood, higher score wins
-            if info['Player_Count'] > info['Dealer_Count']:
+            if info.Player_Count > info.Dealer_Count:
                 # Player wins
-                info['Game_Outcome'] = 'player wins'
-            elif info['Player_Count'] < info['Dealer_Count']:
+                info.Game_Outcome = BlackJackGameOutcome.PLAYER_WINS
+            elif info.Player_Count < info.Dealer_Count:
                 # Dealer wins
-                info['Game_Outcome'] = 'dealer wins'
+                info.Game_Outcome = BlackJackGameOutcome.DEALER_WINS
             else:
                 # It's a tie score, and a push
-                info['Game_Outcome'] = 'push'
+                info.Game_Outcome = BlackJackGameOutcome.PUSH
        
-        return None;
+        return None
     
 
