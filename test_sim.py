@@ -1,5 +1,5 @@
 import unittest
-from BlackJackSim import BlackJackSim
+from BlackJackSim import BlackJackSim, BlackJackCheck
 from deck import Stacked_Deck
 from card import Card
 
@@ -50,7 +50,6 @@ class Test_Sim(unittest.TestCase):
     def test_check_blackjack_neither(self):
         
         bjs = BlackJackSim()
-        info = {}
         
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
@@ -58,17 +57,16 @@ class Test_Sim(unittest.TestCase):
         # Set up player hand
         bjs.player_hand.add_cards([Card('C','K'), Card('D','Q')])
         
-        info = bjs.check_for_blackjack()
+        act_val = bjs.check_for_blackjack()
         
         # Do we have the expected status?
-        exp_val = 'play on'
-        act_val = info['Status']
+        exp_val = BlackJackCheck.PLAY_ON
         self.assertEqual(exp_val, act_val)
  
+    
     def test_check_blackjack_dealer(self):
         
         bjs = BlackJackSim()
-        info = {}
         
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','A'), Card('H','J')])
@@ -76,17 +74,16 @@ class Test_Sim(unittest.TestCase):
         # Set up player hand
         bjs.player_hand.add_cards([Card('C','K'), Card('D','Q')])
         
-        info = bjs.check_for_blackjack()
+        act_val = bjs.check_for_blackjack()
         
         # Do we have the expected status?
-        exp_val = 'dealer blackjack'
-        act_val = info['Status']
+        exp_val = BlackJackCheck.DEALER_BLACKJACK
         self.assertEqual(exp_val, act_val)        
+
 
     def test_check_blackjack_player(self):
         
         bjs = BlackJackSim()
-        info = {}
         
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
@@ -94,17 +91,16 @@ class Test_Sim(unittest.TestCase):
         # Set up player hand
         bjs.player_hand.add_cards([Card('C','K'), Card('D','A')])
         
-        info = bjs.check_for_blackjack()
+        act_val = bjs.check_for_blackjack()
         
         # Do we have the expected status?
-        exp_val = 'player blackjack'
-        act_val = info['Status']
+        exp_val = BlackJackCheck.PLAYER_BLACKJACK
         self.assertEqual(exp_val, act_val)        
+
 
     def test_check_blackjack_both(self):
         
         bjs = BlackJackSim()
-        info = {}
         
         # Set up dealer hand
         bjs.dealer_hand.add_cards([Card('S','10'), Card('H','A')])
@@ -112,11 +108,10 @@ class Test_Sim(unittest.TestCase):
         # Set up player hand
         bjs.player_hand.add_cards([Card('C','K'), Card('D','A')])
         
-        info = bjs.check_for_blackjack()
+        act_val = bjs.check_for_blackjack()
         
         # Do we have the expected status?
-        exp_val = 'both blackjack'
-        act_val = info['Status']
+        exp_val = BlackJackCheck.BOTH_BLACKJACK
         self.assertEqual(exp_val, act_val)        
 
     

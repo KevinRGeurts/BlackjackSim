@@ -2,6 +2,18 @@ from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
 from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from enum import Enum
+
+
+class BlackJackCheck(Enum):
+    """
+    An enumeration returned by BlackJackSim.chack_for_blackjack().
+    """
+    PLAY_ON = 1
+    DEALER_BLACKJACK = 2
+    PLAYER_BLACKJACK = 3
+    BOTH_BLACKJACK = 4
+
 
 class BlackJackSim:
     """
@@ -149,7 +161,7 @@ class BlackJackSim:
         # TODO: Should I handle splitting hands when the player gets a pair on the deal?
         
         check_info = self.check_for_blackjack()
-        if check_info['Status'] == 'play on':
+        if check_info == BlackJackCheck.PLAY_ON:
         
             # Neither dealer nor player have blackjack, on deal, so play the hands.
             
@@ -178,20 +190,20 @@ class BlackJackSim:
             info['Player_Final_Hand'] = str(self.player_hand)
             info['Dealer_Final_Hand'] = str(self.dealer_hand)
             
-            if check_info['Status'] == 'both blackjack':
+            if check_info == BlackJackCheck.BOTH_BLACKJACK:
                 # It's a tie score, and a push
                 info['Game_Outcome'] = 'push'
                 info['Player_Status'] = 'blackjack'
                 info['Player_Count'] = 21
                 info['Dealer_Status'] = 'blackjack'
                 info['Dealer_Count'] = 21
-            elif check_info['Status'] == 'dealer blackjack':
+            elif check_info == BlackJackCheck.DEALER_BLACKJACK:
                 info['Game_Outcome'] = 'dealer wins'
                 info['Player_Status'] = 'none'
                 info['Player_Count'] = 0
                 info['Dealer_Status'] = 'blackjack'
                 info['Dealer_Count'] = 21
-            elif check_info['Status'] == 'player blackjack':
+            elif check_info == BlackJackCheck.PLAYER_BLACKJACK:
                 info['Game_Outcome'] = 'player wins'
                 info['Player_Status'] = 'blackjack'
                 info['Player_Count'] = 21
@@ -204,23 +216,21 @@ class BlackJackSim:
     def check_for_blackjack(self):
         """
         Check both the dealer's and player's hand for black jack, and declare a winner (one hand has blackjack) or a push (both hands have blackjack). 
-        Play the dealer's hand of black jack, returning a dictionary of information about the outcome of the hand.
-            Status = 'play on', 'dealer blackjack', 'player blackjack', 'both blackjack', string
-        :return: Dictionary of information about the outcome of the blackjack check.
+        :return: The outcome of the black jack check, BlackJackCheck() enum
         """      
-        check_info = {}
+        
+        # Note that this will be the default return, that is, if none of the if/elif below are true
+        check_info = BlackJackCheck.PLAY_ON
         
         dealer_info = self.dealer_hand.hand_info()
         player_info = self.player_hand.hand_info()
         
         if dealer_info.Count_Max == 21 and player_info.Count_Max == 21:
-            check_info['Status'] = 'both blackjack'
+            check_info = BlackJackCheck.BOTH_BLACKJACK
         elif dealer_info.Count_Max == 21:
-            check_info['Status'] = 'dealer blackjack'
+            check_info = BlackJackCheck.DEALER_BLACKJACK
         elif player_info.Count_Max == 21:
-            check_info['Status'] = 'player blackjack'
-        else:
-            check_info['Status'] = 'play on'
+            check_info = BlackJackCheck.PLAYER_BLACKJACK
             
         return check_info
     
