@@ -34,10 +34,10 @@ class GamePlayOutcome:
         """
         Create the data members of structured info.
             Dealer_Final_Hand = String representation of dealer's hand of cards at the end of the game, string
-            Dealer_Status = 'bust', 'stand', 'blackjack', or 'none' (player blackjacked, dealer didn't), string
+            Dealer_Status = 'bust', 'stand', 'blackjack', or 'none' (player blackjacked, dealer didn't), BlackJackPlayStatus Enum
             Dealer_Count = Final count of dealer's hand (0 if player blackjacked and dealer didn't), int
             Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
-            Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), string
+            Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), BlackJackPlayStatus Enum
             Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
             Game_Outcome = Who won?, BlackJackGameOutcome() enum
         """
@@ -61,10 +61,18 @@ class BlackJackStats:
             Dealer_Wins = The number of games won by the dealer, int
             Player_WIns = The number of games won by the player, int
             Pushes = The number of tie (push) games, int
+            Dealer_BlackJacks = The number of games where the dealer was dealt BlackJack, int
+            Player_BlackJacks = The number of games where teh player was dealt BlackJack, int
+            Notes:
+                If a dealer is dealt BlackJack, then Dealer_Wins +=1 and Dealer_BlackJacks +=1
+                If a player is dealt BlackJack, and the Dealer isn't, then Player_Wins +=1, and Player_BlackJacks +=1
+                If both player and dealer are dealt BlackJack, then Pushes +=1, Dealer_BlackJacks +=1, PlayerBlackJacks +=1
         """
         self.Dealer_Wins = 0
         self.Player_Wins = 0
         self.Pushes = 0
+        self.Dealer_BlackJacks = 0
+        self.Player_BlackJacks = 0
 
 
 class BlackJackSim:
@@ -172,20 +180,30 @@ class BlackJackSim:
         dealer_wins = 0
         player_wins = 0
         pushes = 0
+        dealer_blackjacks = 0
+        player_blackjacks = 0
         
         for g in range(num_games):  
             print('Playing game:', g)
             info = self.play_game(player_deal, dealer_show)
+            # Gather and record stats on who won
             if info.Game_Outcome == BlackJackGameOutcome.DEALER_WINS:
                 dealer_wins += 1
             elif info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
                 player_wins += 1
             elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
                 pushes += 1
+            # Gather and record stats on getting BlackJack
+            if info.Dealer_Status == BlackJackPlayStatus.BLACKJACK:
+                dealer_blackjacks += 1
+            if info.Player_Status == BlackJackPlayStatus.BLACKJACK:
+                player_blackjacks += 1
         
         game_stats.Dealer_Wins = dealer_wins
         game_stats.Player_Wins = player_wins
         game_stats.Pushes = pushes
+        game_stats.Dealer_BlackJacks = dealer_blackjacks
+        game_stats.Player_BlackJacks = player_blackjacks
                
         return game_stats
 

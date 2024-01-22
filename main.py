@@ -102,6 +102,8 @@ def play_many_auto():
     pw = info.Player_Wins
     pu = info.Pushes
     tg = dw + pw + pu
+    dbj = info.Dealer_BlackJacks
+    pbj = info.Player_BlackJacks
     
     print('     Dealer shows:', str(dealer_show))
     print('     Player initial hand:', player_init_hand)
@@ -112,6 +114,11 @@ def play_many_auto():
     print('     Dealer % Wins:', ((100.0 * dw) / tg))
     print('     Player % Wins:', ((100.0 * pw) / tg))
     print('     Push %:', ((100.0 * pu) / tg))
+    print('     Dealer BlackJacks:', dbj)
+    print('     Player BlackJacks:', pbj)
+    print('     Dealer % BlackJacks:', ((100.0 * dbj) / tg))
+    print('     Player % BlackJacks:', ((100.0 * pbj) / tg))
+    
     
     return None
 

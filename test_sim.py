@@ -162,7 +162,7 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         
 
-    def test_play_games(self):
+    def test_play_games_fixed_player_deal_and_dealer_show(self):
         from random import seed
         seed(1234567890)
         sim = BlackJackSim()
@@ -172,6 +172,8 @@ class Test_Sim(unittest.TestCase):
         dw = info.Dealer_Wins
         pw = info.Player_Wins
         pu = info.Pushes
+        dbj = info.Dealer_BlackJacks
+        pbj = info.Player_BlackJacks
         # Do we have the expected dealer wins?
         exp_val = 7
         act_val = dw
@@ -183,6 +185,46 @@ class Test_Sim(unittest.TestCase):
         # Do we have the expected pushes?
         exp_val = 14
         act_val = pu
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected dealer BlackJacks?
+        exp_val = 0
+        act_val = dbj
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected player BlackJacks?
+        exp_val = 0
+        act_val = pbj
+        self.assertEqual(exp_val, act_val)
+    
+        
+    def test_play_games(self):
+        from random import seed
+        seed(1234567890)
+        sim = BlackJackSim()
+        info = sim.play_games(100)
+        dw = info.Dealer_Wins
+        pw = info.Player_Wins
+        pu = info.Pushes
+        dbj = info.Dealer_BlackJacks
+        pbj = info.Player_BlackJacks
+        # Do we have the expected dealer wins?
+        exp_val = 45
+        act_val = dw
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected player wins?
+        exp_val = 45
+        act_val = pw
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected pushes?
+        exp_val = 10
+        act_val = pu
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected dealer BlackJacks?
+        exp_val = 3
+        act_val = dbj
+        self.assertEqual(exp_val, act_val)
+        # Do we have the expected player BlackJacks?
+        exp_val = 4
+        act_val = pbj
         self.assertEqual(exp_val, act_val)
         
         
