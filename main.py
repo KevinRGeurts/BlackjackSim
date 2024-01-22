@@ -69,6 +69,10 @@ def play_many_auto():
     sim = BlackJackSim()
     print('Starting a bunch of games of black jack to generate win statistics...')
     
+    # Ask how many games the user wants to have played
+    response = input('How many games do you want to automatically play?\n')
+    num_games = int(response)
+    
     # Ask if the user wants to specify the player's deal?
     player_deal = []
     player_init_hand = ''
@@ -82,7 +86,7 @@ def play_many_auto():
         for i in range(len(player_deal)):
             player_init_hand += str(player_deal[i]) + ' '
     
-    # Ask if the user wants to specigy teh dealer's show card?    
+    # Ask if the user wants to specify the dealer's show card?    
     dealer_show = None
     response = input('Do you want to specigy the dealer''s show card? (Y/N)\n')
     if response == 'Y' or response == 'y':
@@ -93,7 +97,7 @@ def play_many_auto():
     # from random import seed
     # seed(1234567890)
 
-    info = sim.play_games(100, player_deal, dealer_show)
+    info = sim.play_games(num_games, player_deal, dealer_show)
     dw = info.Dealer_Wins
     pw = info.Player_Wins
     pu = info.Pushes

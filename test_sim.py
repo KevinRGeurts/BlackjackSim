@@ -6,6 +6,21 @@ from card import Card
 
 class Test_Sim(unittest.TestCase):
 
+    def test_get_dealer_show(self):
+        bjs = BlackJackSim()
+        
+        # Set up dealer hand
+        bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
+        
+        # Is the dealer's show card as expected?
+        c = Card('S','5')
+        sc = bjs.get_dealer_show()
+        
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (sc.get_suit(), sc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+        
+       
     def test_draw_for_dealer(self):
         bjs = BlackJackSim()
         

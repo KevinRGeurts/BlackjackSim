@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from deck import Deck
 from hand import Hand
-from PlayStrategy import PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy, BlackJackPlayStatus
+from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from enum import Enum
 
 
@@ -78,12 +78,9 @@ class BlackJackSim:
         """
         self.deck = Deck(isInfinite = True)
         self.dealer_hand = Hand()
-        #self.dealer_play_strategy = PlayStrategy()
         self.dealer_play_strategy = CasinoDealerPlayStrategy()
         self.player_hand = Hand()
-        #self.player_play_strategy = PlayStrategy()
         self.player_play_strategy = HoylePlayerPlayStrategy()
-        #self.player_play_strategy = CasinoDealerPlayStrategy()
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     
@@ -125,6 +122,22 @@ class BlackJackSim:
         """
         return self.dealer_hand.add_cards(self.deck.draw(number))
     
+    
+    def dealer_hand_info(self):
+        """
+        Call Hand.hand_info on the dealer's hand.
+        :return: Hand.HandInfo object with useful information about the dealer's hand.
+        """
+        return self.dealer_hand.hand_info()
+    
+
+    def player_hand_info(self):
+        """
+        Call Hand.hand_info on the player's hand.
+        :return: Hand.HandInfo object with useful information about the player's hand.
+        """
+        return self.player_hand.hand_info()
+    
         
     def draw_for_player(self, number=1):
         """
@@ -132,7 +145,15 @@ class BlackJackSim:
         :parameter number: How many cards to draw into player's hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        return self.player_hand.add_cards(self.deck.draw(number))   
+        return self.player_hand.add_cards(self.deck.draw(number))
+    
+    
+    def get_dealer_show(self):
+        """
+        Return the dealer's face up (show) card that can be seen by the player.
+        :return: The first card in the dealer's hand, Card()
+        """
+        return self.dealer_hand.get_cards()[0]
     
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):
@@ -281,7 +302,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.dealer_play_strategy.play(self.dealer_hand, self.deck)
+        outcome_info = self.dealer_play_strategy.play(hand_info_callback=self.dealer_hand_info, draw_callback=self.draw_for_dealer, dealer_show_callback=self.get_dealer_show)
                   
         return outcome_info
         
@@ -293,9 +314,9 @@ class BlackJackSim:
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         # Get the first card in the dealer's hand, which is the face up card
-        show = self.dealer_hand.get_cards()[0]
+        show = self.get_dealer_show()
         
-        outcome_info = self.player_play_strategy.play(self.player_hand, self.deck, show)
+        outcome_info = self.player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show)
                     
         return outcome_info
     

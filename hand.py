@@ -20,10 +20,11 @@ class HandInfo:
         self.Count_Other = 0
         self.Count_Min = 0
         self.Count_Max = 0
+        self.String_Rep = ''
         
     
     def __str__(self):
-        s = 'Num_Aces = ' + str(self.Num_Aces) + ' Num_Other = ' + str(self.Num_Other) + ' Count_Other = ' + str(self.Count_Other) + ' Count_Min = ' + str(self.Count_Min) + ' Count_Max = ' + str(self.Count_Max)
+        s = 'String_rep = ' + self.String_Rep + 'Num_Aces = ' + str(self.Num_Aces) + ' Num_Other = ' + str(self.Num_Other) + ' Count_Other = ' + str(self.Count_Other) + ' Count_Min = ' + str(self.Count_Min) + ' Count_Max = ' + str(self.Count_Max)
         return s
 
 
@@ -124,6 +125,7 @@ class Hand:
         :return: A HandInfo object of useful information about the hand
         """
         info=HandInfo()
+        info.String_Rep = str(self)
         num_aces = self.get_num_aces()
         info.Num_Aces = num_aces
         info.Num_Other = self.get_num_non_aces()

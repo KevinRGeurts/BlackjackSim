@@ -142,6 +142,11 @@ class Test_Hand(unittest.TestCase):
         
         info = h.hand_info()
         
+        # Do we have the expected string representation of the hand?
+        exp_val = 'JS 3H 5S AD AC'
+        act_val = info.String_Rep
+        self.assertEqual(exp_val, act_val)
+        
         # Do we have the expected number, 2, of ace cards in the hand?
         exp_val = 2
         act_val = info.Num_Aces

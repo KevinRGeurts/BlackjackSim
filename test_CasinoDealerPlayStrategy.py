@@ -1,4 +1,5 @@
 import unittest
+from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy
 from hand import Hand
 from deck import Stacked_Deck
@@ -8,18 +9,28 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
     
     def test_play_stand_min(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('C','8'), Card('D','J'), Card('S','5'), Card('H','2')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','8'), Card('D','J')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
         
         # Do we have the expected final hand?
         exp_val = '8C JD'
@@ -37,19 +48,29 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
 
     def test_play_stand_max(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','5'), Card('H','2')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','J')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
-        
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
+                
         # Do we have the expected final hand?
         exp_val = 'AC JD'
         act_val = info.Final_Hand
@@ -66,19 +87,29 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
     
     def test_play_hit_to_stand_max(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
+        sd.add_cards([Card('S','5'), Card('H','2'), Card('D','J'), Card('C','A')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('S','5'), Card('H','2')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
-        
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
+                
         # Do we have the expected final hand?
         exp_val = '5S 2H AC'
         act_val = info.Final_Hand
@@ -95,18 +126,28 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
    
     def test_play_hit_to_bust_max_stand_min(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
-       
-        # Create a Stacked_Deck
+        
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
-       
-        # Set up hand
-        h = Hand()
-        h.add_cards([Card('S','7'), Card('H','9')])
+        sd.add_cards([Card('S','7'), Card('H','9'), Card('D','J'), Card('C','A')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
+        
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
         
         # Do we have the expected final hand?
         exp_val = '7S 9H AC'
@@ -124,18 +165,28 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
 
     def test_play_hit_to_bust_max_hit_to_stand_min(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
-       
-        # Create a Stacked_Deck
+        
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','3')]
-       
-        # Set up hand
-        h = Hand()
-        h.add_cards([Card('S','7'), Card('H','8')])
+        sd.add_cards([Card('S','7'), Card('H','8'), Card('D','J'), Card('C','A'), Card('D','3')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
+        
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
         
         # Do we have the expected final hand?
         exp_val = '7S 8H AC 3D'
@@ -153,18 +204,28 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
     
     def test_play_hit_to_bust_max_hit_to_bust_min(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
         sd = Stacked_Deck()
-        sd.deck = [Card('C','A'), Card('D','J')]
-       
-        # Set up hand
-        h = Hand()
-        h.add_cards([Card('S','7'), Card('H','8')])
+        sd.add_cards([Card('S','7'), Card('H','8'), Card('D','J'), Card('C','A'), Card('D','J')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
+        
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)        
         
         # Do we have the expected final hand?
         exp_val = '7S 8H AC JD'

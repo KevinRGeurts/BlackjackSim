@@ -1,11 +1,11 @@
 import unittest
+from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, HoylePlayerPlayStrategy
-from hand import Hand
 from deck import Stacked_Deck
 from card import Card
 
 class Test_HoylePlayerPlayStrategy(unittest.TestCase):
-    # 	Check Count_Max
+    # Check Count_Max
 	# 	If Count_Max > 17 and <= 21, then stand [A 7] Test 1
 	# 	If Count_Max <= 17 or > 21, then check Count_Min [A 6]; [A 6 5] Test 2
 	# Check Count_Min
@@ -26,18 +26,30 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
     
     def test_play_stand_max(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+        
+        # Create the desired play strategy for the test
         ps = HoylePlayerPlayStrategy()
-        
-        # Create a Stacked_Deck (Doesn't matter what. Their should be no draws.)
+       
+        # Create a Stacked_Deck.
+        # The first two cards will end up in the player's hand.
+        # The third card will end up in the dealer's hand, so there is a show card available.
+        # The rest don't matter as there should be no draws during play.
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('C','A'), Card('D','7'), Card('S','5'), Card('H','2')])
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','7')])
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
+        
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
         
         # Do we have the expected final hand?
         exp_val = 'AC 7D'
@@ -54,19 +66,30 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
 
 
     def test_play_bust_min(self):
-        
+
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
+
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','K')]
+        sd.add_cards([Card('C','A'), Card('D','6'), Card('S','10'), Card('S','5'), Card('H','K')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','6')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S KH'
@@ -84,18 +107,29 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
     
     def test_play_stand_min_over_seventeen(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
+
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','7')]
+        sd.add_cards([Card('C','A'), Card('D','6'), Card('S','10'), Card('S','5'), Card('H','7')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','6')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
         
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 7H'
@@ -112,20 +146,31 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
 
 
     def test_play_stand_min_on_show_six_or_under(self):
-        
+         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
+
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','2')]
+        sd.add_cards([Card('C','A'), Card('D','6'), Card('S','6'), Card('S','5'), Card('H','2')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','6')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd, show = Card('S','6'))
-        
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
+       
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 2H'
         act_val = info.Final_Hand
@@ -142,19 +187,30 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
  
     def test_play_stand_min_on_show_over_six(self):
         
+        # Create the sim object which will provide hand and deck for the play strategy
+        bjs = BlackJackSim()
+                
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck
+        # Create a Stacked_Deck.
+        # Card 1, 2, 4, 5, 6 will end up in the player's hand.
+        # Card 3 will end up in the dealer's hand, so there is a show card available.
+
         sd = Stacked_Deck()
-        sd.deck = [Card('S','5'), Card('H','2'), Card('H','3')]
+        sd.add_cards([Card('C','A'), Card('D','6'), Card('S','7'), Card('S','5'), Card('H','2'), Card('H','3')])
+
+        # Assign the created deck to the sim object
+        bjs.switch_deck(sd)
         
-        # Set up the hand
-        h = Hand()
-        h.add_cards([Card('C','A'), Card('D','6')])
+        # Add cards to the player's hand in the sim
+        bjs.draw_for_player(2)
+        
+        # Add show card to dealer's hand in the sim
+        bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(h, sd, show = Card('S','7'))
-        
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
+       
         # Do we have the expected final hand?
         exp_val = 'AC 6D 5S 2H 3H'
         act_val = info.Final_Hand

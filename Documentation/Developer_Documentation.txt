@@ -77,6 +77,17 @@ So, trying to put all this together into a workflow...
 		 Player % Wins: 43.21
 		 Push %: 8.987
 
+	*** Thinking about how to not pass Hand()s and Deck()s into PlayStrategy().play() ...
+
+	Hoyle player strategy requries the following "access" to the BlackJackSim: (Other current available strategies are same.)
+		(1) Hand.hand_info() - Couls use new BlackJackSim.player_hand_info() and BlackJackSim.dealer_hand_info()
+		The next two, (2) and (3), are used together...
+		(2) Hand.add_cards()  - Could use BlackJackSim.draw_for_player()
+		(3) Deck.draw() - Could use BlackJackSim.draw_for_player()
+		(4) Use new BlackJackSim.get_dealer_show() to get the dealer's face up show card
+
+	Landed on a solution of passing bound methods as arguments to the PlayStrategy().play() method.
+
 	
 
 	

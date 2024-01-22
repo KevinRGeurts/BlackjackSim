@@ -1,8 +1,3 @@
-from hashlib import blake2b
-from re import I
-from hand import Hand
-from deck import Deck
-from card import Card
 from enum import Enum
 
 
@@ -38,27 +33,30 @@ class HandPlayOutcome:
 class PlayStrategy:
     """
     Following a Strategy design pattern, this is the interface class for all blackjack hand playing strategies.
-    It litteraly defines no attributes or methods. By convention (and necessity) each child must define a play(...) method.
-    """   
- 
+    Each child must by convention and necessity implement the play(...) method.
+    """
+
 
 class CasinoDealerPlayStrategy(PlayStrategy):
     """
     Implements strategy for (casino) dealer play.
     """
     
-    def play(self, hand = Hand(), deck = Deck(), show = Card()):
+    # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
+    # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
+    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
         Play the hand of black jack, returning a HandPlayOutcome() object with information about the outcome of playing the hand.
-        :parameter hand: The Hand to be played.
-        :parameter deck: The Deck from which to draw cards.
-        :paramter show: The dealer's face up card, Card
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         outcome_info = HandPlayOutcome()
         
-        info = hand.hand_info()
+        info = hand_info_callback()
         
         hand_status = BlackJackPlayStatus.STAND
         final_count = 0
@@ -66,9 +64,9 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         while info.Count_Max <= 16:
             # Hit
             hand_status = BlackJackPlayStatus.HIT
-            hand.add_cards(deck.draw(1))
+            draw_callback(1)
             # print('Dealer Hand After Hitting on Max Count: ', hand)
-            info = hand.hand_info()
+            info = hand_info_callback()
             # print(info) 
         count_max = info.Count_Max
         if (count_max >= 17) and (count_max <= 21):
@@ -80,9 +78,9 @@ class CasinoDealerPlayStrategy(PlayStrategy):
             while info.Count_Min <= 16:
                 # Hit
                 hand_status = BlackJackPlayStatus.HIT
-                hand.add_cards(deck.draw(1))
+                draw_callback(1)
                 # print('Dealer Hand After Hiting on Count_Min: ', hand)
-                info = hand.hand_info()
+                info = hand_info_callback()
                 # print(info)
             count_min = info.Count_Min
             if (count_min >= 17) and (count_min <= 21):
@@ -96,7 +94,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         # print('Dealer Hand Outcome:', hand_status, final_count)
 
         # Assemble outcome info for the hand
-        outcome_info.Final_Hand = str(hand)
+        outcome_info.Final_Hand = info.String_Rep
         outcome_info.Status = hand_status
         outcome_info.Count = final_count
             
@@ -108,12 +106,16 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
     Implements strategy for player play, based on asking a human whether to hit or stand.
     """
 
-    def play(self, hand = Hand(), deck = Deck(), show = Card()):
+    # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
+    # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
+    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
         Play the hand of black jack, returning a HandPlayOutcome() object of information about the outcome of the hand.
-        :parameter hand: The Hand to be played.
-        :parameter deck: The Deck from which to draw cards.
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.player_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_player
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         outcome_info = HandPlayOutcome()
@@ -121,19 +123,19 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         hand_status = BlackJackPlayStatus.HIT
         final_count = 0
         
-        info = hand.hand_info()       
+        info = hand_info_callback()       
         
         print('Playing an interactive hand of blackjack...')
-        print('Player''s hand:', str(hand), '     Dealer shows:', str(show))
+        print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
         response = input('(H)it or (S)tand?')
         while response == 'H' or response == 'h':
-            hand.add_cards(deck.draw(1))
-            info = hand.hand_info()
+            draw_callback(1)
+            info = hand_info_callback()
             if info.Count_Min > 21:
                 hand_status = BlackJackPlayStatus.BUST
                 final_count = info.Count_Min
                 break
-            print('Player''s hand:', str(hand), '     Dealer shows:', str(show))
+            print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
             response = input('(H)it or (S)tand?')
         
         
@@ -143,7 +145,7 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
             final_count = info.Count_Min
                 
         # Assemble outcome info for the hand
-        outcome_info.Final_Hand = str(hand)
+        outcome_info.Final_Hand = info.String_Rep
         outcome_info.Status = hand_status
         outcome_info.Count = final_count
             
@@ -166,13 +168,16 @@ class HoylePlayerPlayStrategy(PlayStrategy):
 	# 		If dealer shows 7 - 10, J, Q, K, A, then hit [done]
 	# After hitting, return to Check Count_Max [done]    
     
-    def play(self, hand = Hand(), deck = Deck(), show = Card()):
+    # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
+    # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
+    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
         Play the hand of black jack, returning a HandPlayOutcome() object of information about the outcome of the hand.
-        :parameter hand: The Hand to be played.
-        :parameter deck: The Deck from which to draw cards.
-        :parameter show: The dealer's face up card, Card
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         outcome_info = HandPlayOutcome()
@@ -182,7 +187,7 @@ class HoylePlayerPlayStrategy(PlayStrategy):
         
         while hand_status == BlackJackPlayStatus.HIT:
         
-            info = hand.hand_info()
+            info = hand_info_callback()
             
             if info.Count_Max <= 17 or info.Count_Max > 21:
                 # Need to check Count_Min
@@ -197,24 +202,24 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                 elif info.Count_Min <= 12:
                     # Hit
                     hand_status = BlackJackPlayStatus.HIT
-                    hand.add_cards(deck.draw(1))
+                    draw_callback(1)
                 else:
                     # Hand counts between 13 and 16 inclusive. Decide to hit or stand based on dealer's face up card.
-                    if show.count_card(ace_high = True) <= 6:
+                    if dealer_show_callback().count_card(ace_high = True) <= 6:
                         # Dealer shows 2 - 6, so stand (hoping dealer will have to hit and will bust)
                         hand_status = BlackJackPlayStatus.STAND
                         final_count = info.Count_Min
                     else:
                         # Dealer shows 7 - 10, J, Q, K, or A, so hit
                         hand_status = BlackJackPlayStatus.HIT
-                        hand.add_cards(deck.draw(1))
+                        draw_callback(1)
             else:
                 # Stand, because Count_Max is > 17, and we haven't busted
                 hand_status = BlackJackPlayStatus.STAND
                 final_count = info.Count_Max
                 
         # Assemble outcome info for the hand
-        outcome_info.Final_Hand = str(hand)
+        outcome_info.Final_Hand = info.String_Rep
         outcome_info.Status = hand_status
         outcome_info.Count = final_count
             
