@@ -87,7 +87,7 @@ def play_one_auto():
     print('     Dealer Status:', info.Dealer_Status)
     print('     Dealer Count:', info.Dealer_Count)
     print('     Dealer Hand:', info.Dealer_Final_Hand)
-    if info.Split_Game_Out != BlackJackGameOutcome.NONE:
+    if info.Split_Game_Outcome != BlackJackGameOutcome.NONE:
         # A pair was split. Provide output for the second player hand
         print('     Winner:', info.Split_Game_Outcome)
         print('     Split Status:', info.Split_Status)
@@ -159,6 +159,35 @@ def play_many_auto():
     return None
 
 
+def play_batches():
+    """
+    Use BlackJackSim to play a bunch of batches of games automatically.
+    Example: Use this to see the distibution of net wins if you play 20 hands of blackjack many times.
+    """
+    sim = BlackJackSim()
+    print('Playing batches of blackjack games to determine distribution of net wins for a batch...')
+    
+    # Ask how many games the user wants to have played in each batch
+    response = input('How many games per batch do you want to automatically play?\n')
+    num_games = int(response)
+    
+    # Ask how many batches the user wants to have played
+    response = input('How many batches do you want to automatically play?\n')
+    num_batches = int(response)
+    
+    # If you need repeatability, for example to debug something, then you can set a seed here.
+    from random import seed
+    seed(1234567890)
+
+    results = sim.play_batches_of_games(num_games, num_batches)
+
+    for k, v in results.items():
+        print('net wins: ', k, 'number of times:', v)
+
+    return None
+
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     
@@ -169,7 +198,7 @@ if __name__ == '__main__':
     print('***Python Blackjack Simulator ***')
     
     # Ask user how they want to use the simulator
-    response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (D)ebug Scenario ?\n')
+    response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (B)atches of Games, (D)ebug Scenario ?\n')
     
     while response != 'Q' and response != 'q':
         
@@ -184,10 +213,13 @@ if __name__ == '__main__':
             case 'M' | 'm':
                 play_many_auto()
                 
+            case 'B' | 'b':
+                play_batches()
+                
             case 'D' | 'd':
                 play_debug()
                 
-        response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games')
+        response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (B)atches of Games, (D)ebug Scenario ?\n')
     
       
     # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***

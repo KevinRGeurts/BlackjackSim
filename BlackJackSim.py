@@ -198,6 +198,34 @@ class BlackJackSim:
         return self.dealer_hand.get_cards()[0]
     
     
+    def play_batches_of_games(self, num_games = 1, num_batches = 1):
+        """
+        Play multiple batches of multiple games of blackjack. The intent is to, for example, answer the qestion of what is
+        the distribution of +/- player games won if 20 games are played in a batch, and thousands of batches are played.
+        This would correspond to, for example, sitting at a $5 blackjack table in vegas and playing 20 hands.
+        What then is the probability of losing or winning a net of X games at a sitting.
+        :parameter num_games: Number of games to be played for each batch, int
+        :parameter num_batches: Number of batches of games to be played, int
+        :return: A dictionary where the keys are the int number of net losses (-) or wins (+) and the values are the number of batches that produced
+            this net number of losses or wins
+        """
+        results = {}      
+        
+        for b in range(num_batches):
+            batch_stats = self.play_games(num_games)
+            net_wins = batch_stats.Player_Wins - batch_stats.Dealer_Wins
+            # Look up the results dictionary entry for key of net_wins
+            v = results.get(net_wins)
+            if v is None:
+                # Key is not yet in the dictionary, add it now with a value of 1
+                results[net_wins] = 1
+            else:
+                # Key is already in the dictionary. Increment value up by 1 and reset it.
+                results[net_wins] = v + 1
+
+        return results
+
+    
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):
         """
         Play multiple games of blackjack, returning a BlackJackStats() object of statistics of outcomes across the set of games.

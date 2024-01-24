@@ -217,6 +217,19 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
     
         
+    def test_play_batches_of_games(self):
+        from random import seed
+        seed(1234567890)
+        
+        sim = BlackJackSim()
+        results = sim.play_batches_of_games(10, 10)
+        
+        # Did we win a net of 1 game the number of times expected?
+        exp_val = 3
+        act_val = results[1]
+        self.assertEqual(exp_val, act_val)
+        
+    
     def test_play_games(self):
         from random import seed
         seed(1234567890)
