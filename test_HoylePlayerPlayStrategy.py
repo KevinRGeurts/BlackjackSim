@@ -223,7 +223,39 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         exp_val = 17
         act_val = info.Count
         self.assertEqual(exp_val, act_val)
-
-
+        
+    
+    def test_split(self):
+        
+        ps = HoylePlayerPlayStrategy()
+        
+        # Test split on 8's
+        exp_val = True
+        act_val = ps.split('8')
+        self.assertEqual(exp_val, act_val)
+        
+        # Test don't split on A's
+        exp_val = False
+        act_val = ps.split('A')
+        self.assertEqual(exp_val, act_val)
+        
+        # Never split face cards, 10's, 5's, or 4's
+        exp_val = False
+        for pair_pips in ['K', 'Q', 'J', '10', '5', '4']:
+            act_val = ps.split(pair_pips)
+            self.assertEqual(exp_val, act_val)
+            
+        # Split other pairs unless dealer shows 7+ or an A
+        for pair_pips in ['9', '7', '6', '3', '2']:
+            for dealer_pips in ['2', '3', '4', '5', '6']:
+                exp_val = True
+                act_val = ps.split(pair_pips, dealer_pips)
+                self.assertEqual(exp_val, act_val)
+            for dealer_pips in ['7', '8', '9', '10', 'J', 'Q', 'K', 'A']:
+                exp_val = False
+                act_val = ps.split(pair_pips, dealer_pips)
+                self.assertEqual(exp_val, act_val)                
+                
+                
 if __name__ == '__main__':
     unittest.main()

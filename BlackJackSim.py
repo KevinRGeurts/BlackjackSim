@@ -23,6 +23,8 @@ class BlackJackGameOutcome(Enum):
     DEALER_WINS = 2
     # PUSH means both blackjack, bust, or stand with a tie count
     PUSH = 3
+    # NONE means that the hand used to play the second hand of a split pair was not used in the game, that is, no pair was split
+    NONE = 4
 
 
 class GamePlayOutcome:
@@ -39,7 +41,14 @@ class GamePlayOutcome:
             Player_Final_Hand = String representation of Player's hand of cards at the end of the game, string
             Player_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), BlackJackPlayStatus Enum
             Player_Count = Final count of Player's hand (0 if dealer blackjacked and player didn't), int
+            Split_Final_Hand = String representation of Player's split hand of cards at the end of the game, string
+                (Empty if player's hand is not split.)
+            Split_Status = 'bust', 'stand', 'blackjack', or 'none'  (dealer blackjacked, player didn't), BlackJackPlayStatus Enum
+                ('none' if player's hand is not split.)
+            Split_Count = Final count of Player's split hand (0 if dealer blackjacked and player didn't), int
+                (0 if player's hand is not split.)
             Game_Outcome = Who won?, BlackJackGameOutcome() enum
+            Split_Game_Outcome = Who won the split game?, BlackJackGameOutcome() enum
         """
         self.Dealer_Final_Hand = ''
         self.Dealer_Status = BlackJackPlayStatus.STAND
@@ -47,7 +56,11 @@ class GamePlayOutcome:
         self.Player_Final_Hand = ''
         self.Player_Status = BlackJackPlayStatus.STAND
         self.Player_Count = 0
+        self.Split_Final_Hand = ''
+        self.Split_Status = BlackJackPlayStatus.NONE
+        self.Split_Count = 0
         self.Game_Outcome = BlackJackGameOutcome.PUSH
+        self.Split_Game_Outcome = BlackJackGameOutcome.NONE
     
 
 class BlackJackStats:
@@ -75,6 +88,8 @@ class BlackJackStats:
         self.Player_BlackJacks = 0
 
 
+# TODO: If we only defaulted play strategies to PlayStrategy, we wouldn't need to import the specific implementations, which
+# would probably be more consistent with the intent of abstraction
 class BlackJackSim:
     """
     Logic for playing a game of black jack.\n
@@ -82,12 +97,14 @@ class BlackJackSim:
 
     def __init__(self):
         """
-        Construct an infinite deck of Cards (i.e. an infinite deck shute), an empty dealer Hand, and an empty player Hand.
+        Construct an infinite deck of Cards (i.e. an infinite deck shute), an empty dealer Hand, an empty player Hand,
+        and, to be used if needed, an empty hand for if the player splits a pair.
         """
         self.deck = Deck(isInfinite = True)
         self.dealer_hand = Hand()
         self.dealer_play_strategy = CasinoDealerPlayStrategy()
         self.player_hand = Hand()
+        self.split_hand = Hand() # For if the player splits a pair
         self.player_play_strategy = HoylePlayerPlayStrategy()
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
@@ -145,8 +162,16 @@ class BlackJackSim:
         :return: Hand.HandInfo object with useful information about the player's hand.
         """
         return self.player_hand.hand_info()
-    
+
+
+    def split_hand_info(self):
+        """
+        Call Hand.hand_info on the player's split hand.
+        :return: Hand.HandInfo object with useful information about the player's split hand.
+        """
+        return self.split_hand.hand_info()    
         
+    
     def draw_for_player(self, number=1):
         """
         Draw one or more cards from deck into player's hand.
@@ -154,6 +179,15 @@ class BlackJackSim:
         :return: A list of Card(s) in the hand after the draw
         """
         return self.player_hand.add_cards(self.deck.draw(number))
+    
+    
+    def draw_for_split(self, number=1):
+        """
+        Draw one or more cards from deck into player's split hand.
+        :parameter number: How many cards to draw into player's split hand, int
+        :return: A list of Card(s) in the hand after the draw
+        """
+        return self.split_hand.add_cards(self.deck.draw(number))   
     
     
     def get_dealer_show(self):
@@ -193,10 +227,19 @@ class BlackJackSim:
                 player_wins += 1
             elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
                 pushes += 1
+            # Gather and record stats on who won the split hand if the player split a pair
+            if info.Split_Game_Outcome == BlackJackGameOutcome.DEALER_WINS:
+                dealer_wins += 1
+            elif info.Split_Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
+                player_wins += 1
+            elif info.Split_Game_Outcome == BlackJackGameOutcome.PUSH:
+                pushes += 1
             # Gather and record stats on getting BlackJack
             if info.Dealer_Status == BlackJackPlayStatus.BLACKJACK:
                 dealer_blackjacks += 1
             if info.Player_Status == BlackJackPlayStatus.BLACKJACK:
+                player_blackjacks += 1
+            if info.Split_Status == BlackJackPlayStatus.BLACKJACK:
                 player_blackjacks += 1
         
         game_stats.Dealer_Wins = dealer_wins
@@ -208,28 +251,38 @@ class BlackJackSim:
         return game_stats
 
     
-    def play_game(self, player_deal = [], dealer_show = None):
+    def play_game(self, player_deal = [], dealer_show = None, dealer_down = None):
         """
         Play one game of black jack, returning a GamePlayOutcome() object of information about the outcome of the game.
         :parameter player_deal: A list of no, one, or two Card()s dealt to the player. The deal will be completed with 2, 1, or no
             cards. This is intended to enable fixing part or all of the initial player hand.
-        :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
+        :parameter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
             drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
             is visible to the player.
-        :return: Information about the outcome of the game, GamePlayOutcome() object
+        :parameter dealer_down: If specified, it is the face down Card() for the dealer. This is intended to fix the part of the
+            dealer's deal that is invisible to the player.
+        :return: Information about the outcome of the game or games (if their is a split), GamePlayOutcome() object
         """
         info = GamePlayOutcome()
         
-        # Clear dealer and player hands of Cards
+        # Clear dealer, player, and split hands of Cards
         self.dealer_hand = Hand()
         self.player_hand = Hand()
+        self.split_hand = Hand()
         
+        # TODO: Simplify this logic, using 'not (is None)' syntax
         # Build the dealer's initial hand, drawing as needed
-        if dealer_show is None:
+        if dealer_show is None and dealer_down is None:
             self.dealer_hand.add_cards(self.deck.draw(2))
-        else:
+        elif dealer_show is None:
+            self.dealer_hand.add_cards(dealer_down)
+            self.dealer_hand.add_cards(self.deck.draw(1))
+        elif dealer_down is None:
             self.dealer_hand.add_cards(dealer_show)
             self.dealer_hand.add_cards(self.deck.draw(1))
+        else:
+             self.dealer_hand.add_cards(dealer_show)
+             self.dealer_hand.add_cards(dealer_down)
             
         # Build the player's inital hand, drawing as needed
         assert(len(player_deal) <=2)
@@ -239,12 +292,38 @@ class BlackJackSim:
         elif len(player_deal) == 1:
             self.player_hand.add_cards(self.deck.draw(1))
         
-        # TODO: Should I handle splitting hands when the player gets a pair on the deal?
-        
         check_info = self.check_for_blackjack()
         if check_info == BlackJackCheck.PLAY_ON:
         
             # Neither dealer nor player have blackjack, on deal, so play the hands.
+
+            if self.player_hand.get_cards()[0].get_pips() == self.player_hand.get_cards()[1].get_pips():
+                # The player has been dealt a pair. Ask the player strategy if we should split.
+                print('Player has a pair and could split: ', str(self.player_hand), 'Dealer shows: ', self.get_dealer_show().get_pips())
+                if self.player_play_strategy.split(self.player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
+                    print('Player chose to split.')
+                    # Execute split
+                    # TODO: Don't reach directly into Hand members
+                    
+                    # Preserve second of pair to be transferred to split hand, and remove it from the player's hand
+                    xfer_card = self.player_hand.cards.pop()
+                    # Add the preserved card to the split hand
+                    self.split_hand.add_cards([xfer_card])
+                    # Draw a second card into the split hand
+                    self.draw_for_split(1)
+                    # TODO: What if we drew to BlackJack in the split?
+                    
+                    # Draw a replacement card for the player's hand
+                    self.draw_for_player(1)
+                    # TODO: What if we drew to BlackJack in the player's hand?
+                    
+                    # Play the split hand, and add hand outcome info to game info
+
+                    split_info = self.play_split_hand()
+                    info.Split_Final_Hand = split_info.Final_Hand
+                    info.Split_Status = split_info.Status
+                    info.Split_Count = split_info.Count 
+
             
             # Play player hand, and add hand outcome info to game info
             player_info = self.play_player_hand()
@@ -331,11 +410,19 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        # Get the first card in the dealer's hand, which is the face up card
-        show = self.get_dealer_show()
-        
         outcome_info = self.player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show)
                     
+        return outcome_info
+    
+    
+    def play_split_hand(self):
+        """
+        Play the player's split hand of black jack, using the player play strategy, and returning a HandPlayOutcome() object with
+        information about the outcome of playing the hand.
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
+        """
+        outcome_info = self.player_play_strategy.play(hand_info_callback=self.split_hand_info, draw_callback=self.draw_for_split, dealer_show_callback=self.get_dealer_show)
+
         return outcome_info
     
 
@@ -343,9 +430,11 @@ class BlackJackSim:
         """
         Complete the argument info dictionary after determing the game winner.
         Assumes that Player_Status, Dealer_Status, Player_Count, and Dealer_Count exist in the info dictionary upon entry to this method.
+        Assumes that Split_Count exists upon entry to this method if Split_Status != BlackJackPlayStatus.NONE
         :param info: Same info object returned by play_game(), GamePlayOutcome() object
         :return: NULL
         """
+        # Determine game outcome for the only hand of the game, or for the first hand if there was a split of a pair by player
         if (info.Player_Status == BlackJackPlayStatus.BUST):
             # If player busts, then it doesn't matter what the dealer status is, the dealer wins.
             # This is the house's advantage in the game.
@@ -363,6 +452,26 @@ class BlackJackSim:
             else:
                 # It's a tie score, and a push
                 info.Game_Outcome = BlackJackGameOutcome.PUSH
+                
+        # Determine game outcome for the second, split hand, if there was a split of a pair by the player
+        if (info.Split_Status != BlackJackPlayStatus.NONE):
+            if (info.Split_Status == BlackJackPlayStatus.BUST):
+                # If split busts, then it doesn't matter what the dealer status is, the dealer wins.
+                # This is the house's advantage in the game.
+                info.Split_Game_Outcome = BlackJackGameOutcome.DEALER_WINS
+            elif (info.Split_Status == BlackJackPlayStatus.STAND) and (info.Dealer_Status == BlackJackPlayStatus.BUST):
+                info.Split_Game_Outcome = BlackJackGameOutcome.PLAYER_WINS
+            else:
+                # Both split and dealer stood, higher score wins
+                if info.Split_Count > info.Dealer_Count:
+                    # Split wins
+                    info.Split_Game_Outcome = BlackJackGameOutcome.PLAYER_WINS
+                elif info.Split_Count < info.Dealer_Count:
+                    # Dealer wins
+                    info.Split_Game_Outcome = BlackJackGameOutcome.DEALER_WINS
+                else:
+                    # It's a tie score, and a push
+                    info.Split_Game_Outcome = BlackJackGameOutcome.PUSH         
        
         return None
     

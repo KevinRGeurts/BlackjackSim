@@ -88,6 +88,60 @@ So, trying to put all this together into a workflow...
 
 	Landed on a solution of passing bound methods as arguments to the PlayStrategy().play() method.
 
+	*** Thinking about how to implement splitting a player's hand when they are dealt a pair ***
+
+	BlackJackSim.play_game(...) after implementing splitting proceeds as follows:
+		Clear dealer, player, and split hands
+		Deal to dealer as needed - 2 cards, or 1 if dealer_show is provided as argument, or 0 if dealer_down is also provided as argument
+		Deal to player as needed - 0, 1, or 2 cards, depending on player_deal provided as argument
+		Check player and dealer hands for BlackJack
+			If one or both were dealt BlackJack, build GamePlayOutcome and return it
+			If no BlackJacks were dealt, play on
+				Test if player has a pair
+					Enquire of player strategy if the pair should be split
+						Transfer the 2nd card of the pair over to the split hand and draw another card into the split hand
+						Draw a replacement card for the player hand
+						Play the split hand using the player strategy
+				Play the player hand using the player strategy
+				Play the dealer hand using the dealer strategy
+				Build GamePlayOutCome and return it
+
+		Observations and thoughts:
+			(1) Can't just recursively call BlackJackSim.play_game(), because the recursive call would operate on the same BlackJackSim.player_hand data member
+				(a) Could we "recursively" create a new BlackJackSim object to play the second hand after the split?
+				(b) NOTE: Tried this ... and then realized it has the problem of playing a second dealer hand
+			(2) Have to be able to specify the dealer's whole deal, not just the show card.
+				NOTE: It was realized that this is silly reasoning. The dealer only every has one hand to play.
+			(3) Callers of BlackJackSim.play_game() are currently expecting to be returned a single GamePlayOutcome object, with the results of just one game.
+				(a) Could we modify play_game() to return a list or a tuple of GamePlayOutcome objects? The fact that more than one was returned would indicate a split had occurred.
+					(-) Existing callers must be modified to process the list or tuple correctly
+					(+) Seems more "natural" and less "hack-like" and easier to understand than option (b)
+					(+/-) All callers, to handle splits, must check if the list has more than one item in it or the tuple does and branch accordingly
+					(+) A list or tuple could be processed by a for loop
+					(+) A tuple is immutable, unlike a list
+					NOTE: Tried the tuple return concept, but through it out when we switched over to following observation (5) for the solution.
+				(b) Or, could we nest a second GamePlayOutcome object within the first, with the results of the second game of the split?
+					(-) Seems a little "contrived" and "hack-like", and harder to grasp what is the intent
+					(+) Existing callers function without modification, though would ignore the split game
+					(-) No processing of this nesting with a loop
+					(+/-) All callers, to handle splits, must include logic to see if their was a split (the nested object isn't None?) and branch accordingly
+					NOTE: Never tried this. Used the solution hypothesized in observation (5) instead.
+			(4) Can this get deeper ... that is, if the second card dealt to a split produces a pair, could the player split that?
+				(*) I'm (guessing) this isn't part of the casino split rule
+				(*) This should be a rate event
+				(*) But, the simulation logic needs to be able to prevent this from happening, because in theory the recursion would just keep going
+				NOTE: There is no concern with spliting a second time, under the circumstance that another pair is formed by dealing a second card
+				to one of the split hands. The second pair will not be split with the current implementation that follows the concept of observation (5).
+			(5) Now think a better solution is to add a split_hand = Hand() member to the BlackJackSim class, and use it to play
+				the second of the pair of spit hands when a split occurs. And to handle playing out this Hand() within play_game()
+				(a) And why not just embed the information for this split hand into the GamePlayOutcome() class, and not mess around with the complicated tuple.
+
+		As of 24-Jan-2024, Observation (5) is what is implemented in the code, and it tests out okay.
+
+
+
+
+
 	
 
 	

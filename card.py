@@ -48,6 +48,8 @@ class Card:
             card_count = int(pips)
         return card_count
 
+    # TODO: Could formalize this more by using @property decoration to turn pips into a property with a getter and (maybe) a setter.
+    # This could be done for many/all data members in this solution.
     def get_pips(self):
         """
         Return the Card's pips as a string. By convention, this method should be used to get a Card's pips, rather than 

@@ -9,7 +9,8 @@ class BlackJackPlayStatus(Enum):
     STAND = 2
     BUST = 3
     BLACKJACK = 4
-    # NONE used if the other game participant blackjacked and this participant didn't
+    # NONE used if the other game participant blackjacked and this participant didn't.
+    # NONE also used for the second hand of a split pair if their was not split.
     NONE = 5
 
 
@@ -33,7 +34,9 @@ class HandPlayOutcome:
 class PlayStrategy:
     """
     Following a Strategy design pattern, this is the interface class for all blackjack hand playing strategies.
-    Each child must by convention and necessity implement the play(...) method.
+    Each child must by convention and necessity implement these methods:
+        play(...) - For playing a hand following the strategy
+        split(...) - For answering True or False to the question of if a split is desired when a pair has been dealt
     """
 
 
@@ -42,12 +45,25 @@ class CasinoDealerPlayStrategy(PlayStrategy):
     Implements strategy for (casino) dealer play.
     """
     
+    def split(self, pair_pips = '', dealer_show_pips = ''):
+        """
+        The method called to determine if the strategy calls for a split after a pair of cards is dealt. This should always return False.
+        :parameter pair_pips: The pips string of the pair of Cards dealt to the player, string
+        :parameter dealer_show_pips: The pips string of the dealer's face up show card, string
+        :return: True if should split, False if should NOT split, Boolean
+        """
+        # No splits for this play strategy, so return False
+        return False
+    
+    
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
     # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
     def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
+            (1) Hit on <= 16
+            (2) Stand on >= 17
         Play the hand of black jack, returning a HandPlayOutcome() object with information about the outcome of playing the hand.
         :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
         :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
@@ -104,8 +120,24 @@ class CasinoDealerPlayStrategy(PlayStrategy):
 class InteractivePlayerPlayStrategy(PlayStrategy):
     """
     Implements strategy for player play, based on asking a human whether to hit or stand.
+    Human is also asked if the want to split a dealt pair.
     """
-
+    
+    def split(self, pair_pips = '', dealer_show_pips = ''):
+        """
+        The method called to determine if the strategy calls for a split after a pair of cards is dealt. This should
+        :parameter pair_pips: The pips string of the pair of Cards dealt to the player, string
+        :parameter dealer_show_pips: The pips string of the dealer's face up show card, string
+        :return: True if should split, False if should NOT split, Boolean
+        """
+        # We're interactive here, so ask the user if they want to split
+        response = input('Do you wish to split your pair of ' + pair_pips + ' ? Dealer shows ' + dealer_show_pips + '. (Y/N)?')
+        if response == 'Y' or response == 'y':
+            return True
+        else:
+            return False
+    
+    
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
     # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
@@ -138,7 +170,6 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
             print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
             response = input('(H)it or (S)tand?')
         
-        
         hand_status = BlackJackPlayStatus.STAND
         final_count =  info.Count_Max
         if final_count > 21:
@@ -152,10 +183,45 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         return outcome_info    
 
 
+
 class HoylePlayerPlayStrategy(PlayStrategy):
     """
-    Implements strategy for player play, based on recommendations in Hoyle's Rules of Games.
+    Implements strategy for player play and splitting a dealt pair, based on recommendations in Hoyle's Rules of Games.
     """
+
+    def split(self, pair_pips = '', dealer_show_pips = ''):
+        """
+        The method called to determine if the strategy calls for a split after a pair of cards is dealt.
+            (1) Always split A's or 8's.
+            (2) Never split A's. (Desirable for a user to split A's, but not allowed by most casinos.)
+            (3) Never split Face cards, 10's, 5's, 4's
+            (4) Split other pairs unless dealer shows 7+ or an A
+        :parameter pair_pips: The pips string of the pair of Cards dealt to the player, string
+        :parameter dealer_show_pips: The pips string of the dealer's face up show card, string
+        :return: True if should split, False if should NOT split, Boolean
+        """
+        # Apply the reccomendations from Hoyle to determine if a split is desired
+        should_split = False
+        match pair_pips:
+            case '8':
+                # Always split 8's
+                should_split = True
+            case 'A':
+                # Splitting Aces is desirable for player, but not allowed by casino rules
+                should_split = False
+            case 'K' | 'Q' | 'J' | '10' | '5' | '4':
+                # Never split face cards, 10's, 5's, or 4's
+                should_split = False
+            case '9' | '7' | '6' | '3' | '2':
+                # Split unless dealer shows 7+ or Ace
+                match dealer_show_pips:
+                    case '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K' | 'A':
+                        should_split = False
+                    case '2' | '3' | '4' | '5' | '6':
+                        should_split = True
+        return should_split
+
+
 	# Check Count_Max
 	# 	If Count_Max > 17 and <= 21, then stand [done]
 	# 	If Count_Max <= 17 or > 21, then

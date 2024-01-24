@@ -7,6 +7,13 @@ from card import Card
 
 class Test_CasinoDealerPlayStrategy(unittest.TestCase):
     
+    def test_split(self):
+        ps = CasinoDealerPlayStrategy()
+        exp_val = False
+        act_val = ps.split()
+        self.assertEqual(exp_val, act_val)
+        
+    
     def test_play_stand_min(self):
         
         # Create the sim object which will provide hand and deck for the play strategy

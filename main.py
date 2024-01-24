@@ -1,8 +1,7 @@
-from deck import Deck, Stacked_Deck
-from hand import Hand
+from deck import Stacked_Deck
 from card import Card
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
-from PlayStrategy import CasinoDealerPlayStrategy, HoylePlayerPlayStrategy, InteractivePlayerPlayStrategy
+from PlayStrategy import InteractivePlayerPlayStrategy
 
 
 # TODO: Find a better home for this capability. As part of Card()? As part of Hand()?
@@ -26,6 +25,29 @@ def make_card_list_from_str(card_str = ''):
     return cards
 
 
+def play_debug():
+    """
+    Run a debugging scenario coded in this function.
+    """
+    sim = BlackJackSim()
+        
+    info = GamePlayOutcome()
+
+    # Here is what will happen to the cards in the stacked deck
+    # 1,2 dealt to dealer
+    # 3,4 dealt to player before split
+    # 5 dealt to player's split hand
+    # 6 dealt to player's original hand after split
+    sd = Stacked_Deck()
+    sd.add_cards([Card('H','7'), Card('D','10'),Card('C','8'), Card('S','8'),Card('S','A'), Card('C','J')])
+    sim.switch_deck(sd)
+        
+    # Play the game, which should result in a split
+    info = sim.play_game()
+
+    return None
+
+
 def play_interactive():
     """
     Use BlackJackSim to play an interactive game.
@@ -40,7 +62,14 @@ def play_interactive():
     print('     Player Hand:', info.Player_Final_Hand)
     print('     Dealer Status:', info.Dealer_Status)
     print('     Dealer Count:', info.Dealer_Count)
-    print('     Dealer Hand:', info.Dealer_Final_Hand)   
+    print('     Dealer Hand:', info.Dealer_Final_Hand)
+    if info.Split_Game_Outcome != BlackJackGameOutcome.NONE:
+        # A pair was split. Provide output for the second player hand
+        print('     Winner:', info.Split_Game_Outcome)
+        print('     Split Status:', info.Split_Status)
+        print('     Split Count:', info.Split_Count)
+        print('     Split Hand:', info.Split_Final_Hand)
+
     return None
 
 
@@ -57,7 +86,14 @@ def play_one_auto():
     print('     Player Hand:', info.Player_Final_Hand)
     print('     Dealer Status:', info.Dealer_Status)
     print('     Dealer Count:', info.Dealer_Count)
-    print('     Dealer Hand:', info.Dealer_Final_Hand)    
+    print('     Dealer Hand:', info.Dealer_Final_Hand)
+    if info.Split_Game_Out != BlackJackGameOutcome.NONE:
+        # A pair was split. Provide output for the second player hand
+        print('     Winner:', info.Split_Game_Outcome)
+        print('     Split Status:', info.Split_Status)
+        print('     Split Count:', info.Split_Count)
+        print('     Split Hand:', info.Split_Final_Hand)
+        
     return None
 
 
@@ -88,7 +124,7 @@ def play_many_auto():
     
     # Ask if the user wants to specify the dealer's show card?    
     dealer_show = None
-    response = input('Do you want to specigy the dealer''s show card? (Y/N)\n')
+    response = input('Do you want to specify the dealer''s show card? (Y/N)\n')
     if response == 'Y' or response == 'y':
         response = input('Enter dealer show, e.g., 10H: ')
         dealer_show = make_card_list_from_str(response)[0]
@@ -133,7 +169,7 @@ if __name__ == '__main__':
     print('***Python Blackjack Simulator ***')
     
     # Ask user how they want to use the simulator
-    response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games ?\n')
+    response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (D)ebug Scenario ?\n')
     
     while response != 'Q' and response != 'q':
         
@@ -147,6 +183,9 @@ if __name__ == '__main__':
                 
             case 'M' | 'm':
                 play_many_auto()
+                
+            case 'D' | 'd':
+                play_debug()
                 
         response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games')
     
@@ -172,5 +211,11 @@ if __name__ == '__main__':
     # print('     Dealer Status:', info.Dealer_Status)
     # print('     Dealer Count:', info.Dealer_Count)
     # print('     Dealer Hand:', info.Dealer_Final_Hand)
+    # if info.Split_Game_Out != BlackJackGameOutcome.NONE:
+    #     # A pair was split. Provide output for the second player hand
+    #     print('     Winner:', info.Split_Game_Outcome)
+    #     print('     Split Status:', info.Split_Status)
+    #     print('     Split Count:', info.Split_Count)
+    #     print('     Split Hand:', info.Split_Final_Hand)
 
 

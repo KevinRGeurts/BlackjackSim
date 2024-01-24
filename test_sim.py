@@ -61,6 +61,27 @@ class Test_Sim(unittest.TestCase):
         exp_val = (c.get_suit(), c.get_pips())
         act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
+ 
+    
+    def test_draw_for_split(self):
+        bjs = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','4')])
+        
+        # Replace sim's deck with Stacked_Deck
+        bjs.switch_deck(sd)
+
+        # Draw a card
+        dc = bjs.draw_for_split(1)
+        dc = dc[0]
+        
+        # Did we get the one we expected?
+        c = Card('C', 'A')
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc.get_suit(), dc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
     
     
     def test_check_blackjack_neither(self):
@@ -207,11 +228,11 @@ class Test_Sim(unittest.TestCase):
         dbj = info.Dealer_BlackJacks
         pbj = info.Player_BlackJacks
         # Do we have the expected dealer wins?
-        exp_val = 45
+        exp_val = 48
         act_val = dw
         self.assertEqual(exp_val, act_val)
         # Do we have the expected player wins?
-        exp_val = 45
+        exp_val = 44
         act_val = pw
         self.assertEqual(exp_val, act_val)
         # Do we have the expected pushes?
@@ -223,7 +244,7 @@ class Test_Sim(unittest.TestCase):
         act_val = dbj
         self.assertEqual(exp_val, act_val)
         # Do we have the expected player BlackJacks?
-        exp_val = 4
+        exp_val = 5
         act_val = pbj
         self.assertEqual(exp_val, act_val)
         
@@ -637,6 +658,35 @@ class Test_Sim(unittest.TestCase):
         act_val = info.Dealer_Count
         self.assertEqual(exp_val, act_val)
         
+    def test_game_with_split(self):
+        
+        sim = BlackJackSim()
+        
+        info = GamePlayOutcome()
+
+        # Here is what will happen to the cards in the stacked deck
+        # 1,2 dealt to dealer
+        # 3,4 dealt to player before split
+        # 5 dealt to player's split hand
+        # 6 dealt to player's original hand after split
+        sd = Stacked_Deck()
+        sd.add_cards([Card('H','7'), Card('D','10'),Card('C','8'), Card('S','8'),Card('S','A'), Card('C','J')])
+        sim.switch_deck(sd)
+        
+        # Play the game, which should result in a split
+        info = sim.play_game()
+        
+        # Do we have the expected results for the first player hand
+        exp_val = '8C JC'
+        act_val = info.Player_Final_Hand
+        self.assertEqual(exp_val, act_val)
+
+        # Do we have the expected results for the second, split, player hand
+        exp_val = '8S AS'
+        act_val = info.Split_Final_Hand
+        self.assertEqual(exp_val, act_val)
+        
+        
     
     def test_determine_game_outcome(self):
         
@@ -650,82 +700,106 @@ class Test_Sim(unittest.TestCase):
         info.Player_Count = 0
         info.Dealer_Status = BlackJackPlayStatus.BUST
         info.Dealer_Count = 0
+        info.Split_Status = BlackJackPlayStatus.STAND
+        info.Split_Count = 0
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.PLAYER_WINS
         act_val = info.Game_Outcome
         self.assertEqual(exp_val, act_val)
+        act_val = info.Split_Game_Outcome
+        self.assertEqual(exp_val, act_val)
  
-        # Test player busts...
+        # Test player and split bust...
 
         info.Player_Status = BlackJackPlayStatus.BUST
         info.Player_Count = 0
         info.Dealer_Status = BlackJackPlayStatus.STAND
         info.Dealer_Count = 0
+        info.Split_Status = BlackJackPlayStatus.BUST
+        info.Split_Count = 0 
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.DEALER_WINS
         act_val = info.Game_Outcome
         self.assertEqual(exp_val, act_val)
+        act_val = info.Split_Game_Outcome
+        self.assertEqual(exp_val, act_val)
         
-        # Test both stand, player has high score...
+        # Test all stand, player and split have high score...
 
         info.Player_Status = BlackJackPlayStatus.STAND
         info.Player_Count = 19
         info.Dealer_Status = BlackJackPlayStatus.STAND
         info.Dealer_Count = 17
+        info.Split_Status = BlackJackPlayStatus.STAND
+        info.Split_Count = 18
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.PLAYER_WINS
         act_val = info.Game_Outcome
         self.assertEqual(exp_val, act_val)
+        act_val = info.Split_Game_Outcome
+        self.assertEqual(exp_val, act_val)
 
-        # Test both stand, dealer has high score...
+        # Test all stand, dealer has high score...
 
         info.Player_Status = BlackJackPlayStatus.STAND
         info.Player_Count = 19
         info.Dealer_Status = BlackJackPlayStatus.STAND
         info.Dealer_Count = 20
+        info.Split_Status = BlackJackPlayStatus.STAND
+        info.Player_Count = 18
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.DEALER_WINS
         act_val = info.Game_Outcome
         self.assertEqual(exp_val, act_val)
-
-        # Test both stand, tie score...
+        act_val = info.Split_Game_Outcome
+        self.assertEqual(exp_val, act_val)
+        
+        # Test all stand, tie scores...
 
         info.Player_Status = BlackJackPlayStatus.STAND
         info.Player_Count = 19
         info.Dealer_Status = BlackJackPlayStatus.STAND
         info.Dealer_Count = 19
+        info.Split_Status = BlackJackPlayStatus.STAND
+        info.Split_Count = 19
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.PUSH
         act_val = info.Game_Outcome
         self.assertEqual(exp_val, act_val)
+        act_val = info.Split_Game_Outcome
+        self.assertEqual(exp_val, act_val)
         
-        # Test both bust, it's a win by the dealer...
+        # Test all bust, it's wins by the dealer...
 
         info.Player_Status = BlackJackPlayStatus.BUST
         info.Player_Count = 0
         info.Dealer_Status = BlackJackPlayStatus.BUST
         info.Dealer_Count = 0
+        info.Split_Status = BlackJackPlayStatus.BUST
+        info.Split_Count = 0
         
         sim.determine_game_outcome(info)
             
-        # Do we have the expected game outcome?
+        # Do we have the expected game and split game outcomes?
         exp_val = BlackJackGameOutcome.DEALER_WINS
         act_val = info.Game_Outcome
+        self.assertEqual(exp_val, act_val)
+        act_val = info.Split_Game_Outcome
         self.assertEqual(exp_val, act_val)
 
 
