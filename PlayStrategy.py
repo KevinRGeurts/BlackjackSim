@@ -1,4 +1,6 @@
 from enum import Enum
+from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
+from hand import Hand
 
 
 class BlackJackPlayStatus(Enum):
@@ -131,8 +133,13 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         :return: True if should split, False if should NOT split, Boolean
         """
         # We're interactive here, so ask the user if they want to split
-        response = input('Do you wish to split your pair of ' + pair_pips + ' ? Dealer shows ' + dealer_show_pips + '. (Y/N)?')
-        if response == 'Y' or response == 'y':
+
+        # Build a query for the user to obtain a decision on whether or not to split
+        query_preface = 'Do you wish to split your pair of ' + pair_pips + ' ? Dealer shows ' + dealer_show_pips + '.'
+        query_dic = {'y':'Yes', 'n':'No'}
+        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+
+        if response == 'y':
             return True
         else:
             return False
@@ -158,9 +165,12 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         info = hand_info_callback()       
         
         print('Playing an interactive hand of blackjack...')
-        print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
-        response = input('(H)it or (S)tand?')
-        while response == 'H' or response == 'h':
+        
+        # Build a query for the user to obtain a hit or stand decision
+        query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
+        query_dic = {'h':'Hit', 's':'Stand'}
+        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        while response == 'h':
             draw_callback(1)
             info = hand_info_callback()
             if info.Count_Min > 21:
@@ -168,12 +178,14 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
                 final_count = info.Count_Min
                 break
             print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
-            response = input('(H)it or (S)tand?')
+            query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
+            response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
         
-        hand_status = BlackJackPlayStatus.STAND
-        final_count =  info.Count_Max
-        if final_count > 21:
-            final_count = info.Count_Min
+        if hand_status != BlackJackPlayStatus.BUST:
+            hand_status = BlackJackPlayStatus.STAND
+            final_count =  info.Count_Max
+            if final_count > 21:
+                final_count = info.Count_Min
                 
         # Assemble outcome info for the hand
         outcome_info.Final_Hand = info.String_Rep

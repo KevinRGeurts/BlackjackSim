@@ -2,27 +2,7 @@ from deck import Stacked_Deck
 from card import Card
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
 from PlayStrategy import InteractivePlayerPlayStrategy
-
-
-# TODO: Find a better home for this capability. As part of Card()? As part of Hand()?
-def make_card_list_from_str(card_str = ''):
-    """
-    Make and return a list of cards, given a string in the format of Hand.__str__().
-    :parameter card_str: A sting representing one or more cards in the format PipsSuit, e.g. AS KH QD JC 10H 2S
-    :return: A list of Card()s
-    """
-    cards = []
-    # Convert the card_str into a list of strings for individual cards, using str.split()
-    card_str_list = card_str.split()
-    for s in card_str_list:
-        # Last character for each card string is the suit
-        suit = s[len(s)-1]
-        # The rest of the card string is the pips
-        pips = s[0:len(s)-1]
-        # Construct a Card() and add it to the return list
-        # print('suit=',suit,'pips=',pips)
-        cards.append(Card(suit, pips))   
-    return cards
+from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
 
 
 def play_debug():
@@ -106,16 +86,21 @@ def play_many_auto():
     print('Starting a bunch of games of black jack to generate win statistics...')
     
     # Ask how many games the user wants to have played
-    response = input('How many games do you want to automatically play?\n')
-    num_games = int(response)
+    # Build a query to ask how many games the user wants to have played
+    query_preface = 'How many games do you want to automatically play?'
+    num_games = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
     
     # Ask if the user wants to specify the player's deal?
     player_deal = []
     player_init_hand = ''
-    response = input('Do you want to specify the player''s deal? (Y/N)\n')
-    if response == 'Y' or response == 'y':
-        response = input('Enter player deal, e.g., 10H 5S: ')
-        player_deal = make_card_list_from_str(response)
+    # Build a query to ask if the user wants to specify the player's deal
+    query_preface = 'Do you want to specify the player''s deal?'
+    query_dic = {'y':'Yes', 'n':'No'}
+    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    if response == 'y':
+        # Build a query to get up to two cards from the user
+        query_preface = 'Enter player deal of one or two cards.'
+        player_deal = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)
     
         # Rebuild what should be the input string of cards provided by the user.
         # This will be printed in the output as proof that the user input as produced the desired result.
@@ -124,10 +109,14 @@ def play_many_auto():
     
     # Ask if the user wants to specify the dealer's show card?    
     dealer_show = None
-    response = input('Do you want to specify the dealer''s show card? (Y/N)\n')
-    if response == 'Y' or response == 'y':
-        response = input('Enter dealer show, e.g., 10H: ')
-        dealer_show = make_card_list_from_str(response)[0]
+    # Build a query to ask if the user wants to specify the dealer's show card
+    query_preface = 'Do you want to specify the dealer''s show card'
+    query_dic = {'y':'Yes', 'n':'No'}
+    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    if response == 'y':
+        # Build a query to get one card from the user
+        query_preface = 'Enter one dealer show card.'
+        dealer_show = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)[0]
 
     # If you need repeatability, for example to debug something, then you can set a seed here.
     # from random import seed
@@ -168,12 +157,14 @@ def play_batches():
     print('Playing batches of blackjack games to determine distribution of net wins for a batch...')
     
     # Ask how many games the user wants to have played in each batch
-    response = input('How many games per batch do you want to automatically play?\n')
-    num_games = int(response)
+    # Build a query to ask how many games the user wants to have played in each batch
+    query_preface = 'How many games per batch do you want to automatically play?'
+    num_games = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
     
     # Ask how many batches the user wants to have played
-    response = input('How many batches do you want to automatically play?\n')
-    num_batches = int(response)
+    # Build a query to ask how many batches the user wants to have played
+    query_preface = 'How many batches do you want to automatically play?'
+    num_batches = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
     
     # If you need repeatability, for example to debug something, then you can set a seed here.
     from random import seed
@@ -195,32 +186,33 @@ if __name__ == '__main__':
     Used currently to set up what ever situation is needed for playing or debugging, since I can't seem to debug unit tests.
     """
     
-    print('***Python Blackjack Simulator ***')
+    print('*** Python Blackjack Simulator ***')
     
-    # Ask user how they want to use the simulator
-    response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (B)atches of Games, (D)ebug Scenario ?\n')
+    # Build a query for the user to obtain their choice of how to user the simulator
+    query_preface = 'How do you want to use the simulator?'
+    query_dic = {'q':'Quit', 'i':'Interactive Game', 'a':'Automatic Game', 'm':'Many Automatic Games', 'b':'Batches of Games', 'd':'Debug Scenario'}
+    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
     
-    while response != 'Q' and response != 'q':
+    while response != 'q':
         
         match response:
             
-            case 'I' | 'i':
+            case 'i':
                 play_interactive()
                 
-            case 'A' | 'a':
+            case 'a':
                 play_one_auto()
                 
-            case 'M' | 'm':
+            case 'm':
                 play_many_auto()
                 
-            case 'B' | 'b':
+            case 'b':
                 play_batches()
                 
-            case 'D' | 'd':
+            case 'd':
                 play_debug()
                 
-        response = input('(Q)uit, (I)nteractive Game, (A)utomatic Game, (M)any Automatic Games, (B)atches of Games, (D)ebug Scenario ?\n')
-    
+        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
       
     # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
 

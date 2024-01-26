@@ -68,7 +68,7 @@ So, trying to put all this together into a workflow...
 	Test 4 "stand min on show six or under": Hand[A 6] Deck[5 2] show[6] Hit Hit Stand
 	Test 5 "stand min on show over six": Hand[A 6] Deck[5 2 3] show[7] Hit Hit Hit Stand
 
-	Some results: Playing 100,000 hands with dealer using Casino logic and player both using this logic:
+	Some results: Playing 100,000 hands with dealer using Casino logic and player using this logic:
 		 Dealer Wins: 47803
 		 Player Wins: 43210
 		 Pushes: 8987
@@ -138,11 +138,49 @@ So, trying to put all this together into a workflow...
 
 		As of 24-Jan-2024, Observation (5) is what is implemented in the code, and it tests out okay.
 
+		*** Thinking about how to implement requesting input from user without having input(...) calls throughout the class heierarchy ***
+
+		Where is input(...) currently called?
+			(1) main.py, __main__
+			(2) PlayStrategy.py, InteractivePlayerPlayStrategy.split(), InteractivePlayerPlayStrategy.play() 
+
+		Possibilityies:
+			(1) Send all input requests to a singleton, and let the singleton decide how to respond.
+				(+) Singelton guarantees the request will be handled
+				(*) Python implementation of singleton pattern: https://python-patterns.guide/gang-of-four/singleton/
+					This URL explains why it is best instead to use the Python Global Object Pattern: https://python-patterns.guide/python/module-globals/
+					I think, but am not certain, that I should be using the Prebound Method version of Global Object Pattern: https://python-patterns.guide/python/prebound-methods/
+			(2) Set up a chain of responsibility, using mix-in class to PlayStrategy, BlackJackSim, And a reworked main.py that has been turned into a class
+				(-) Feels overly complicated given that input requests are only coming from two "locations" in the code base
+
+		What should a request look like?
+				Enum request type:						Return Type:
+				YES_NO (e.g., Do you want to split?)	Bool: True (Yes), False (No)
+				HIT_STAND								Bool: True (Hit), False (Stand)
+				MENU (choose from a list)				Int: Index of item on the menu
+				NUMBER (e.g., games, batches)			Int: User entered integer value
+				CARDS									list of Card(), probably generated from user entered string
+
+		Some simplifying and improving thoughts after starting to implement:
+				(1) Let MENU cover YES_NO and HIT_STAND as specializations
+					(a) For MENU, caller will provide a dictionary where values are the string descriptions of each choice
+						to be presented to the user, and keys are the string response that will indicate having selected that option.
+						For example: {'h': 'Hit', 's': 'Stand'}. The "singleton" will be responsible for presenting a menu of choices
+						to the user, based on the values, and also responsible for returning a key to the caller. The caller will
+						also provide a "query preface" string to be presented by the singleton to explain the purpose of choosing
+						from the menu. For example, 'Player's hand: 2S QH.  Dealer shows: 8C.  '. The singleton, if using the terminal,
+						would assemble the dictionary into something like, 'Choose (h)Hit, (s)Stand: '
+					(b) For NUMBER, caller provides the "query preface" string (e.g., 'HOw many games do you want to automaticall play?') and an empty dictionary.
+						.Singleton queries user with something like, 'How many games do you want to automatically play?  Enter a number:  '.
+					(c) For CARDS, the caller provides the "query preface" string (e.g., 'Enter player deal, e.g., 10H 5S: ').
+						Singleton creates list of Card() objects based on string input by the user.
+
+				
 
 
+			
 
-
-	
+	Nu
 
 	
 	

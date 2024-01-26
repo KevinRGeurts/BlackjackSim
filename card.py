@@ -46,6 +46,7 @@ class Card:
             card_count = 10
         else:
             card_count = int(pips)
+            assert(card_count >= 2 and card_count <= 10)
         return card_count
 
     # TODO: Could formalize this more by using @property decoration to turn pips into a property with a getter and (maybe) a setter.
@@ -66,3 +67,24 @@ class Card:
         "return: Card's suit, string
         """
         return self.suit
+    
+
+    def make_card_list_from_str(self, card_str = ''):
+        """
+        Make and return a list of cards, given a string in the format of Hand.__str__().
+        This is a utility method. It does nothing to self.
+        :parameter card_str: A sting representing one or more cards in the format PipsSuit, e.g. AS KH QD JC 10H 2S
+        :return: A list of Card()s
+        """
+        cards = []
+        # Convert the card_str into a list of strings for individual cards, using str.split()
+        card_str_list = card_str.split()
+        for s in card_str_list:
+            # Last character for each card string is the suit
+            suit = s[len(s)-1]
+            # The rest of the card string is the pips
+            pips = s[0:len(s)-1]
+            # Construct a Card() and add it to the return list
+            # print('suit=',suit,'pips=',pips)
+            cards.append(Card(suit, pips))   
+        return cards

@@ -1,5 +1,6 @@
 import unittest
 from card import Card
+from hand import Hand
 
 class Test_Card(unittest.TestCase):
     def test_count_card_default(self):
@@ -59,8 +60,11 @@ class Test_Card(unittest.TestCase):
         exp_val = 6
         act_val = Card().get_count_from_pips('6')
         self.assertEqual(exp_val, act_val)
-
         
+        # Test trap bad pips
+        self.assertRaises(AssertionError, Card().get_count_from_pips, 11)
+
+    
     def test_get_pips(self):
         exp_val = 'Q'
         act_val = Card('S','Q').get_pips()
@@ -70,6 +74,15 @@ class Test_Card(unittest.TestCase):
     def test_get_suit(self):
         exp_val = 'S'
         act_val = Card('S','Q').get_suit()
+        self.assertEqual(exp_val, act_val)
+        
+
+    def test_make_card_list_from_str(self):
+        exp_val = 'AS KH QD JC 10H 2S'
+        card_list = Card().make_card_list_from_str('AS KH QD JC 10H 2S')
+        h = Hand()
+        h.add_cards(card_list)
+        act_val = str(h)
         self.assertEqual(exp_val, act_val)
 
 
