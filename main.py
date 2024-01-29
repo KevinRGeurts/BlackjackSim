@@ -1,8 +1,10 @@
+from enum import nonmember
 from deck import Stacked_Deck
 from card import Card
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
 from PlayStrategy import InteractivePlayerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
+import logging
 
 
 def play_debug():
@@ -45,7 +47,7 @@ def play_interactive():
     print('     Dealer Hand:', info.Dealer_Final_Hand)
     if info.Split_Game_Outcome != BlackJackGameOutcome.NONE:
         # A pair was split. Provide output for the second player hand
-        print('     Winner:', info.Split_Game_Outcome)
+        print('     Split Winner:', info.Split_Game_Outcome)
         print('     Split Status:', info.Split_Status)
         print('     Split Count:', info.Split_Count)
         print('     Split Hand:', info.Split_Final_Hand)
@@ -69,7 +71,7 @@ def play_one_auto():
     print('     Dealer Hand:', info.Dealer_Final_Hand)
     if info.Split_Game_Outcome != BlackJackGameOutcome.NONE:
         # A pair was split. Provide output for the second player hand
-        print('     Winner:', info.Split_Game_Outcome)
+        print('     Split Winner:', info.Split_Game_Outcome)
         print('     Split Status:', info.Split_Status)
         print('     Split Count:', info.Split_Count)
         print('     Split Hand:', info.Split_Final_Hand)
@@ -82,9 +84,33 @@ def play_many_auto():
     Use BlackJackSim to play a bunch of games automatically.
     Example: Use this to see how often the player wins if they are dealt JH 9S, and dealer shows 7D.
     """
+
+    # Get the hit/stand data logger so we can add a file handler to it if needed below
+    logger = logging.getLogger('blackjack_logger.hit_stand_logger')
+
     sim = BlackJackSim()
     print('Starting a bunch of games of black jack to generate win statistics...')
     
+    # Ask if hit/stand data should be logged to file
+    query_preface = 'Do you want to log hit/stand data to file?'
+    query_dic = {'y':'Yes', 'n':'No'}
+    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    fh = None # Because we need to have this variable in the outer scope
+    if response == 'y':
+            # Get the hit/stand data logger so we can add a file handler to it
+            logger = logging.getLogger('blackjack_logger.hit_stand_logger')
+            # Create a file handler to log events at this level of the logger hierarchy
+            log_path = 'C:\\Users\\krgeu\\Documents\\BlackJack_Output\\hit_stand_training_data.log'
+            fh = logging.FileHandler(filename=log_path, mode='w')
+            print('Hit/stand data will be logged to file:', log_path)
+            # Set the file handler to log at INFO level, so hit/stand data needs to be injected to this logger wth logger.info(...)
+            fh.setLevel(logging.INFO)
+            # Create a formatter for hit/stand info, which just logs the info string itself, and add it to the file handler
+            formatter = logging.Formatter('%(message)s')
+            fh.setFormatter(formatter)
+            # Add the file handler to the logger
+            logger.addHandler(fh)
+
     # Ask how many games the user wants to have played
     # Build a query to ask how many games the user wants to have played
     query_preface = 'How many games do you want to automatically play?'
@@ -110,7 +136,7 @@ def play_many_auto():
     # Ask if the user wants to specify the dealer's show card?    
     dealer_show = None
     # Build a query to ask if the user wants to specify the dealer's show card
-    query_preface = 'Do you want to specify the dealer''s show card'
+    query_preface = 'Do you want to specify the dealer''s show card?'
     query_dic = {'y':'Yes', 'n':'No'}
     response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
     if response == 'y':
@@ -145,6 +171,12 @@ def play_many_auto():
     print('     Player % BlackJacks:', ((100.0 * pbj) / tg))
     
     
+    # Remove the file handler from the logger, if file handler was created.
+    # This ensures that each time through this function in the same execution of __main__ that the user gets to
+    # decide if logging to file should happen.
+    if fh is not None:
+        logger.removeHandler(fh)
+
     return None
 
 
@@ -185,6 +217,31 @@ if __name__ == '__main__':
     """
     Used currently to set up what ever situation is needed for playing or debugging, since I can't seem to debug unit tests.
     """
+    
+    # Create a logger with name 'blackjack_logger'. This is NOT the root logger, which is one level up from here, and has no name.
+    # This logger is currently intended to handle everything that isn't hit/stand data going to file.
+    logger = logging.getLogger('blackjack_logger')
+    # This is the threshold level for the logger itself, before it will pass to any handlers, which can have their own threshold.
+    # Should be able to control here what the stream handler receives and thus what ends up going to stderr.
+    # Use this key for now:
+    #   DEBUG = debug messages sent to this logger will end up on stderr (e.g., pair dealt so split is possible)
+    #   INFO = info messages sent to this logger will end up on stderr (e.g., number of current game when multiple are being played)
+    logger.setLevel(logging.INFO)
+    # Set up this highest level below root logger with a stream handler
+    sh = logging.StreamHandler()
+    # Set the threshold for the stream handler itself, which will come into play only after the logger threshold is met.
+    sh.setLevel(logging.DEBUG)
+    # Add the stream handler to the logger
+    logger.addHandler(sh)
+    
+    # Create the new logger that will handle hit/stand data going to file.
+    # Create it as a child of the logger, 'blackjack_logger'
+    logger = logging.getLogger('blackjack_logger.hit_stand_logger')
+    # Set the logger's level to INFO. If this is left at the NOTSET default, then all messages would be sent to parent
+    # (Except that propagate is set to False below.) 
+    logger.setLevel(logging.INFO)
+    # Don't propagate to parents from this logger
+    logger.propagate = False
     
     print('*** Python Blackjack Simulator ***')
     

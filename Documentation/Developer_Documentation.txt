@@ -77,7 +77,7 @@ So, trying to put all this together into a workflow...
 		 Player % Wins: 43.21
 		 Push %: 8.987
 
-	*** Thinking about how to not pass Hand()s and Deck()s into PlayStrategy().play() ...
+*** Thinking about how to not pass Hand()s and Deck()s into PlayStrategy().play() ...
 
 	Hoyle player strategy requries the following "access" to the BlackJackSim: (Other current available strategies are same.)
 		(1) Hand.hand_info() - Couls use new BlackJackSim.player_hand_info() and BlackJackSim.dealer_hand_info()
@@ -88,7 +88,7 @@ So, trying to put all this together into a workflow...
 
 	Landed on a solution of passing bound methods as arguments to the PlayStrategy().play() method.
 
-	*** Thinking about how to implement splitting a player's hand when they are dealt a pair ***
+*** Thinking about how to implement splitting a player's hand when they are dealt a pair ***
 
 	BlackJackSim.play_game(...) after implementing splitting proceeds as follows:
 		Clear dealer, player, and split hands
@@ -138,13 +138,13 @@ So, trying to put all this together into a workflow...
 
 		As of 24-Jan-2024, Observation (5) is what is implemented in the code, and it tests out okay.
 
-		*** Thinking about how to implement requesting input from user without having input(...) calls throughout the class heierarchy ***
+*** Thinking about how to implement requesting input from user without having input(...) calls throughout the class heierarchy ***
 
 		Where is input(...) currently called?
 			(1) main.py, __main__
 			(2) PlayStrategy.py, InteractivePlayerPlayStrategy.split(), InteractivePlayerPlayStrategy.play() 
 
-		Possibilityies:
+		Possibilities:
 			(1) Send all input requests to a singleton, and let the singleton decide how to respond.
 				(+) Singelton guarantees the request will be handled
 				(*) Python implementation of singleton pattern: https://python-patterns.guide/gang-of-four/singleton/
@@ -174,13 +174,44 @@ So, trying to put all this together into a workflow...
 						.Singleton queries user with something like, 'How many games do you want to automatically play?  Enter a number:  '.
 					(c) For CARDS, the caller provides the "query preface" string (e.g., 'Enter player deal, e.g., 10H 5S: ').
 						Singleton creates list of Card() objects based on string input by the user.
-
-				
-
-
-			
-
-	Nu
-
 	
 	
+	*** Thinking about how to "centralize" providing information to the user ***
+
+		Current list of where and how print(...) is used in the code base.
+		(1) UserResponseCollector.py - Okay, already centralized
+		(2) PlayStrategy.py, InteractivePlayStrategy.play(...) - Inform user an interactive hand is being played
+		(3) PlayStrategy.py, CasinoDealerPlayStrategy.play(...) - 5 instances of debug info, likely not needed with test cases in place
+		(4) Main.py, All the information that needs to be provided to the user about outcomes
+		(5) card.py Card.make_card_list_from_str(...) - Debug info, likely not needed with test cases in place
+		(6) BlackJackSim.py, BlackJackSim.play_game(...) - Inform user that a split is possible and what choice has been made
+		(7) BlackJackSim.py, BlackJackSim.play_games(...) - Inform user which game is currently being played ... basically progress update
+
+		What else could be added?
+		(8) Log to file player hand and HIT, STAND label, to use as training test data for an AI player strategy development
+
+		So ... what types of print(...) do we have?
+		(a) Information that MUST be provided to the user - (4){Ok}, (6){Done}, (7) {Done}
+		(b) Debug information, only provided to developer to help diagnose problems - (2)?, (3), (5) {all Done}
+		(c) Data logging to file, only provided when requested - (8) {Done}
+
+		Scenario (c):
+		Think I'm going to get started here just by using the logging module in python to handle case (8). To learn what that module
+		can do, and since it seems to be a good way to handle this case. Actually, what I need to log for (8) is in
+		HoylePlayerPlayStrategy.play(...). But I need to turn logging on and off at a higher level, at least in BlackJackSim.play_games(...)
+		and more likely in Main, as a option for the user, like, "Do you want to log hit/stand data while the games are played?", and
+		"What file name do you want to log to?". So would probably make good sense to centralize. Otherwise, commenting in and out even
+		for temporary use is going to be spread out in the code base.
+
+		Scenario (b):
+		(2), (3), (5): Remove the print(...) from the code base.
+
+		Scenarios (a):
+		Leave (4) alone. This is currently "the app", so it deciding to print(...) is fine.
+		Convert (6) to logger.debug(...), with configuration of logging such that this would go to stderr if main.py, __main__ set
+			level for the logger to debug. (NOTE: read code comments)
+		Convert (7) to logger.info(...), with configuration of logging such that this should go to stderr
+
+
+
+

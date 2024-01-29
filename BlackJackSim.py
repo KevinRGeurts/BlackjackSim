@@ -2,6 +2,7 @@ from deck import Deck
 from hand import Hand
 from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from enum import Enum
+import logging
 
 
 class BlackJackCheck(Enum):
@@ -236,6 +237,10 @@ class BlackJackSim:
             is visible to the player.
         :return: Sstatistics for the set of games, as a BlackJackStats() object
         """
+        
+        # Get the logger 'blackjack_logger'
+        logger = logging.getLogger('blackjack_logger')
+        
         game_stats = BlackJackStats()
         
         dealer_wins = 0
@@ -244,8 +249,9 @@ class BlackJackSim:
         dealer_blackjacks = 0
         player_blackjacks = 0
         
-        for g in range(num_games):  
-            print('Playing game:', g)
+        for g in range(num_games):
+            msg = 'Playing game: ' + str(g)
+            logger.info(msg)
             info = self.play_game(player_deal, dealer_show)
             # Gather and record stats on who won
             if info.Game_Outcome == BlackJackGameOutcome.DEALER_WINS:
@@ -290,6 +296,10 @@ class BlackJackSim:
             dealer's deal that is invisible to the player.
         :return: Information about the outcome of the game or games (if their is a split), GamePlayOutcome() object
         """
+        
+        # Get the logger 'blackjack_logger'
+        logger = logging.getLogger('blackjack_logger')
+        
         info = GamePlayOutcome()
         
         # Clear dealer, player, and split hands of Cards
@@ -326,9 +336,10 @@ class BlackJackSim:
 
             if self.player_hand.get_cards()[0].get_pips() == self.player_hand.get_cards()[1].get_pips():
                 # The player has been dealt a pair. Ask the player strategy if we should split.
-                print('Player has a pair and could split: ', str(self.player_hand), 'Dealer shows: ', self.get_dealer_show().get_pips())
+                msg = 'Player has a pair and could split: ' + str(self.player_hand) + ' Dealer shows: ' + self.get_dealer_show().get_pips()
+                logger.debug(msg)
                 if self.player_play_strategy.split(self.player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
-                    print('Player chose to split.')
+                    logger.debug('Player chose to split.')
                     # Execute split
                     # TODO: Don't reach directly into Hand members
                     

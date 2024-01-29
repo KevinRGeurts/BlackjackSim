@@ -1,6 +1,6 @@
 from enum import Enum
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
-from hand import Hand
+import logging
 
 
 class BlackJackPlayStatus(Enum):
@@ -83,9 +83,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
             # Hit
             hand_status = BlackJackPlayStatus.HIT
             draw_callback(1)
-            # print('Dealer Hand After Hitting on Max Count: ', hand)
             info = hand_info_callback()
-            # print(info) 
         count_max = info.Count_Max
         if (count_max >= 17) and (count_max <= 21):
             # Stand on Count_Max
@@ -97,9 +95,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
                 # Hit
                 hand_status = BlackJackPlayStatus.HIT
                 draw_callback(1)
-                # print('Dealer Hand After Hiting on Count_Min: ', hand)
                 info = hand_info_callback()
-                # print(info)
             count_min = info.Count_Min
             if (count_min >= 17) and (count_min <= 21):
                 # Stand on Count_Min
@@ -109,7 +105,6 @@ class CasinoDealerPlayStrategy(PlayStrategy):
                 # If we've busted on Count_Min, and the hand
                 hand_status = BlackJackPlayStatus.BUST
                 final_count = count_min
-        # print('Dealer Hand Outcome:', hand_status, final_count)
 
         # Assemble outcome info for the hand
         outcome_info.Final_Hand = info.String_Rep
@@ -164,8 +159,6 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         
         info = hand_info_callback()       
         
-        print('Playing an interactive hand of blackjack...')
-        
         # Build a query for the user to obtain a hit or stand decision
         query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
         query_dic = {'h':'Hit', 's':'Stand'}
@@ -177,7 +170,6 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
                 hand_status = BlackJackPlayStatus.BUST
                 final_count = info.Count_Min
                 break
-            print('Player''s hand:', info.String_Rep, '     Dealer shows:', str(dealer_show_callback()))
             query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
             response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
         
@@ -258,6 +250,10 @@ class HoylePlayerPlayStrategy(PlayStrategy):
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
+        
+        # Get the logger to use to output hit/stand info
+        logger = logging.getLogger('blackjack_logger.hit_stand_logger')
+        
         outcome_info = HandPlayOutcome()
         
         hand_status = BlackJackPlayStatus.HIT
@@ -275,24 +271,39 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                     final_count = info.Count_Min
                 elif info.Count_Min >= 17:
                     # Stand
+                    # Log hit/stand training/test data, in CSV format
+                    logger.info('%s, %s', info.String_Rep, 'STAND' )
+                    # -----
                     hand_status = BlackJackPlayStatus.STAND
-                    final_count = info.Count_Min
+                    final_count = info.Count_Min                    
                 elif info.Count_Min <= 12:
                     # Hit
+                    # Log hit/stand training/test data, in CSV format
+                    logger.info('%s, %s', info.String_Rep, 'HIT' )
+                    # -----
                     hand_status = BlackJackPlayStatus.HIT
                     draw_callback(1)
                 else:
                     # Hand counts between 13 and 16 inclusive. Decide to hit or stand based on dealer's face up card.
                     if dealer_show_callback().count_card(ace_high = True) <= 6:
                         # Dealer shows 2 - 6, so stand (hoping dealer will have to hit and will bust)
+                        # Log hit/stand training/test data, in CSV format
+                        logger.info('%s, %s', info.String_Rep, 'STAND' )
+                        # -----
                         hand_status = BlackJackPlayStatus.STAND
-                        final_count = info.Count_Min
+                        final_count = info.Count_Min                        
                     else:
                         # Dealer shows 7 - 10, J, Q, K, or A, so hit
+                        # Log hit/stand training/test data, in CSV format
+                        logger.info('%s, %s', info.String_Rep, 'HIT' )
+                        # -----
                         hand_status = BlackJackPlayStatus.HIT
                         draw_callback(1)
             else:
                 # Stand, because Count_Max is > 17, and we haven't busted
+                # Log hit/stand training/test data, in CSV format
+                logger.info('%s, %s', info.String_Rep, 'STAND' )
+                # -----
                 hand_status = BlackJackPlayStatus.STAND
                 final_count = info.Count_Max
                 

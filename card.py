@@ -85,6 +85,5 @@ class Card:
             # The rest of the card string is the pips
             pips = s[0:len(s)-1]
             # Construct a Card() and add it to the return list
-            # print('suit=',suit,'pips=',pips)
             cards.append(Card(suit, pips))   
         return cards
