@@ -10,6 +10,7 @@ class Card:
             Pips: 'A' = Ace, '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J' = Jack, 'Q' = Queen, 'K' = King 
         count will be automatically set based on pips.
         """
+        assert(suit == 'H' or suit == 'D' or suit == 'S' or suit == 'C')
         self.suit=suit
         self.pips=pips
         self.count=self.get_count_from_pips(pips)

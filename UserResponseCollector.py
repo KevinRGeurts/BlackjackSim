@@ -85,7 +85,8 @@ class UserResponseCollector(object):
                 processed_response = Card().make_card_list_from_str(raw_response)
             except:
                 # Let the user know they provided an invalid response
-                print('\n', '"', raw_response, '"', 'is not a valid list of cards. Please try again.' )
+                msg = '\n' + '\'' + raw_response + '\'' + ' is not a valid list of cards. Please try again.' 
+                print(msg)
         
         return processed_response
     
@@ -114,7 +115,8 @@ class UserResponseCollector(object):
                 processed_response = int(raw_response)
             except:
                 # Let the user know they provided an invalid response
-                print('\n', '"', raw_response, '"', 'is not a number. Please try again.' )
+                msg = '\n' + '\'' + raw_response + '\'' + ' is not a number. Please try again.'
+                print(msg)
         
         return processed_response
       
@@ -153,7 +155,8 @@ class UserResponseCollector(object):
                 processed_response = raw_response
             else:
                 # Let the user know they provided an invalid response
-                print('\n', '"', raw_response, '"', 'is not a valid response. Please try again.' )
+                msg = '\n' + '\'' + raw_response + '\'' + ' is not a valid response. Please try again.' 
+                print(msg)
         
         return processed_response
 

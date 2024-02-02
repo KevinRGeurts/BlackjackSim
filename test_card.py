@@ -3,6 +3,9 @@ from card import Card
 from hand import Hand
 
 class Test_Card(unittest.TestCase):
+    def test_construct_card_bad_suit(self):
+        self.assertRaises(AssertionError, Card().__init__, 'Z')    
+    
     def test_count_card_default(self):
         exp_val = 10
         c = Card()
@@ -62,7 +65,7 @@ class Test_Card(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         
         # Test trap bad pips
-        self.assertRaises(AssertionError, Card().get_count_from_pips, 11)
+        self.assertRaises(AssertionError, Card().get_count_from_pips, '11')
 
     
     def test_get_pips(self):
