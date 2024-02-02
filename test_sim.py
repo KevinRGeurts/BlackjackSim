@@ -3,6 +3,7 @@ from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, Gam
 from PlayStrategy import BlackJackPlayStatus
 from deck import Stacked_Deck
 from card import Card
+import logging
 
 class Test_Sim(unittest.TestCase):
 
@@ -230,6 +231,57 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         
     
+    def test_logging_info(self):
+        
+        sim = BlackJackSim()
+        
+        # Set up logging
+        sim.setup_logging()
+        
+        # Test that logger works as expected
+        with self.assertLogs('blackjack_logger', level=logging.INFO) as cm:
+            sim.play_games(2)
+        
+        # Test that the info messages sent to the logger are as expected
+        self.assertEqual(cm.output[0], 'INFO:blackjack_logger:Playing game: 1')    
+        self.assertEqual(cm.output[1], 'INFO:blackjack_logger:Playing game: 2')
+        
+    
+    def test_logging_debug(self):
+        
+        sim = BlackJackSim()
+        
+        # Set up logging
+        sim.setup_logging()
+        
+        # Test that logger works as expected
+        with self.assertLogs('blackjack_logger', level=logging.DEBUG) as cm:
+            sim.play_game([Card('H','8'), Card('S','8')], Card('C','2'))
+        
+        # Test that the debug messages sent to the logger are as expected
+        self.assertEqual(cm.output[0], 'DEBUG:blackjack_logger:Player has a pair and could split: 8H 8S Dealer shows: 2')    
+        self.assertEqual(cm.output[1], 'DEBUG:blackjack_logger:Player chose to split.')
+
+
+    def test_logging_hit_stand(self):
+        
+        sim = BlackJackSim()
+        
+        # Set up logging
+        sim.setup_logging()
+        fh = sim.setup_hit_stand_logging_file_handler('C:\\Users\\krgeu\\Documents\\BlackJack_Output\\unit_test_hit_stand_training_data.log')
+        
+        # Test that logger works as expected
+        with self.assertLogs('blackjack_logger.hit_stand_logger', level=logging.INFO) as cm:
+            # Definitely want this to be an immediate STAND, so we know what to expect in the log
+            sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
+        
+        # Test that the debug message sent to the logger is as expected
+        self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
+        
+        logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
+
+       
     def test_play_games(self):
         from random import seed
         seed(1234567890)

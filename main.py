@@ -97,6 +97,7 @@ def play_many_auto():
     response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
     fh = None # Because we need to have this variable in the outer scope
     if response == 'y':
+            # TODO: This would be a bust on any other computer, so, figure out a way to generalize this before loading to GitHub    
             fh = sim.setup_hit_stand_logging_file_handler('C:\\Users\\krgeu\\Documents\\BlackJack_Output\\hit_stand_training_data.log')    
 
     # Ask how many games the user wants to have played

@@ -251,7 +251,7 @@ class BlackJackSim:
         player_blackjacks = 0
         
         for g in range(num_games):
-            msg = 'Playing game: ' + str(g)
+            msg = 'Playing game: ' + str(g+1) # The +1 puts the counting for messaging on a 1...N basis instead of 0...N-1
             logger.info(msg)
             info = self.play_game(player_deal, dealer_show)
             # Gather and record stats on who won
