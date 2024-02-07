@@ -212,6 +212,10 @@ So, trying to put all this together into a workflow...
 			level for the logger to debug. (NOTE: read code comments)
 		Convert (7) to logger.info(...), with configuration of logging such that this should go to stderr
 
+	*** Potentially useful information logging to file handlers using temporary files
+
+		https://stackoverflow.com/questions/23212435/permission-denied-to-write-to-my-temporary-file
+
 
 
 

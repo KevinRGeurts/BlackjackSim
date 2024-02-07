@@ -1,12 +1,40 @@
 import unittest
 from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
-from PlayStrategy import BlackJackPlayStatus
+from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from deck import Stacked_Deck
 from card import Card
 import logging
+import tempfile
+from pathlib import Path
 
 class Test_Sim(unittest.TestCase):
 
+    def test_set_player_play_strategy(self):
+        bjs = BlackJackSim()
+        ps = CasinoDealerPlayStrategy()
+        bjs.set_player_play_strategy(ps)
+        
+        # Did the player play strategy get set as expected?
+        self.assertIsInstance(bjs.player_play_strategy, CasinoDealerPlayStrategy)
+        
+        # Construct something that is NOT a PlayStrategy, and try to set it as one
+        ps = Card()
+        self.assertRaises(AssertionError, bjs.set_player_play_strategy, ps)
+        
+    
+    def test_set_dealer_play_strategy(self):
+        bjs = BlackJackSim()
+        ps = HoylePlayerPlayStrategy()
+        bjs.set_dealer_play_strategy(ps)
+        
+        # Did the dealer play strategy get set as expected?
+        self.assertIsInstance(bjs.dealer_play_strategy, HoylePlayerPlayStrategy)
+        
+        # Construct something that is NOT a PlayStrategy, and try to set it as one
+        ps = Card()
+        self.assertRaises(AssertionError, bjs.set_dealer_play_strategy, ps)
+        
+    
     def test_get_dealer_show(self):
         bjs = BlackJackSim()
         
@@ -269,17 +297,25 @@ class Test_Sim(unittest.TestCase):
         
         # Set up logging
         sim.setup_logging()
-        fh = sim.setup_hit_stand_logging_file_handler('C:\\Users\\krgeu\\Documents\\BlackJack_Output\\unit_test_hit_stand_training_data.log')
+   
+        # We will always use the same log file name, but we will place it in temporary directory.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = Path(temp_dir, 'temp_blackjack_log.log')
+            fh = sim.setup_hit_stand_logging_file_handler(temp_file_path.name)
         
-        # Test that logger works as expected
-        with self.assertLogs('blackjack_logger.hit_stand_logger', level=logging.INFO) as cm:
-            # Definitely want this to be an immediate STAND, so we know what to expect in the log
-            sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
+            # Test that logger works as expected
+            with self.assertLogs('blackjack_logger.hit_stand_logger', level=logging.INFO) as cm:
+                # Definitely want this to be an immediate STAND, so we know what to expect in the log
+                sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
         
-        # Test that the debug message sent to the logger is as expected
-        self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
+                # Test that the debug message sent to the logger is as expected
+                self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
         
-        logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
+                logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
+                
+        
+        # Did the file get deleted?
+        self.assertTrue(not temp_file_path.exists())
 
        
     def test_play_games(self):

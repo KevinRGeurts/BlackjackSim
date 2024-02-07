@@ -116,6 +116,7 @@ class BlackJackSim:
         :parameter ps: The player play strategy, PlayerPlayStrategy()
         :return: None
         """
+        assert(isinstance(ps, PlayStrategy))
         self.player_play_strategy = ps
         return None
             
@@ -126,6 +127,7 @@ class BlackJackSim:
         :parameter ps: The dealer play strategy, PlayerPlayStrategy()
         :return: None
         """
+        assert(isinstance(ps, PlayStrategy))
         self.dealer_play_strategy = ps
         return None
                 

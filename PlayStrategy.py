@@ -60,7 +60,6 @@ class CasinoDealerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
     def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
@@ -72,6 +71,11 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        
         outcome_info = HandPlayOutcome()
         
         info = hand_info_callback()
@@ -142,7 +146,6 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
     def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
@@ -152,6 +155,12 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        assert(callable(dealer_show_callback))
+
         outcome_info = HandPlayOutcome()
         
         hand_status = BlackJackPlayStatus.HIT
@@ -240,7 +249,6 @@ class HoylePlayerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    # TODO: It would be nice if there was a way to check if the X_callback arguments are actually bound methods. But googling has not suggested a workable solution.
     def play(self, hand_info_callback, draw_callback, dealer_show_callback):
         """
         The method called to invoke the hand playing strategy.
@@ -250,6 +258,12 @@ class HoylePlayerPlayStrategy(PlayStrategy):
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        assert(callable(dealer_show_callback))
+
         
         # Get the logger to use to output hit/stand info
         logger = logging.getLogger('blackjack_logger.hit_stand_logger')
