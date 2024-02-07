@@ -4,8 +4,8 @@ from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePla
 from deck import Stacked_Deck
 from card import Card
 import logging
-import tempfile
 from pathlib import Path
+import os
 
 class Test_Sim(unittest.TestCase):
 
@@ -298,24 +298,26 @@ class Test_Sim(unittest.TestCase):
         # Set up logging
         sim.setup_logging()
    
-        # We will always use the same log file name, but we will place it in temporary directory.
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_file_path = Path(temp_dir, 'temp_blackjack_log.log')
-            fh = sim.setup_hit_stand_logging_file_handler(temp_file_path.name)
+        # TODO: Investigate if the generalization below will work on LINUX
+        # We will always use the same tempoary log file name, placed in the user's Documents directory.
+        home_path = Path().home().joinpath('Documents','temp_blackjack_log.log')
+        fh = sim.setup_hit_stand_logging_file_handler(str(home_path))
+
+        # Test that logger works as expected
+        with self.assertLogs('blackjack_logger.hit_stand_logger', level=logging.INFO) as cm:
+            # Definitely want this to be an immediate STAND, so we know what to expect in the log
+            sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
         
-            # Test that logger works as expected
-            with self.assertLogs('blackjack_logger.hit_stand_logger', level=logging.INFO) as cm:
-                # Definitely want this to be an immediate STAND, so we know what to expect in the log
-                sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
+            # Test that the debug message sent to the logger is as expected
+            self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
         
-                # Test that the debug message sent to the logger is as expected
-                self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
-        
-                logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
-                
+        # Clean up
+        logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
+        fh.close()
+        os.unlink(str(home_path))
         
         # Did the file get deleted?
-        self.assertTrue(not temp_file_path.exists())
+        self.assertTrue(not home_path.exists())
 
        
     def test_play_games(self):

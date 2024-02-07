@@ -1,10 +1,10 @@
-from enum import nonmember
 from deck import Stacked_Deck
 from card import Card
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
 from PlayStrategy import InteractivePlayerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
 import logging
+from pathlib import Path
 
 
 def play_debug():
@@ -97,8 +97,10 @@ def play_many_auto():
     response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
     fh = None # Because we need to have this variable in the outer scope
     if response == 'y':
-            # TODO: This would be a bust on any other computer, so, figure out a way to generalize this before loading to GitHub    
-            fh = sim.setup_hit_stand_logging_file_handler('C:\\Users\\krgeu\\Documents\\BlackJack_Output\\hit_stand_training_data.log')    
+            # TODO: Investigate if the generalization below will work on LINUX
+            # We will always use the same log file name, placed in the user's Documents directory.
+            home_path = Path().home().joinpath('Documents','hit_stand_training_data.log')
+            fh = sim.setup_hit_stand_logging_file_handler(str(home_path))    
 
     # Ask how many games the user wants to have played
     # Build a query to ask how many games the user wants to have played
