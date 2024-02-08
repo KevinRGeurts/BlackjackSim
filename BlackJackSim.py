@@ -351,18 +351,16 @@ class BlackJackSim:
                     self.split_hand.add_cards([xfer_card])
                     # Draw a second card into the split hand
                     self.draw_for_split(1)
-                    # TODO: What if we drew to BlackJack in the split?
+                    # TODO: What if we drew to BlackJack in the split? For, now, just assert that the split does not have blackjack.
                     # A saving grace is that if the player play strategy is Hoyle, which it is by default, then the player will
-                    # never split A's, faces, or 10's, meaning it isn't possible to split and draw a blackjack with that strategy.
-                    # For, now, just assert that the split does not have blackjack.
+                    # never split A's, faces, or 10's, meaning it isn't possible to split and draw a blackjack with that strategy. 
                     assert(not self.split_has_blackjack())
                     
                     # Draw a replacement card for the player's hand
                     self.draw_for_player(1)
-                    # TODO: What if we drew to BlackJack in the player's hand?
+                    # TODO: What if we drew to BlackJack in the player's hand? For now, just assert that the player's hand does not have blackjack.
                     # A saving grace is that if the player play strategy is Hoyle, which it is by default, then the player will
                     # never split A's, faces, or 10's, meaning it isn't possible to split and draw a blackjack with that strategy.
-                    # For now, just assert that the player's hand does not have blackjack.
                     assert(self.check_for_blackjack() != BlackJackCheck.PLAYER_BLACKJACK)
                     assert(self.check_for_blackjack() != BlackJackCheck.BOTH_BLACKJACK)
                     
