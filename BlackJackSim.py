@@ -344,7 +344,6 @@ class BlackJackSim:
                 if self.player_play_strategy.split(self.player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
                     logger.debug('Player chose to split.')
                     # Execute split
-                    # TODO: Don't reach directly into Hand members
                     
                     # Preserve second of pair to be transferred to split hand, and remove it from the player's hand
                     xfer_card = self.player_hand.cards.pop()
@@ -353,10 +352,19 @@ class BlackJackSim:
                     # Draw a second card into the split hand
                     self.draw_for_split(1)
                     # TODO: What if we drew to BlackJack in the split?
+                    # A saving grace is that if the player play strategy is Hoyle, which it is by default, then the player will
+                    # never split A's, faces, or 10's, meaning it isn't possible to split and draw a blackjack with that strategy.
+                    # For, now, just assert that the split does not have blackjack.
+                    assert(not self.split_has_blackjack())
                     
                     # Draw a replacement card for the player's hand
                     self.draw_for_player(1)
                     # TODO: What if we drew to BlackJack in the player's hand?
+                    # A saving grace is that if the player play strategy is Hoyle, which it is by default, then the player will
+                    # never split A's, faces, or 10's, meaning it isn't possible to split and draw a blackjack with that strategy.
+                    # For now, just assert that the player's hand does not have blackjack.
+                    assert(self.check_for_blackjack() != BlackJackCheck.PLAYER_BLACKJACK)
+                    assert(self.check_for_blackjack() != BlackJackCheck.BOTH_BLACKJACK)
                     
                     # Play the split hand, and add hand outcome info to game info
 
@@ -412,9 +420,22 @@ class BlackJackSim:
         return info
         
     
+    def split_has_blackjack(self):
+        """
+        Return True if split hand has blackjack, otherwise return False.
+        :return: Split hand has blackjack, True/False, bool
+        """
+        split_info = self.split_hand.hand_info()
+        if split_info.Count_Max == 21:
+            return True
+        else:
+            return False
+        
+    
     def check_for_blackjack(self):
         """
-        Check both the dealer's and player's hand for black jack, and declare a winner (one hand has blackjack) or a push (both hands have blackjack). 
+        Check the dealer's ane player's, hands for blackjack.
+        And, based on dealer's and player's hands, declare a winner (one hand has blackjack) or a push (both hands have blackjack).
         :return: The outcome of the black jack check, BlackJackCheck() enum
         """      
         
@@ -562,6 +583,8 @@ class BlackJackSim:
         logger = logging.getLogger('blackjack_logger.hit_stand_logger')
         # Create a file handler to log events at this level of the logger hierarchy
         fh = logging.FileHandler(filename=logpath, mode='w')
+        # Log an info message at this level of the logger, but note, since the file handler hasn't been added to the logger yet,
+        # this message will not go into the logging file, which is good, since it is not hit / stand data
         msg = 'Hit/stand data will be logged to file: ' + logpath
         logging.getLogger('blackjack_logger').info(msg)
         # Set the file handler to log at INFO level, so hit/stand data needs to be injected to this logger wth logger.info(...)

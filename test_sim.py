@@ -92,6 +92,44 @@ class Test_Sim(unittest.TestCase):
         self.assertTupleEqual(exp_val, act_val)
  
     
+    def test_split_has_blackjack(self):
+        bjs = BlackJackSim()
+         
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.add_cards([Card('C','A'), Card('D','J'), Card('S','4')])
+        
+        # Replace sim's deck with Stacked_Deck
+        bjs.switch_deck(sd)
+
+        # Draw 2 cards
+        dc = bjs.draw_for_split(2)
+        
+        # Did the split hand draw blackjack?
+        exp_val = True
+        act_val = bjs.split_has_blackjack()
+        self.assertEqual(exp_val, act_val)
+       
+
+    def test_split_does_not_have_blackjack(self):
+        bjs = BlackJackSim()
+         
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        sd.add_cards([Card('C','A'), Card('D','9'), Card('S','4')])
+        
+        # Replace sim's deck with Stacked_Deck
+        bjs.switch_deck(sd)
+
+        # Draw 2 cards
+        dc = bjs.draw_for_split(2)
+        
+        # Did the split hand draw blackjack?
+        exp_val = False
+        act_val = bjs.split_has_blackjack()
+        self.assertEqual(exp_val, act_val)
+
+
     def test_draw_for_split(self):
         bjs = BlackJackSim()
         
@@ -299,8 +337,8 @@ class Test_Sim(unittest.TestCase):
         sim.setup_logging()
    
         # TODO: Investigate if the generalization below will work on LINUX
-        # We will always use the same tempoary log file name, placed in the user's Documents directory.
-        home_path = Path().home().joinpath('Documents','temp_blackjack_log.log')
+        # We will always use a temporary log file name with a random component, placed in the user's Documents directory.
+        home_path = Path().home().joinpath('Documents', 'temp_blackjack_' + os.urandom(8).hex() + '.log')
         fh = sim.setup_hit_stand_logging_file_handler(str(home_path))
 
         # Test that logger works as expected

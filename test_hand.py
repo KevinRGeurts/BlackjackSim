@@ -40,6 +40,38 @@ class Test_Hand(unittest.TestCase):
         act_val = (h.get_cards()[1].get_suit(), h.get_cards()[1].get_pips())
         self.assertTupleEqual(exp_val, act_val)
     
+    
+    def test_remove_card(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3'), Card('C','9'), Card('D','A')]
+        h.add_cards(cards)
+        
+        # Remove the last card
+        rc = h.remove_card()
+    
+        # Do we have the expected number, 3, of cards left  in the hand?
+        exp_val = 3
+        act_val = h.get_num_cards()
+        self.assertEqual(exp_val, act_val)
+        # Is the removed card the card we expect?
+        exp_val = ('D', 'A')
+        act_val = (rc.get_suit(), rc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+        
+        # Remove the first card that is left
+        rc = h.remove_card(0)
+
+        # Do we have the expected number, 2, of cards left  in the hand?
+        exp_val = 2
+        act_val = h.get_num_cards()
+        self.assertEqual(exp_val, act_val)
+        # Is the removed card the card we expect?
+        exp_val = ('S', 'J')
+        act_val = (rc.get_suit(), rc.get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+        
+        
     def test_get_num_aces(self):
         
         h1 = Hand()

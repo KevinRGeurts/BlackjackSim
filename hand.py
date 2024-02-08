@@ -163,6 +163,15 @@ class Hand:
                 
         return count
     
+
+    def remove_card(self, index = -1):
+        """
+        Remove the card at index from the hand. By default (index = -1), the last card will be removed.
+        :parameter index: index of card to remove from the hand (starting at 0), int
+        :return: The card that was removed from the had, Card
+        """
+        return self.cards.pop(index)
+    
     
     def __str__(self):
         s = ''
