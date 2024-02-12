@@ -1,5 +1,6 @@
 from deck import Stacked_Deck
 from card import Card
+from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
 from PlayStrategy import InteractivePlayerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
@@ -12,21 +13,20 @@ def play_debug():
     Run a debugging scenario coded in this function.
     """
     sim = BlackJackSim()
-        
-    info = GamePlayOutcome()
+    
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','J'),Card('H','K')])
+    
+    player_hand = Hand()
+    player_hand.add_cards([Card('S','5'),Card('C','2')])
+    
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
 
-    # Here is what will happen to the cards in the stacked deck
-    # 1,2 dealt to dealer
-    # 3,4 dealt to player before split
-    # 5 dealt to player's split hand
-    # 6 dealt to player's original hand after split
-    sd = Stacked_Deck()
-    sd.add_cards([Card('H','7'), Card('D','10'),Card('C','8'), Card('S','8'),Card('S','A'), Card('C','J')])
-    sim.switch_deck(sd)
+    print('Hit Win Probability: ', hit_win_prob)
+    print('Hit Push Probability: ', hit_push_prob)
+    print('Stand Win Probability: ', stand_win_prob)
+    print('Stand Push Probability: ', stand_push_prob)
         
-    # Play the game, which should result in a split
-    info = sim.play_game()
-
     return None
 
 

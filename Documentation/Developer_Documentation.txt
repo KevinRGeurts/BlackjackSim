@@ -216,6 +216,28 @@ So, trying to put all this together into a workflow...
 
 		https://stackoverflow.com/questions/23212435/permission-denied-to-write-to-my-temporary-file
 
+	*** Thinking through how to calculate the probability of winning each time a player is about to hit or stand
+
+		Concept: Each time a player is asked to hit or stand, play a bunch of hits and dealer hands. Then compute the probability
+		that hitting (1 card ony) or standing will win the hand.
+		
+		Why: (1) Think of it as a strategy where the player is capable of running such probabilities in his/her head. How does this compare
+		then to the results from the Hoyle strategy? (2) Combined with a non-infinite deck, like a 5-deck shute, this would be a basis
+		from which counting strategies could be developed and assessed.
+		
+		First implementation of this should be a method in BlackJackSim that computes the probability.
+		First "test" of this will be adding it to interactive play, as an optional "additional FYI" for the user to consider.
+		
+		
+		Let's try to work through this:
+		
+		(a) It would need to be a new PlayStrategy, let's call it ProbabilityPlayerPlayStrategy.
+		(b) It's play() method would need to be able to call back and get the entire dealer's hand, not just the show card.
+		(c) Steps in play are along these lines:
+			(1) We already know we don't have any blackjacks, or th
+
+
+
 
 
 

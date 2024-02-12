@@ -2,6 +2,7 @@ import unittest
 from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
 from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from deck import Stacked_Deck
+from hand import Hand
 from card import Card
 import logging
 from pathlib import Path
@@ -942,6 +943,162 @@ class Test_Sim(unittest.TestCase):
         self.assertEqual(exp_val, act_val)
         act_val = info.Split_Game_Outcome
         self.assertEqual(exp_val, act_val)
+
+
+    def test_win_probability_hit_push_stand_lose(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','10'), Card('S','4')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 10, then stand on 20
+        dealer_hand.add_cards([Card('D','6'),Card('H','4')])
+    
+        player_hand = Hand()
+        # When player stands on 16 they will lose
+        # When player hits to 20 they will push
+        player_hand.add_cards([Card('S','K'),Card('C','6')])
+        
+        exp_val = (0.0, 0.0, 1.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val) 
+ 
+    
+    def test_win_probability_hit_lose_stand_push(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','10'), Card('S','4')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 10, then stand on 20
+        dealer_hand.add_cards([Card('D','6'),Card('H','4')])
+    
+        player_hand = Hand()
+        # When player stands on 20 they will push
+        # When player hits to 24 (bust) they will lose
+        player_hand.add_cards([Card('S','K'),Card('C','Q')])
+        
+        exp_val = (0.0, 0.0, 0.0, 1.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val) 
+        
+
+    def test_win_probability_hit_lose_stand_lose(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','10'), Card('S','2')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 10, then stand on 20
+        dealer_hand.add_cards([Card('D','6'),Card('H','4')])
+    
+        player_hand = Hand()
+        # When player stands on 16 they will lose
+        # When player hits to 18 they will win
+        player_hand.add_cards([Card('S','K'),Card('C','6')])
+        
+        exp_val = (0.0, 0.0, 0.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val)
+
+    
+    def test_win_probability_hit_win_stand_win(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','9'), Card('S','2')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 8, then stand on 17
+        dealer_hand.add_cards([Card('D','6'),Card('H','2')])
+    
+        player_hand = Hand()
+        # When player stands on 18 they will win
+        # When player hits to 20 they will win
+        player_hand.add_cards([Card('S','K'),Card('C','8')])
+        
+        exp_val = (1.0, 1.0, 0.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val)
+       
+
+    def test_win_probability_hit_lose_stand_win(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','9'), Card('S','4')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 8, then stand on 17
+        dealer_hand.add_cards([Card('D','6'),Card('H','2')])
+    
+        player_hand = Hand()
+        # When player stands on 18 they will win
+        # When player hits to bust (22) they will lose
+        player_hand.add_cards([Card('S','K'),Card('C','8')])
+        
+        exp_val = (0.0, 1.0, 0.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val)
+        
+        
+    def test_win_probability_hit_win_stand_lose(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 and then stand
+        # Player's hit will be #2
+        sd.add_cards([Card('D','10'), Card('S','2')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 8, then stand on 18
+        dealer_hand.add_cards([Card('D','6'),Card('H','2')])
+    
+        player_hand = Hand()
+        # When player stands on 17 they will lose
+        # When player hits to 19 they will win
+        player_hand.add_cards([Card('S','K'),Card('C','7')])
+        
+        exp_val = (1.0, 0.0, 0.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val)
 
 
 if __name__ == '__main__':

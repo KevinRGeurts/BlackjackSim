@@ -595,4 +595,131 @@ class BlackJackSim:
         
         return fh
     
+    
+    def win_probability_hit_stand(self, player_hand = Hand(), dealer_hand = Hand(), num_trials = 1000, deck = None):
+        """
+        Determine the probability of winning and pushing for both hitting one card and for standing at any point in playing a hand.
+        Assumes that dealer's hand has just been dealt (has exactly two cards), and that player's hand as 2+ cards.
+        :parameter player_hand: The player's hand for which stand and hit probabilities will be determined, Hand object
+        :parameter dealer_hand: The dealer's had against which stand and hit wind proabilities will be determined, Hand object
+        :parameter num_trials: The number of times to hit and play out the dealer's hand to determine probabilities, int
+        :parameter deck: The deck that will be used for all the trials, Deck object.
+            If None, then when the new BlackJackSimulation is created for the trials, it's default Deck will be used.
+            Typically this argument should not be used, unless to facilitate testing.
+        :return: Tupble (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob), floats
+        """
+
+        # When we enter here:
+        # (1) the dealer hand should have only the two-card deal
+        # (2) the player hand should have at least the two-card deal, but will have more cards if there has already been one or
+        #   more hits.
+
+        # Get the logger 'blackjack_logger'
+        logger = logging.getLogger('blackjack_logger')
+
+        # Zero out some counters and stat variables
+        hit_win_count = 0
+        hit_push_count = 0
+        stand_win_count = 0
+        stand_push_count = 0
+        hit_win_prob = 0.0
+        hit_push_prob = 0.0
+        stand_win_prob = 0.0
+        stand_push_prob = 0.0
+
+        # Create a new BlackJackSim object to be used to play the games needed to compute the probabilites
+        bjs = BlackJackSim()
+
+        # if deck argument is provided, replace the trial BlackJackSim object's deck with it
+        if (deck is not None): bjs.switch_deck(deck)
+        
+        for g in range(num_trials):
+
+            msg = 'Probability trial: ' + str(g+1) # The +1 puts the counting for messaging on a 1...N basis instead of 0...N-1
+            logger.debug(msg)
+            
+            # Clear the player and dealer hands in the simulation for this trial
+            bjs.dealer_hand = Hand()
+            bjs.player_hand = Hand()
+        
+            # Transfer dealer's cards to the dealer's hand in the simulation for this trial
+            bjs.dealer_hand.add_cards(dealer_hand.get_cards())
+            
+            # Transfer player's cards to the player's hand in the simulation for this trial
+            bjs.player_hand.add_cards(player_hand.get_cards())
+        
+            info = GamePlayOutcome()
+        
+            # Play the dealer's hand, and add hand outcome info to game info 
+            dealer_info = bjs.play_dealer_hand()
+            info.Dealer_Final_Hand = dealer_info.Final_Hand
+            info.Dealer_Status = dealer_info.Status
+            info.Dealer_Count = dealer_info.Count
+        
+            # First, we'll let the player stand
+            player_hand_info = bjs.player_hand_info()
+            info.Player_Final_Hand = player_hand_info.String_Rep
+            info.Player_Status = BlackJackPlayStatus.STAND
+            count_max = player_hand_info.Count_Max
+            count_min = player_hand_info.Count_Min
+            if (count_max <= 21):
+                info.Player_Count = count_max
+            elif (count_min <= 21):
+                info.Player_Count = count_min
+            else:
+                # TODO: Is this needed? Final logic should not let a BUST be the case, I think, since we haven't hit.
+                info.Player_Count = count_min
+                info.Player_Status = BlackJackPlayStatus.BUST
+        
+            # Deterimine game outcome after standing, and add to game info
+            bjs.determine_game_outcome(info)
+            
+            msg = 'Probability trial: ' + str(g+1) + ' Stand Result: ' + str(info.Game_Outcome)
+            logger.debug(msg)
+            msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
+            logger.debug(msg)
+
+            # Accumulate proability information
+            if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
+                stand_win_count += 1
+            elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
+                stand_push_count += 1
+
+            # Now we'll have the player hit
+            bjs.draw_for_player()
+            player_hand_info = bjs.player_hand_info()
+            info.Player_Final_Hand = player_hand_info.String_Rep
+            info.Player_Status = BlackJackPlayStatus.STAND
+            count_max = player_hand_info.Count_Max
+            count_min = player_hand_info.Count_Min
+            if (count_max <= 21):
+                info.Player_Count = count_max
+            elif (count_min <= 21):
+                info.Player_Count = count_min
+            else:
+                info.Player_Count = count_min
+                info.Player_Status = BlackJackPlayStatus.BUST
+        
+            # Deterimine game outcome after hitting, and add to game info
+            bjs.determine_game_outcome(info)
+            
+            msg = 'Probability trial: ' + str(g+1) + ' Hit Result: ' + str(info.Game_Outcome)
+            logger.debug(msg)
+            msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
+            logger.debug(msg)
+        
+            # Accumulate proability information
+            if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
+                hit_win_count += 1
+            elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
+                hit_push_count += 1
+                
+        # Compute probabilities
+        hit_win_prob = hit_win_count / num_trials
+        hit_push_prob = hit_push_count / num_trials
+        stand_win_prob = stand_win_count / num_trials
+        stand_push_prob = stand_push_count / num_trials
+
+        return (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
 
