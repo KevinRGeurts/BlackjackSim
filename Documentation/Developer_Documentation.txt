@@ -236,6 +236,47 @@ So, trying to put all this together into a workflow...
 		(c) Steps in play are along these lines:
 			(1) We already know we don't have any blackjacks, or th
 
+		... blah... blah... blah
+
+		How would I use this type of information in an automated play strategy?
+			
+			(1) Is probability of winning by hitting greater than by standing, then hit, otherwise stand, OR
+			(2) Is probability of winning or pushing by hitting greater than by standing, then hit, otherwise stand
+			
+			(1) prioritizes winning, while (2) prioritizes at least maintaining stake by not losing
+			
+			With this as an automated paly strategy, and noting importantly that it currently includes the probability computed with the dealer's down card fixed,
+			so that it is not only a limit for, let's call it, perfect counting, but also really is like we can see into the dealer's hand.
+
+			Based on 1000 games, with 1000 trials each time there is a hit/stand decision, then results are:
+
+			Dealer wins 44.3 %
+			Player wins 45.6 %
+			Push 10.1 %
+			Dealer Blackjacks 5.2 %
+			Player Blackjacks 5.8 %
+
+			Modified this all so that the dealer's hidden card is also drawn on each trial, so that there is no leakage of hidden information.
+			Based on 1000 games, with 1000 trials each time there is a hit/stand decision, then results are:
+			
+			Dealer wins 49.3 %
+			Player wins 41.5 %
+			Push 9.2 %
+			Dealer Blackjacks 5.5 %
+			Player Blackjacks 5.4 %
+
+			So ... this does not appear to be better than Hoyle strategy. It is about the same as player using Casino Dealer strategy.
+
+			Need to ponder that, as it was my intuition that it should be similar or somewhat better than Hoyle, since it is more
+			situation specific than Hoyle. Some possibilities: (1) Implementation bug; (2) Not enough games/trials for good statistics (grasping at a straw);
+			(3) Prioritze winning over pushing? (4) Hitting too aggressively? Afterall, the Hoyle strategy has the element of standing
+			in hopes that dealer will bust. Maybe need a more complicated hit criteria based on the computed probabilites. Like only hit
+			if hit win/push probability is > X? Like maybe > 50%, because otherwise it's a coin toss, and may as well stand? But that
+			maybe doesn't make sense when the odds of winning are quite low wether you hit or stand?
+
+
+
+
 
 
 

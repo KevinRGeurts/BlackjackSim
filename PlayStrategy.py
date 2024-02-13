@@ -1,4 +1,6 @@
 from enum import Enum
+from hand import Hand
+from card import Card
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
 import logging
 
@@ -60,7 +62,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
             (1) Hit on <= 16
@@ -69,6 +71,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
         :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Should be None for this strategy, and will force to None at the top of this method. 
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
@@ -76,6 +79,9 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         assert(callable(hand_info_callback))
         assert(callable(draw_callback))
         
+        # This strategy isn't intended to access the sim_object
+        if sim_object is not None: sim_object = None   
+       
         outcome_info = HandPlayOutcome()
         
         info = hand_info_callback()
@@ -146,13 +152,14 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
         Play the hand of black jack, returning a HandPlayOutcome() object of information about the outcome of the hand.
         :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.player_hand_info
         :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_player
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Should be None for this strategy, and will force to None at the top of this method. 
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
@@ -160,6 +167,9 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         assert(callable(hand_info_callback))
         assert(callable(draw_callback))
         assert(callable(dealer_show_callback))
+        
+        # This strategy isn't intended to access the sim_object
+        if sim_object is not None: sim_object = None   
 
         outcome_info = HandPlayOutcome()
         
@@ -195,6 +205,84 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
             
         return outcome_info    
 
+
+class InteractiveProbabilityPlayerPlayStrategy(InteractivePlayerPlayStrategy):
+    """
+    Implements strategy for player play, based on asking a human whether to hit or stand.
+    But here player is provided information on the probability of winning or pushing if the hit or stand.
+    Human is also asked if the want to split a dealt pair.
+    """
+    
+    # TODO: Create unit tests for InteractiveProbabilityPlayerPlayStrategy.play()
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
+        """
+        The method called to invoke the hand playing strategy.
+        Play the hand of black jack, returning a HandPlayOutcome() object of information about the outcome of the hand.
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.player_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_player
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Object which is used by the strategy to get win/push probabilites for hit/stand, the calling BlackJackSim object. 
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
+        """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        assert(callable(dealer_show_callback))
+        # Can't do the next assert. Importing BlackJackSim is circular with PlayStrategy.py
+        #assert(isinstance(sim_object, BlackJackSim))
+
+        outcome_info = HandPlayOutcome()
+        
+        hand_status = BlackJackPlayStatus.HIT
+        final_count = 0
+        
+        info = hand_info_callback()
+
+        # Determine probabilities of winning and pushing
+        player_hand = Hand()
+        player_hand.add_cards(Card().make_card_list_from_str(hand_info_callback().String_Rep))
+        dealer_hand = Hand()
+        dealer_hand.add_cards(Card().make_card_list_from_str(str(dealer_show_callback())))
+        (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
+    
+        # Build a query for the user to obtain a hit or stand decision
+        query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback()) + '\n'
+        query_preface += 'Hit Win Probability: ' + str(hit_win_prob) + ' Stand Win Probability: ' + str(stand_win_prob) + '\n'
+        query_preface += 'Hit Push Probability: ' + str(hit_push_prob) + ' Stand Push Probability: ' + str(stand_push_prob)
+        query_dic = {'h':'Hit', 's':'Stand'}
+        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        while response == 'h':
+            draw_callback(1)
+            info = hand_info_callback()
+            if info.Count_Min > 21:
+                hand_status = BlackJackPlayStatus.BUST
+                final_count = info.Count_Min
+                break
+            
+            # Determine probabilities of winning and pushing
+            player_hand = Hand()
+            player_hand.add_cards(Card().make_card_list_from_str(hand_info_callback().String_Rep))
+            (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
+    
+            # Build a query for the user to obtain a hit or stand decision
+            query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback()) + '\n'
+            query_preface += 'Hit Win Probability: ' + str(hit_win_prob) + ' Stand Win Probability: ' + str(stand_win_prob) + '\n'
+            query_preface += 'Hit Push Probability: ' + str(hit_push_prob) + ' Stand Push Probability: ' + str(stand_push_prob)
+            response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        
+        if hand_status != BlackJackPlayStatus.BUST:
+            hand_status = BlackJackPlayStatus.STAND
+            final_count =  info.Count_Max
+            if final_count > 21:
+                final_count = info.Count_Min
+                
+        # Assemble outcome info for the hand
+        outcome_info.Final_Hand = info.String_Rep
+        outcome_info.Status = hand_status
+        outcome_info.Count = final_count
+            
+        return outcome_info    
 
 
 class HoylePlayerPlayStrategy(PlayStrategy):
@@ -249,13 +337,14 @@ class HoylePlayerPlayStrategy(PlayStrategy):
     
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
-    def play(self, hand_info_callback, draw_callback, dealer_show_callback):
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
         Play the hand of black jack, returning a HandPlayOutcome() object of information about the outcome of the hand.
         :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
         :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
         :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Should be None for this strategy, and will force to None at the top of this method. 
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
         # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
@@ -263,7 +352,9 @@ class HoylePlayerPlayStrategy(PlayStrategy):
         assert(callable(hand_info_callback))
         assert(callable(draw_callback))
         assert(callable(dealer_show_callback))
-
+        
+        # This strategy isn't intended to access the sim_object
+        if sim_object is not None: sim_object = None
         
         # Get the logger to use to output hit/stand info
         logger = logging.getLogger('blackjack_logger.hit_stand_logger')
@@ -324,6 +415,74 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                 # -----
                 hand_status = BlackJackPlayStatus.STAND
                 final_count = info.Count_Max
+                
+        # Assemble outcome info for the hand
+        outcome_info.Final_Hand = info.String_Rep
+        outcome_info.Status = hand_status
+        outcome_info.Count = final_count
+            
+        return outcome_info
+    
+
+class ProbabilityPlayerPlayStrategy(CasinoDealerPlayStrategy):
+    """
+    Implements strategy for player play, where player decisions to hit or stand are based on probabilities of winning/pushing,
+    when hitting/standing. The probabilities include the impact only of the show card in the dealer's hand.
+    """
+    
+    # TODO: Add unit tests for ProbabilityPlayerPlayStrategy
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
+        """
+        The method called to invoke the hand playing strategy.
+            (1) Hit if probability of winning or pushing on hit is greater than on stand.
+        Play the hand of black jack, returning a HandPlayOutcome() object with information about the outcome of playing the hand.
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Object which is used by the strategy to get win/push probabilites for hit/stand, the calling BlackJackSim object. 
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
+        """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        assert(callable(dealer_show_callback))
+        # Can't do the next assert. Importing BlackJackSim is circular with PlayStrategy.py
+        # assert(isinstance(sim_object, BlackJackSim))
+
+        outcome_info = HandPlayOutcome()
+        
+        hand_status = BlackJackPlayStatus.HIT
+        final_count = 0
+        
+        info = hand_info_callback()
+
+        # Time to determine probabilities of winning/pushing
+        player_hand = Hand()
+        player_hand.add_cards(Card().make_card_list_from_str(hand_info_callback().String_Rep))
+        dealer_hand = Hand()
+        dealer_hand.add_cards(Card().make_card_list_from_str(str(dealer_show_callback())))
+        (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
+    
+        while ((hit_win_prob + hit_push_prob) > (stand_win_prob + stand_push_prob)):
+            # We're going to HIT
+            draw_callback(1)
+            info = hand_info_callback()
+            if info.Count_Min > 21:
+                hand_status = BlackJackPlayStatus.BUST
+                final_count = info.Count_Min
+                break
+            
+            # Again determine probabilities of winning and pushing
+            player_hand = Hand()
+            player_hand.add_cards(Card().make_card_list_from_str(hand_info_callback().String_Rep))
+            (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
+        
+        if hand_status != BlackJackPlayStatus.BUST:
+            hand_status = BlackJackPlayStatus.STAND
+            final_count =  info.Count_Max
+            if final_count > 21:
+                final_count = info.Count_Min
                 
         # Assemble outcome info for the hand
         outcome_info.Final_Hand = info.String_Rep

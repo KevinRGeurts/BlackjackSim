@@ -944,6 +944,30 @@ class Test_Sim(unittest.TestCase):
         act_val = info.Split_Game_Outcome
         self.assertEqual(exp_val, act_val)
 
+    
+    def test_win_probability_hit_stand_dealer_blackjack(self):
+        
+        sim = BlackJackSim()
+        
+        # Create a Stacked_Deck
+        sd = Stacked_Deck()
+        # Dealer will draw #1 to obtain a blackjack
+        sd.add_cards([Card('H','Q')])
+        
+        dealer_hand = Hand()
+        # Dealer will hit on 10, then stand on 20
+        dealer_hand.add_cards([Card('D','A')])
+    
+        player_hand = Hand()
+        # Makes no difference, because dealer drew blackjack
+        player_hand.add_cards([Card('S','K'),Card('C','6')])
+        
+        exp_val = (0.0, 0.0, 0.0, 0.0) # (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+        act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
+
+        self.assertTupleEqual(exp_val, act_val)
+
 
     def test_win_probability_hit_push_stand_lose(self):
         
@@ -951,13 +975,13 @@ class Test_Sim(unittest.TestCase):
         
         # Create a Stacked_Deck
         sd = Stacked_Deck()
-        # Dealer will draw #1 and then stand
-        # Player's hit will be #2
-        sd.add_cards([Card('D','10'), Card('S','4')])
+        # Dealer will draw #1 to complete deal, and then #2 to hit, and then stand
+        # Player's hit will be #3
+        sd.add_cards([Card('H','4'), Card('D','10'), Card('S','4')])
         
         dealer_hand = Hand()
         # Dealer will hit on 10, then stand on 20
-        dealer_hand.add_cards([Card('D','6'),Card('H','4')])
+        dealer_hand.add_cards([Card('D','6')])
     
         player_hand = Hand()
         # When player stands on 16 they will lose

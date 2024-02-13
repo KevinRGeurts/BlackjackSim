@@ -470,7 +470,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show)
+        outcome_info = self.player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show, sim_object = self)
                     
         return outcome_info
     
@@ -596,23 +596,30 @@ class BlackJackSim:
         return fh
     
     
+    # TODO: Modify so that as option the dealer hand has only the show card. That way this isn't exactly cheating if used during
+    # play, Becuase the user doesn't have access to "hidden" information. They just have the ability savant like ability to run
+    # a bunch of mental trials of the situation. This does complicate things, because the dealer could draw blackjack.
     def win_probability_hit_stand(self, player_hand = Hand(), dealer_hand = Hand(), num_trials = 1000, deck = None):
         """
         Determine the probability of winning and pushing for both hitting one card and for standing at any point in playing a hand.
-        Assumes that dealer's hand has just been dealt (has exactly two cards), and that player's hand as 2+ cards.
+        Assumes that dealer's hand has just been dealt with one or two cards, and that player's hand as 2+ cards. If the dealer's hand
+        has one card, they typical situation, then it is considered the face up "show" card, and the hidden card will be drawn from the
+        deck on each trial. In this case the function is determining probabilities based only on "known" information. If the dealer's
+        hand has two cards, then, at least in a statistical sense, this function represents a "cheat" because it uses information about
+        the dealer's hidden card from the deal to determine probabilities.
         :parameter player_hand: The player's hand for which stand and hit probabilities will be determined, Hand object
-        :parameter dealer_hand: The dealer's had against which stand and hit wind proabilities will be determined, Hand object
+        :parameter dealer_hand: The dealer's had against which stand and hit wind proabilities will be determined, Hand object 
         :parameter num_trials: The number of times to hit and play out the dealer's hand to determine probabilities, int
         :parameter deck: The deck that will be used for all the trials, Deck object.
             If None, then when the new BlackJackSimulation is created for the trials, it's default Deck will be used.
-            Typically this argument should not be used, unless to facilitate testing.
+            Typically this argument should not be used, unless to facilitate testing. It might also be used to replicate the remains
+            of a multi-deck "shoe", in which case each trial should use the same replication.
         :return: Tupble (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob), floats
         """
-
-        # When we enter here:
-        # (1) the dealer hand should have only the two-card deal
-        # (2) the player hand should have at least the two-card deal, but will have more cards if there has already been one or
-        #   more hits.
+        # Check assumptions
+        assert(player_hand.get_num_cards() >= 2)
+        assert(dealer_hand.get_num_cards() >=1 and dealer_hand.get_num_cards() <= 2)
+        if (deck is not None): assert(isinstance(deck, Deck))
 
         # Get the logger 'blackjack_logger'
         logger = logging.getLogger('blackjack_logger')
@@ -644,75 +651,91 @@ class BlackJackSim:
         
             # Transfer dealer's cards to the dealer's hand in the simulation for this trial
             bjs.dealer_hand.add_cards(dealer_hand.get_cards())
+            # If we got only one card from dealer_hand argument then draw the second
+            if (bjs.dealer_hand.get_num_cards() == 1):
+                bjs.draw_for_dealer()
+                
+            # Did the dealer draw to a blackjack?
+            if (bjs.check_for_blackjack() != BlackJackCheck.DEALER_BLACKJACK ):
+                
+                # Dealer didn't draw to blackjack, so we need to run the trial...
             
-            # Transfer player's cards to the player's hand in the simulation for this trial
-            bjs.player_hand.add_cards(player_hand.get_cards())
+                # Transfer player's cards to the player's hand in the simulation for this trial
+                bjs.player_hand.add_cards(player_hand.get_cards())
         
-            info = GamePlayOutcome()
+                info = GamePlayOutcome()
         
-            # Play the dealer's hand, and add hand outcome info to game info 
-            dealer_info = bjs.play_dealer_hand()
-            info.Dealer_Final_Hand = dealer_info.Final_Hand
-            info.Dealer_Status = dealer_info.Status
-            info.Dealer_Count = dealer_info.Count
+                # Play the dealer's hand, and add hand outcome info to game info 
+                dealer_info = bjs.play_dealer_hand()
+                info.Dealer_Final_Hand = dealer_info.Final_Hand
+                info.Dealer_Status = dealer_info.Status
+                info.Dealer_Count = dealer_info.Count
         
-            # First, we'll let the player stand
-            player_hand_info = bjs.player_hand_info()
-            info.Player_Final_Hand = player_hand_info.String_Rep
-            info.Player_Status = BlackJackPlayStatus.STAND
-            count_max = player_hand_info.Count_Max
-            count_min = player_hand_info.Count_Min
-            if (count_max <= 21):
-                info.Player_Count = count_max
-            elif (count_min <= 21):
-                info.Player_Count = count_min
-            else:
-                # TODO: Is this needed? Final logic should not let a BUST be the case, I think, since we haven't hit.
-                info.Player_Count = count_min
-                info.Player_Status = BlackJackPlayStatus.BUST
+                # First, we'll let the player stand
+                player_hand_info = bjs.player_hand_info()
+                info.Player_Final_Hand = player_hand_info.String_Rep
+                info.Player_Status = BlackJackPlayStatus.STAND
+                count_max = player_hand_info.Count_Max
+                count_min = player_hand_info.Count_Min
+                if (count_max <= 21):
+                    info.Player_Count = count_max
+                elif (count_min <= 21):
+                    info.Player_Count = count_min
+                else:
+                    # TODO: Is this needed? Final logic should not let a BUST be the case, I think, since we haven't hit.
+                    info.Player_Count = count_min
+                    info.Player_Status = BlackJackPlayStatus.BUST
         
-            # Deterimine game outcome after standing, and add to game info
-            bjs.determine_game_outcome(info)
+                # Deterimine game outcome after standing, and add to game info
+                bjs.determine_game_outcome(info)
             
-            msg = 'Probability trial: ' + str(g+1) + ' Stand Result: ' + str(info.Game_Outcome)
-            logger.debug(msg)
-            msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
-            logger.debug(msg)
+                msg = 'Probability trial: ' + str(g+1) + ' Stand Result: ' + str(info.Game_Outcome)
+                logger.debug(msg)
+                msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
+                logger.debug(msg)
 
-            # Accumulate proability information
-            if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
-                stand_win_count += 1
-            elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
-                stand_push_count += 1
+                # Accumulate proability information
+                if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
+                    stand_win_count += 1
+                elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
+                    stand_push_count += 1
 
-            # Now we'll have the player hit
-            bjs.draw_for_player()
-            player_hand_info = bjs.player_hand_info()
-            info.Player_Final_Hand = player_hand_info.String_Rep
-            info.Player_Status = BlackJackPlayStatus.STAND
-            count_max = player_hand_info.Count_Max
-            count_min = player_hand_info.Count_Min
-            if (count_max <= 21):
-                info.Player_Count = count_max
-            elif (count_min <= 21):
-                info.Player_Count = count_min
-            else:
-                info.Player_Count = count_min
-                info.Player_Status = BlackJackPlayStatus.BUST
+                # Now we'll have the player hit
+                bjs.draw_for_player()
+                player_hand_info = bjs.player_hand_info()
+                info.Player_Final_Hand = player_hand_info.String_Rep
+                info.Player_Status = BlackJackPlayStatus.STAND
+                count_max = player_hand_info.Count_Max
+                count_min = player_hand_info.Count_Min
+                if (count_max <= 21):
+                    info.Player_Count = count_max
+                elif (count_min <= 21):
+                    info.Player_Count = count_min
+                else:
+                    info.Player_Count = count_min
+                    info.Player_Status = BlackJackPlayStatus.BUST
         
-            # Deterimine game outcome after hitting, and add to game info
-            bjs.determine_game_outcome(info)
+                # Deterimine game outcome after hitting, and add to game info
+                bjs.determine_game_outcome(info)
             
-            msg = 'Probability trial: ' + str(g+1) + ' Hit Result: ' + str(info.Game_Outcome)
-            logger.debug(msg)
-            msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
-            logger.debug(msg)
+                msg = 'Probability trial: ' + str(g+1) + ' Hit Result: ' + str(info.Game_Outcome)
+                logger.debug(msg)
+                msg = 'Player Hand: ' + info.Player_Final_Hand + ' Dealer Hand: ' + info.Dealer_Final_Hand
+                logger.debug(msg)
         
-            # Accumulate proability information
-            if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
-                hit_win_count += 1
-            elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
-                hit_push_count += 1
+                # Accumulate proability information
+                if info.Game_Outcome == BlackJackGameOutcome.PLAYER_WINS:
+                    hit_win_count += 1
+                elif info.Game_Outcome == BlackJackGameOutcome.PUSH:
+                    hit_push_count += 1
+                    
+            else:
+                # Dealer did draw to blackjack, so that means the player lost both hit and stand, and there was no push.
+                # Log that dealer with a blackjack.
+                msg = 'Probability trial: ' + str(g+1) + ' Dealer drew to blackjack and won.'
+                logger.debug(msg)
+                msg = 'Player Hand: ' + str(player_hand) + ' Dealer Hand: ' + str(bjs.dealer_hand)
+                logger.debug(msg)
                 
         # Compute probabilities
         hit_win_prob = hit_win_count / num_trials
