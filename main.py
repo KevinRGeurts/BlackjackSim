@@ -7,6 +7,21 @@ from UserResponseCollector import UserResponseCollector_query_user, BlackJackQue
 import logging
 from pathlib import Path
 
+def play_debug_2():
+    """
+    Run a debugging scenario coded in this function.
+    """
+    sim = BlackJackSim()
+
+    dealer_hand = Hand()    
+    dealer_hand.add_cards([Card('H','5')])
+    player_hand = Hand()
+    player_hand.add_cards([Card('S','A'),Card('C','5')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+    
+    return None
+
 
 def play_debug():
     """
@@ -14,18 +29,63 @@ def play_debug():
     """
     sim = BlackJackSim()
     
-    dealer_hand = Hand()
-    dealer_hand.add_cards([Card('D','J'),Card('H','K')])
-    
+    dealer_hand = Hand()    
+    dealer_hand.add_cards([Card('D','2')])
     player_hand = Hand()
-    player_hand.add_cards([Card('S','5'),Card('C','2')])
-    
+    player_hand.add_cards([Card('S','10'),Card('C','4')])
     (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+     
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','3')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
 
-    print('Hit Win Probability: ', hit_win_prob)
-    print('Hit Push Probability: ', hit_push_prob)
-    print('Stand Win Probability: ', stand_win_prob)
-    print('Stand Push Probability: ', stand_push_prob)
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','4')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','5')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','6')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','7')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','8')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','9')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','10')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+    dealer_hand = Hand()
+    dealer_hand.add_cards([Card('D','A')])
+    (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim.win_probability_hit_stand(player_hand,dealer_hand,1000)
+    print(str(player_hand), ',', str(dealer_hand), ',', hit_win_prob, ',', stand_win_prob, ',', hit_push_prob, ',', stand_push_prob)
+
+
+    #print('Hit Win Probability: ', hit_win_prob)
+    #print('Hit Push Probability: ', hit_push_prob)
+    #print('Stand Win Probability: ', stand_win_prob)
+    #print('Stand Push Probability: ', stand_push_prob)
         
     return None
 
@@ -362,7 +422,7 @@ if __name__ == '__main__':
                 play_many_probabilities_auto()
                 
             case 'd':
-                play_debug()
+                play_debug_2()
                 
         response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
       

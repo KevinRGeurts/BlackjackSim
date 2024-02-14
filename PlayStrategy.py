@@ -464,7 +464,8 @@ class ProbabilityPlayerPlayStrategy(CasinoDealerPlayStrategy):
         dealer_hand.add_cards(Card().make_card_list_from_str(str(dealer_show_callback())))
         (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
     
-        while ((hit_win_prob + hit_push_prob) > (stand_win_prob + stand_push_prob)):
+        while ((hit_win_prob) > (stand_win_prob)):
+        #while ((hit_win_prob + hit_push_prob) > (stand_win_prob + stand_push_prob)):
             # We're going to HIT
             draw_callback(1)
             info = hand_info_callback()

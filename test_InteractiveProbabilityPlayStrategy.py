@@ -1,13 +1,13 @@
 import unittest
 from card import Card
 from deck import Stacked_Deck
-from PlayStrategy import InteractivePlayerPlayStrategy, BlackJackPlayStatus
+from PlayStrategy import InteractiveProbabilityPlayerPlayStrategy, BlackJackPlayStatus
 from BlackJackSim import BlackJackSim
 import io
 from unittest.mock import patch
 
 
-class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
+class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
 
     # Apply a patch() decorator to replace keyboard input from user with a string.
     # The patch should result in a stand.
@@ -17,7 +17,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Create the desired play strategy for the test
-        ps = InteractivePlayerPlayStrategy()
+        ps = InteractiveProbabilityPlayerPlayStrategy()
        
         # Create a Stacked_Deck.
         # The first two cards will end up in the player's hand.
@@ -35,7 +35,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show, bjs)
         
         # Do we have the expected final hand?
         exp_val = '5S 2C'
@@ -59,7 +59,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Create the desired play strategy for the test
-        ps = InteractivePlayerPlayStrategy()
+        ps = InteractiveProbabilityPlayerPlayStrategy()
        
         # Create a Stacked_Deck.
         # The first two cards will end up in the player's hand.
@@ -78,7 +78,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show, bjs)
         
         # Do we have the expected final hand?
         exp_val = '5S 2C 10D'
@@ -102,7 +102,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Create the desired play strategy for the test
-        ps = InteractivePlayerPlayStrategy()
+        ps = InteractiveProbabilityPlayerPlayStrategy()
        
         # Create a Stacked_Deck.
         # The first two cards will end up in the player's hand.
@@ -121,7 +121,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
         bjs.draw_for_dealer(1)
         
         # Play the hand
-        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show)
+        info = ps.play(bjs.player_hand_info, bjs.draw_for_player, bjs.get_dealer_show, bjs)
         
         # Do we have the expected final hand?
         exp_val = '5S 2C 6D KH'
@@ -142,7 +142,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
     @patch('sys.stdin', io.StringIO('y\n'))
     def test_split_yes(self):
         
-        ps = InteractivePlayerPlayStrategy()
+        ps = InteractiveProbabilityPlayerPlayStrategy()
         
         # Test yes response to splitting query
         exp_val = True
@@ -155,7 +155,7 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
     @patch('sys.stdin', io.StringIO('n\n'))
     def test_split_no(self):
         
-        ps = InteractivePlayerPlayStrategy()
+        ps = InteractiveProbabilityPlayerPlayStrategy()
         
         # Test yes response to splitting query
         exp_val = False
@@ -165,3 +165,4 @@ class Test_InteractivePlayerPlayStrategy(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

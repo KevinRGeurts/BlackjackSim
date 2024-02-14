@@ -274,6 +274,20 @@ So, trying to put all this together into a workflow...
 			if hit win/push probability is > X? Like maybe > 50%, because otherwise it's a coin toss, and may as well stand? But that
 			maybe doesn't make sense when the odds of winning are quite low wether you hit or stand?
 
+			Changed the hit/stand logic for auto play to hit only if win probability on hit exceeds win probability on stand, and got these results
+
+			Dealer Wins: 468
+			Player Wins: 463
+			Pushes: 69
+			Games Played: 1000
+			Dealer % Wins: 46.8
+			Player % Wins: 46.3
+			Push %: 6.9
+			Dealer BlackJacks: 44
+			Player BlackJacks: 41
+			Dealer % BlackJacks: 4.4
+			Player % BlackJacks: 4.1
+
 
 
 

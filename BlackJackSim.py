@@ -481,7 +481,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.player_play_strategy.play(hand_info_callback=self.split_hand_info, draw_callback=self.draw_for_split, dealer_show_callback=self.get_dealer_show)
+        outcome_info = self.player_play_strategy.play(hand_info_callback=self.split_hand_info, draw_callback=self.draw_for_split, dealer_show_callback=self.get_dealer_show, sim_object = self)
 
         return outcome_info
     
@@ -596,14 +596,11 @@ class BlackJackSim:
         return fh
     
     
-    # TODO: Modify so that as option the dealer hand has only the show card. That way this isn't exactly cheating if used during
-    # play, Becuase the user doesn't have access to "hidden" information. They just have the ability savant like ability to run
-    # a bunch of mental trials of the situation. This does complicate things, because the dealer could draw blackjack.
     def win_probability_hit_stand(self, player_hand = Hand(), dealer_hand = Hand(), num_trials = 1000, deck = None):
         """
         Determine the probability of winning and pushing for both hitting one card and for standing at any point in playing a hand.
         Assumes that dealer's hand has just been dealt with one or two cards, and that player's hand as 2+ cards. If the dealer's hand
-        has one card, they typical situation, then it is considered the face up "show" card, and the hidden card will be drawn from the
+        has one card, the typical situation, then it is considered the face up "show" card, and the hidden card will be drawn from the
         deck on each trial. In this case the function is determining probabilities based only on "known" information. If the dealer's
         hand has two cards, then, at least in a statistical sense, this function represents a "cheat" because it uses information about
         the dealer's hidden card from the deal to determine probabilities.
@@ -614,7 +611,7 @@ class BlackJackSim:
             If None, then when the new BlackJackSimulation is created for the trials, it's default Deck will be used.
             Typically this argument should not be used, unless to facilitate testing. It might also be used to replicate the remains
             of a multi-deck "shoe", in which case each trial should use the same replication.
-        :return: Tupble (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob), floats
+        :return: Tuple (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob), floats
         """
         # Check assumptions
         assert(player_hand.get_num_cards() >= 2)

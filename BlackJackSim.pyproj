@@ -27,9 +27,13 @@
   <ItemGroup>
     <Compile Include="BlackJackSim.py" />
     <Compile Include="card.py" />
+    <Compile Include="test_ProbabilityPlayerPlayStrategy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test_InteractivePlayStrategy.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="test_InteractiveProbabilityPlayStrategy.py" />
     <Compile Include="test_UserResponseCollector.py">
       <SubType>Code</SubType>
     </Compile>
