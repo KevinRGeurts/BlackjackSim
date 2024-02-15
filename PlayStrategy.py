@@ -213,7 +213,6 @@ class InteractiveProbabilityPlayerPlayStrategy(InteractivePlayerPlayStrategy):
     Human is also asked if the want to split a dealt pair.
     """
     
-    # TODO: Create unit tests for InteractiveProbabilityPlayerPlayStrategy.play()
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
@@ -430,7 +429,6 @@ class ProbabilityPlayerPlayStrategy(CasinoDealerPlayStrategy):
     when hitting/standing. The probabilities include the impact only of the show card in the dealer's hand.
     """
     
-    # TODO: Add unit tests for ProbabilityPlayerPlayStrategy
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.

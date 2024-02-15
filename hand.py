@@ -108,15 +108,13 @@ class Hand:
         return len(self.cards)
     
     
-    # TODO: Determine if the return is a copy of the list of cards or if it is returning a reference to the internal list
-    # of cards, since the later would allow corruption of the internal data store and by convention should be avoided.
     def get_cards(self):
         """
-        Return a list of the cards in the Hand. By convention, this method should be used, rather than 
+        Return a list of the cards in the Hand, a shallow copy of self.cards. By convention, this method should be used, rather than 
         directly accessing the Hand's cards data member, to insulate the outside world from the details Hand's data model.
-        "return: Cards in the hand, list
+        :return: Cards in the hand, list
         """
-        return self.cards
+        return list(self.cards) # list(list) makes a shallow copy, which is what we want
 
  
     def hand_info(self):
