@@ -290,11 +290,22 @@ class Test_Sim(unittest.TestCase):
         seed(1234567890)
         
         sim = BlackJackSim()
-        results = sim.play_batches_of_games(10, 10)
+        (results_list, net_expected) = sim.play_batches_of_games(10, 10)
         
         # Did we win a net of 1 game the number of times expected?
         exp_val = 3
-        act_val = results[1]
+        match = [tup for tup in results_list if tup[0] == 1]
+        act_val = match[0][1]
+        self.assertEqual(exp_val, act_val)
+        
+        # Is this the expected fraction of times the net was 1 game?
+        exp_val = 3.0/10.0
+        act_val = match[0][2]
+        self.assertEqual(exp_val, act_val)
+        
+        # Did we get the expected "expected value" for a batch of games?
+        exp_val = -0.4
+        act_val = net_expected
         self.assertEqual(exp_val, act_val)
         
     

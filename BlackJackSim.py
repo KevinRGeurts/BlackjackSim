@@ -209,10 +209,15 @@ class BlackJackSim:
         What then is the probability of losing or winning a net of X games at a sitting.
         :parameter num_games: Number of games to be played for each batch, int
         :parameter num_batches: Number of batches of games to be played, int
-        :return: A dictionary where the keys are the int number of net losses (-) or wins (+) and the values are the number of batches that produced
-            this net number of losses or wins
+        :return: A tuple:
+            Item 1: An ordered list of tuples where the first value is the int number of net losses (-) or wins (+), the second value
+            is the number of batches that produced this net number of losses or wins, and the third value is the fraction of batches
+            that produced this net number of losses or wins.
+            Item 2: The expected value of net losses or wins.
         """
-        results = {}      
+        results = {}
+        
+        # Accumulate the number of batches using a dictionary, since we don't know which values of net wins or losses will show up
         
         for b in range(num_batches):
             batch_stats = self.play_games(num_games)
@@ -226,7 +231,20 @@ class BlackJackSim:
                 # Key is already in the dictionary. Increment value up by 1 and reset it.
                 results[net_wins] = v + 1
 
-        return results
+        # Now we will iterate through the dictionary entries to create from them an ordered list of tuples (key,value,frac)
+        # since providing ordered return is better than unordered.
+
+        expected_value = 0.0
+        results_list = []
+        for b in range(-num_batches, num_batches+1, 1):
+            # Look up the results dictionary entry for key of b
+            v = results.get(b)
+            if v is not None:
+                # key value of b is in the dictionary, so put it and it's value in the list as a tuple
+                results_list.append((b,v,1.0*v/num_batches))
+                expected_value += 1.0*b*v/num_batches
+
+        return (results_list, expected_value)
 
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):

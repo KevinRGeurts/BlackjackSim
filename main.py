@@ -7,6 +7,19 @@ from UserResponseCollector import UserResponseCollector_query_user, BlackJackQue
 import logging
 from pathlib import Path
 
+
+def play_debug_3():
+        from random import seed
+        seed(1234567890)
+        
+        sim = BlackJackSim()
+        (results_list, net_expected) = sim.play_batches_of_games(10, 10)
+        
+        act_val = net_expected
+        
+        return None
+  
+
 def play_debug_2():
     """
     Run a debugging scenario coded in this function.
@@ -369,13 +382,15 @@ def play_batches():
     num_batches = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
     
     # If you need repeatability, for example to debug something, then you can set a seed here.
-    from random import seed
-    seed(1234567890)
+    # from random import seed
+    # seed(1234567890)
 
-    results = sim.play_batches_of_games(num_games, num_batches)
+    (results_list, net_expected) = sim.play_batches_of_games(num_games, num_batches)
 
-    for k, v in results.items():
-        print('net wins: ', k, 'number of times:', v)
+    for tup in results_list:
+        print('net wins: ', tup[0], 'number of times: ', tup[1], 'fraction of times: ', tup[2])
+    print('expected value for net wins: ', net_expected)
+
 
     return None
 
@@ -422,7 +437,7 @@ if __name__ == '__main__':
                 play_many_probabilities_auto()
                 
             case 'd':
-                play_debug_2()
+                play_debug_3()
                 
         response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
       
