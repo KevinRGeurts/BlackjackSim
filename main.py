@@ -1,8 +1,8 @@
-from deck import StackedDeck
+from deck import StackedDeck, Deck
 from card import Card
 from hand import Hand
-from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
-from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy
+from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
+from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
 import logging
 from pathlib import Path
@@ -103,6 +103,49 @@ def play_debug():
     return None
 
 
+def simulate_blackjack_probability(num_deals = 10000):
+    """
+    Run simulations to determine how likely it is to get blackjack.
+    """
+    # First, let's deal from an infinite deck
+    
+    sim = BlackJackSim()
+    num_blackjacks = 0
+    for deal in range(num_deals):
+        sim.clear_hands()
+        sim.draw_for_dealer(2)
+        if (sim.check_for_blackjack() == BlackJackCheck.DEALER_BLACKJACK):
+            num_blackjacks += 1
+    
+    # Expected blackjacks dealt from infinite deck = (16/52)*(4/52)+(4/52)*(16/52)
+    # Or, conditional probability of getting a "10" card followed by an Ace +
+    # conditional probability of getting an Ace followed by a "10" card.        
+    print('% blackjacks dealt infintite deck (expected): ', 100.0*((16.0/52.0)*(4.0/52.0)+(4.0/52.0)*(16.0/52.0)))
+    print('% blackjacks dealt  infinite deck (simulated): ', 100.0 * num_blackjacks / num_deals)
+    
+    # Next, let's deal from a normal 52 card deck
+    
+    d = Deck()
+    sim.switch_deck(d)
+    num_blackjacks = 0
+    for deal in range(num_deals):
+        d = Deck()
+        sim.switch_deck(d)
+        sim.clear_hands()
+        sim.draw_for_dealer(2)
+        if (sim.check_for_blackjack() == BlackJackCheck.DEALER_BLACKJACK):
+            num_blackjacks += 1
+
+    # Expected blackjacks dealt from non-infinite deck = (16/52)*(4/51)+(4/52)*(16/51)
+    # Or, conditional probability of getting a "10" card followed by an Ace +
+    # conditional probability of getting an Ace followed by a "10" card.        
+    print('-----')
+    print('% blackjacks dealt regular deck (expected): ', 100.0*((16.0/52.0)*(4.0/51.0)+(4.0/52.0)*(16.0/51.0)))
+    print('% blackjacks dealt  regular deck (simulated): ', 100.0 * num_blackjacks / num_deals)
+
+    return None
+
+
 def play_interactive_probability():
     """
     Use BlackJackSim to play an interactive game, but provid hit/stand win/push probability info to user.
@@ -187,6 +230,7 @@ def play_many_auto():
     logger = logging.getLogger('blackjack_logger.hit_stand_logger')
 
     sim = BlackJackSim()
+    # sim.set_player_play_strategy(CasinoDealerPlayStrategy())
     print('Starting a bunch of games of black jack to generate win statistics...')
     
     # Ask if hit/stand data should be logged to file
@@ -411,7 +455,7 @@ if __name__ == '__main__':
     
     # Build a query for the user to obtain their choice of how to user the simulator
     query_preface = 'How do you want to use the simulator?'
-    query_dic = {'q':'Quit', 'i':'Interactive Game', 'p':'Interactive Game with Probabilities', 'a':'Automatic Game', 'm':'Many Automatic Games', 'u':'Many Automatic Games Using Probabilities'   , 'b':'Batches of Games', 'd':'Debug Scenario'}
+    query_dic = {'q':'Quit', 'i':'Interactive Game', 'p':'Interactive Game with Probabilities', 'a':'Automatic Game', 'm':'Many Automatic Games', 'u':'Many Automatic Games Using Probabilities'   , 'b':'Batches of Games', 'j':'Blackjack Probability', 'd':'Debug Scenario'}
     response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
     
     while response != 'q':
@@ -435,6 +479,9 @@ if __name__ == '__main__':
                 
             case 'u':
                 play_many_probabilities_auto()
+                
+            case 'j':
+                simulate_blackjack_probability()
                 
             case 'd':
                 play_debug_3()
