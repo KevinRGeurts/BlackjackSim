@@ -16,7 +16,7 @@ class Test_Sim(unittest.TestCase):
         bjs.set_player_play_strategy(ps)
         
         # Did the player play strategy get set as expected?
-        self.assertIsInstance(bjs.player_play_strategy, CasinoDealerPlayStrategy)
+        self.assertIsInstance(bjs._player_play_strategy, CasinoDealerPlayStrategy)
         
         # Construct something that is NOT a PlayStrategy, and try to set it as one
         ps = Card()
@@ -29,7 +29,7 @@ class Test_Sim(unittest.TestCase):
         bjs.set_dealer_play_strategy(ps)
         
         # Did the dealer play strategy get set as expected?
-        self.assertIsInstance(bjs.dealer_play_strategy, HoylePlayerPlayStrategy)
+        self.assertIsInstance(bjs._dealer_play_strategy, HoylePlayerPlayStrategy)
         
         # Construct something that is NOT a PlayStrategy, and try to set it as one
         ps = Card()
@@ -40,7 +40,7 @@ class Test_Sim(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
+        bjs._dealer_hand.add_cards([Card('S','5'), Card('H','2')])
         
         # Is the dealer's show card as expected?
         c = Card('S','5')
@@ -157,10 +157,10 @@ class Test_Sim(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
+        bjs._dealer_hand.add_cards([Card('S','5'), Card('H','2')])
         
         # Set up player hand
-        bjs.player_hand.add_cards([Card('C','K'), Card('D','Q')])
+        bjs._player_hand.add_cards([Card('C','K'), Card('D','Q')])
         
         act_val = bjs.check_for_blackjack()
         
@@ -174,10 +174,10 @@ class Test_Sim(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','A'), Card('H','J')])
+        bjs._dealer_hand.add_cards([Card('S','A'), Card('H','J')])
         
         # Set up player hand
-        bjs.player_hand.add_cards([Card('C','K'), Card('D','Q')])
+        bjs._player_hand.add_cards([Card('C','K'), Card('D','Q')])
         
         act_val = bjs.check_for_blackjack()
         
@@ -191,10 +191,10 @@ class Test_Sim(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
+        bjs._dealer_hand.add_cards([Card('S','5'), Card('H','2')])
         
         # Set up player hand
-        bjs.player_hand.add_cards([Card('C','K'), Card('D','A')])
+        bjs._player_hand.add_cards([Card('C','K'), Card('D','A')])
         
         act_val = bjs.check_for_blackjack()
         
@@ -208,10 +208,10 @@ class Test_Sim(unittest.TestCase):
         bjs = BlackJackSim()
         
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','10'), Card('H','A')])
+        bjs._dealer_hand.add_cards([Card('S','10'), Card('H','A')])
         
         # Set up player hand
-        bjs.player_hand.add_cards([Card('C','K'), Card('D','A')])
+        bjs._player_hand.add_cards([Card('C','K'), Card('D','A')])
         
         act_val = bjs.check_for_blackjack()
         
@@ -232,7 +232,7 @@ class Test_Sim(unittest.TestCase):
         bjs.switch_deck(sd)
        
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','5'), Card('H','2')])
+        bjs._dealer_hand.add_cards([Card('S','5'), Card('H','2')])
         
         # Play the dealer hand
         info = bjs.play_dealer_hand()
@@ -557,7 +557,7 @@ class Test_Sim(unittest.TestCase):
         bjs.switch_deck(sd)
        
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','7'), Card('H','9')])
+        bjs._dealer_hand.add_cards([Card('S','7'), Card('H','9')])
         
         # Play the dealer hand
         info = bjs.play_dealer_hand()
@@ -588,7 +588,7 @@ class Test_Sim(unittest.TestCase):
         bjs.switch_deck(sd)
        
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','7'), Card('H','8')])
+        bjs._dealer_hand.add_cards([Card('S','7'), Card('H','8')])
         
         # Play the dealer hand
         info = bjs.play_dealer_hand()
@@ -618,7 +618,7 @@ class Test_Sim(unittest.TestCase):
         bjs.switch_deck(sd)
        
         # Set up dealer hand
-        bjs.dealer_hand.add_cards([Card('S','7'), Card('H','8')])
+        bjs._dealer_hand.add_cards([Card('S','7'), Card('H','8')])
         
         # Play the dealer hand
         info = bjs.play_dealer_hand()
@@ -649,10 +649,10 @@ class Test_Sim(unittest.TestCase):
         bjs.switch_deck(sd)
        
         # Set up dealer hand because play strategy may need a show Card
-        bjs.dealer_hand.add_cards([Card('S','10'), Card('H','7')])
+        bjs._dealer_hand.add_cards([Card('S','10'), Card('H','7')])
         
         # Set up player hand
-        bjs.player_hand.add_cards([Card('S','5'), Card('H','2')])
+        bjs._player_hand.add_cards([Card('S','5'), Card('H','2')])
         
         # Play the player's hand
         info = bjs.play_player_hand()

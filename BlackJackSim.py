@@ -1,3 +1,4 @@
+from turtle import clear
 from deck import Deck
 from hand import Hand
 from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
@@ -101,12 +102,12 @@ class BlackJackSim:
         and, to be used if needed, an empty hand for if the player splits a pair. Also set default strategies for
         dealer and player hand play.
         """
-        self.deck = Deck(isInfinite = True)
-        self.dealer_hand = Hand()
-        self.dealer_play_strategy = CasinoDealerPlayStrategy()
-        self.player_hand = Hand()
-        self.split_hand = Hand() # For if the player splits a pair
-        self.player_play_strategy = HoylePlayerPlayStrategy()
+        self._deck = Deck(isInfinite = True)
+        self._dealer_hand = Hand()
+        self._dealer_play_strategy = CasinoDealerPlayStrategy()
+        self._player_hand = Hand()
+        self._split_hand = Hand() # For if the player splits a pair
+        self._player_play_strategy = HoylePlayerPlayStrategy()
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     
@@ -117,7 +118,7 @@ class BlackJackSim:
         :return: None
         """
         assert(isinstance(ps, PlayStrategy))
-        self.player_play_strategy = ps
+        self._player_play_strategy = ps
         return None
             
     
@@ -128,7 +129,7 @@ class BlackJackSim:
         :return: None
         """
         assert(isinstance(ps, PlayStrategy))
-        self.dealer_play_strategy = ps
+        self._dealer_play_strategy = ps
         return None
                 
     
@@ -138,7 +139,7 @@ class BlackJackSim:
         :parameter new_deck: The new Deck() to assign to the simulator, Deck()
         :return: None
         """
-        self.deck = new_deck
+        self._deck = new_deck
         return None
         
     
@@ -148,7 +149,7 @@ class BlackJackSim:
         :parameter number: How many cards to draw into dealer's hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        return self.dealer_hand.add_cards(self.deck.draw(number))
+        return self._dealer_hand.add_cards(self._deck.draw(number))
     
     
     def dealer_hand_info(self):
@@ -156,7 +157,7 @@ class BlackJackSim:
         Call Hand.hand_info on the dealer's hand.
         :return: Hand.HandInfo object with useful information about the dealer's hand.
         """
-        return self.dealer_hand.hand_info()
+        return self._dealer_hand.hand_info()
     
 
     def player_hand_info(self):
@@ -164,7 +165,7 @@ class BlackJackSim:
         Call Hand.hand_info on the player's hand.
         :return: Hand.HandInfo object with useful information about the player's hand.
         """
-        return self.player_hand.hand_info()
+        return self._player_hand.hand_info()
 
 
     def split_hand_info(self):
@@ -172,7 +173,7 @@ class BlackJackSim:
         Call Hand.hand_info on the player's split hand.
         :return: Hand.HandInfo object with useful information about the player's split hand.
         """
-        return self.split_hand.hand_info()    
+        return self._split_hand.hand_info()    
         
     
     def draw_for_player(self, number=1):
@@ -181,7 +182,7 @@ class BlackJackSim:
         :parameter number: How many cards to draw into player's hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        return self.player_hand.add_cards(self.deck.draw(number))
+        return self._player_hand.add_cards(self._deck.draw(number))
     
     
     def draw_for_split(self, number=1):
@@ -190,7 +191,7 @@ class BlackJackSim:
         :parameter number: How many cards to draw into player's split hand, int
         :return: A list of Card(s) in the hand after the draw
         """
-        return self.split_hand.add_cards(self.deck.draw(number))   
+        return self._split_hand.add_cards(self._deck.draw(number))   
     
     
     def get_dealer_show(self):
@@ -198,7 +199,7 @@ class BlackJackSim:
         Return the dealer's face up (show) card that can be seen by the player.
         :return: The first card in the dealer's hand, Card()
         """
-        return self.dealer_hand.get_cards()[0]
+        return self._dealer_hand.get_cards()[0]
     
     
     def play_batches_of_games(self, num_games = 1, num_batches = 1):
@@ -256,7 +257,7 @@ class BlackJackSim:
         :paremeter dealer_show: If specified, it is the showing, face up Card() for the dealer, and one additional card will be
             drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
             is visible to the player.
-        :return: Sstatistics for the set of games, as a BlackJackStats() object
+        :return: Statistics for the set of games, as a BlackJackStats() object
         """
         
         # Get the logger 'blackjack_logger'
@@ -324,49 +325,47 @@ class BlackJackSim:
         info = GamePlayOutcome()
         
         # Clear dealer, player, and split hands of Cards
-        self.dealer_hand = Hand()
-        self.player_hand = Hand()
-        self.split_hand = Hand()
+        self.clear_hands()
         
         # TODO: Simplify this logic, using 'not (is None)' syntax
         # Build the dealer's initial hand, drawing as needed
         if dealer_show is None and dealer_down is None:
-            self.dealer_hand.add_cards(self.deck.draw(2))
+            self._dealer_hand.add_cards(self._deck.draw(2))
         elif dealer_show is None:
-            self.dealer_hand.add_cards(dealer_down)
-            self.dealer_hand.add_cards(self.deck.draw(1))
+            self._dealer_hand.add_cards(dealer_down)
+            self._dealer_hand.add_cards(self._deck.draw(1))
         elif dealer_down is None:
-            self.dealer_hand.add_cards(dealer_show)
-            self.dealer_hand.add_cards(self.deck.draw(1))
+            self._dealer_hand.add_cards(dealer_show)
+            self._dealer_hand.add_cards(self._deck.draw(1))
         else:
-             self.dealer_hand.add_cards(dealer_show)
-             self.dealer_hand.add_cards(dealer_down)
+             self._dealer_hand.add_cards(dealer_show)
+             self._dealer_hand.add_cards(dealer_down)
             
         # Build the player's inital hand, drawing as needed
         assert(len(player_deal) <=2)
-        self.player_hand.add_cards(player_deal)
+        self._player_hand.add_cards(player_deal)
         if len(player_deal) == 0:
-            self.player_hand.add_cards(self.deck.draw(2))
+            self._player_hand.add_cards(self._deck.draw(2))
         elif len(player_deal) == 1:
-            self.player_hand.add_cards(self.deck.draw(1))
+            self._player_hand.add_cards(self._deck.draw(1))
         
         check_info = self.check_for_blackjack()
         if check_info == BlackJackCheck.PLAY_ON:
         
             # Neither dealer nor player have blackjack, on deal, so play the hands.
 
-            if self.player_hand.get_cards()[0].get_pips() == self.player_hand.get_cards()[1].get_pips():
+            if self._player_hand.get_cards()[0].get_pips() == self._player_hand.get_cards()[1].get_pips():
                 # The player has been dealt a pair. Ask the player strategy if we should split.
-                msg = 'Player has a pair and could split: ' + str(self.player_hand) + ' Dealer shows: ' + self.get_dealer_show().get_pips()
+                msg = 'Player has a pair and could split: ' + str(self._player_hand) + ' Dealer shows: ' + self.get_dealer_show().get_pips()
                 logger.debug(msg)
-                if self.player_play_strategy.split(self.player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
+                if self._player_play_strategy.split(self._player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
                     logger.debug('Player chose to split.')
                     # Execute split
                     
                     # Preserve second of pair to be transferred to split hand, and remove it from the player's hand
-                    xfer_card = self.player_hand.remove_card()
+                    xfer_card = self._player_hand.remove_card()
                     # Add the preserved card to the split hand
-                    self.split_hand.add_cards([xfer_card])
+                    self._split_hand.add_cards([xfer_card])
                     # Draw a second card into the split hand
                     self.draw_for_split(1)
                     # TODO: What if we drew to BlackJack in the split? For, now, just assert that the split does not have blackjack.
@@ -410,8 +409,8 @@ class BlackJackSim:
             
             # One or both of dealer or/and player have blackjack. Set game outcome, etc. in game info
 
-            info.Player_Final_Hand = str(self.player_hand)
-            info.Dealer_Final_Hand = str(self.dealer_hand)
+            info.Player_Final_Hand = str(self._player_hand)
+            info.Dealer_Final_Hand = str(self._dealer_hand)
             
             if check_info == BlackJackCheck.BOTH_BLACKJACK:
                 # It's a tie score, and a push
@@ -441,7 +440,7 @@ class BlackJackSim:
         Return True if split hand has blackjack, otherwise return False.
         :return: Split hand has blackjack, True/False, bool
         """
-        split_info = self.split_hand.hand_info()
+        split_info = self._split_hand.hand_info()
         if split_info.Count_Max == 21:
             return True
         else:
@@ -458,8 +457,8 @@ class BlackJackSim:
         # Note that this will be the default return, that is, if none of the if/elif below are true
         check_info = BlackJackCheck.PLAY_ON
         
-        dealer_info = self.dealer_hand.hand_info()
-        player_info = self.player_hand.hand_info()
+        dealer_info = self._dealer_hand.hand_info()
+        player_info = self._player_hand.hand_info()
         
         if dealer_info.Count_Max == 21 and player_info.Count_Max == 21:
             check_info = BlackJackCheck.BOTH_BLACKJACK
@@ -477,7 +476,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.dealer_play_strategy.play(hand_info_callback=self.dealer_hand_info, draw_callback=self.draw_for_dealer, dealer_show_callback=self.get_dealer_show)
+        outcome_info = self._dealer_play_strategy.play(hand_info_callback=self.dealer_hand_info, draw_callback=self.draw_for_dealer, dealer_show_callback=self.get_dealer_show)
                   
         return outcome_info
         
@@ -488,7 +487,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show, sim_object = self)
+        outcome_info = self._player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show, sim_object = self)
                     
         return outcome_info
     
@@ -499,7 +498,7 @@ class BlackJackSim:
         information about the outcome of playing the hand.
         :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
         """
-        outcome_info = self.player_play_strategy.play(hand_info_callback=self.split_hand_info, draw_callback=self.draw_for_split, dealer_show_callback=self.get_dealer_show, sim_object = self)
+        outcome_info = self._player_play_strategy.play(hand_info_callback=self.split_hand_info, draw_callback=self.draw_for_split, dealer_show_callback=self.get_dealer_show, sim_object = self)
 
         return outcome_info
     
@@ -614,6 +613,21 @@ class BlackJackSim:
         return fh
     
     
+    def clear_hands(self, clear_dealer = True, clear_player = True, clear_split = True):
+        """
+        Clear the Hand()s used for the simulation.
+        :Parameter clear_dealer: If True (default), clear the dealer's hand, boolean
+        :Parameter clear_player: If True (default), clear the player's hand, boolean
+        :Parameter clear_split: If True (default), clear the player's split hand, boolean
+        :return: None
+        """
+        if (clear_dealer): self._dealer_hand = Hand()
+        if (clear_player): self._player_hand = Hand()
+        if (clear_split): self._split_hand = Hand()
+
+        return None
+
+    
     def win_probability_hit_stand(self, player_hand = Hand(), dealer_hand = Hand(), num_trials = 1000, deck = None):
         """
         Determine the probability of winning and pushing for both hitting one card and for standing at any point in playing a hand.
@@ -661,13 +675,14 @@ class BlackJackSim:
             logger.debug(msg)
             
             # Clear the player and dealer hands in the simulation for this trial
-            bjs.dealer_hand = Hand()
-            bjs.player_hand = Hand()
+            bjs.clear_hands()
         
             # Transfer dealer's cards to the dealer's hand in the simulation for this trial
-            bjs.dealer_hand.add_cards(dealer_hand.get_cards())
+            # TODO: Should not be directing using _dealer_hand when we are not self
+            bjs._dealer_hand.add_cards(dealer_hand.get_cards())
             # If we got only one card from dealer_hand argument then draw the second
-            if (bjs.dealer_hand.get_num_cards() == 1):
+            # TODO: Should not be directing using _dealer_hand when we are not self
+            if (bjs._dealer_hand.get_num_cards() == 1):
                 bjs.draw_for_dealer()
                 
             # Did the dealer draw to a blackjack?
@@ -676,7 +691,8 @@ class BlackJackSim:
                 # Dealer didn't draw to blackjack, so we need to run the trial...
             
                 # Transfer player's cards to the player's hand in the simulation for this trial
-                bjs.player_hand.add_cards(player_hand.get_cards())
+                # TODO: Should not be directing using _player_hand when we are not self
+                bjs._player_hand.add_cards(player_hand.get_cards())
         
                 info = GamePlayOutcome()
         
@@ -749,7 +765,8 @@ class BlackJackSim:
                 # Log that dealer with a blackjack.
                 msg = 'Probability trial: ' + str(g+1) + ' Dealer drew to blackjack and won.'
                 logger.debug(msg)
-                msg = 'Player Hand: ' + str(player_hand) + ' Dealer Hand: ' + str(bjs.dealer_hand)
+                # TODO: Should not be directing using _dealer_hand when we are not self
+                msg = 'Player Hand: ' + str(player_hand) + ' Dealer Hand: ' + str(bjs._dealer_hand)
                 logger.debug(msg)
                 
         # Compute probabilities
