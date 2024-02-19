@@ -1,7 +1,7 @@
 import unittest
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, HoylePlayerPlayStrategy
-from deck import Stacked_Deck
+from deck import StackedDeck
 from card import Card
 
 class Test_HoylePlayerPlayStrategy(unittest.TestCase):
@@ -32,11 +32,11 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = HoylePlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
         # The rest don't matter as there should be no draws during play.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','7'), Card('S','5'), Card('H','2')])
         
         # Assign the created deck to the sim object
@@ -72,11 +72,11 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
                 
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
 
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','6'), Card('S','10'), Card('S','5'), Card('H','K')])
 
         # Assign the created deck to the sim object
@@ -112,11 +112,11 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
                 
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
 
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','6'), Card('S','10'), Card('S','5'), Card('H','7')])
 
         # Assign the created deck to the sim object
@@ -152,11 +152,11 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
                 
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
 
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','6'), Card('S','6'), Card('S','5'), Card('H','2')])
 
         # Assign the created deck to the sim object
@@ -192,11 +192,11 @@ class Test_HoylePlayerPlayStrategy(unittest.TestCase):
                 
         ps = HoylePlayerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5, 6 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
 
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','6'), Card('S','7'), Card('S','5'), Card('H','2'), Card('H','3')])
 
         # Assign the created deck to the sim object

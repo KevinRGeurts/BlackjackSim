@@ -11,27 +11,27 @@ class Card:
         count will be automatically set based on pips.
         """
         assert(suit == 'H' or suit == 'D' or suit == 'S' or suit == 'C')
-        self.suit=suit
-        self.pips=pips
-        self.count=self.get_count_from_pips(pips)
+        self._suit=suit
+        self._pips=pips
+        self._count=self.get_count_from_pips(pips)
         
     
     def count_card(self, ace_high=False):
         """
         Return the numeric count of the card.
-        :param ace_low: Should an ace be counted as 1 (False) or 11 (True)?
+        :parameter ace_low: Should an ace be counted as 1 (False) or 11 (True)?
         :return: The numeric count of the card
         """
         card_count = 0;
-        if (self.pips == 'A') and (ace_high):
+        if (self._pips == 'A') and (ace_high):
             card_count = 11
         else:
-            card_count = self.count
+            card_count = self._count
         return card_count
     
     
     def __str__(self):
-        return self.pips + self.suit
+        return self._pips + self._suit
         
     
     def get_count_from_pips(self, pips=''):
@@ -55,19 +55,19 @@ class Card:
     def get_pips(self):
         """
         Return the Card's pips as a string. By convention, this method should be used to get a Card's pips, rather than 
-        directly accessing the pips data member, to insulate the outside world from the details Card's data model.
+        directly accessing the _pips data member, to insulate the outside world from the details Card's data model.
         "return: Card's pips, string
         """
-        return self.pips
+        return self._pips
     
 
     def get_suit(self):
         """
         Return the Card's suit as a string. By convention, this method should be used to get a Card's suit, rather than 
-        directly accessing the suit data member, to insulate the outside world from the details Card's data model.
+        directly accessing the _suit data member, to insulate the outside world from the details Card's data model.
         "return: Card's suit, string
         """
-        return self.suit
+        return self._suit
     
 
     def make_card_list_from_str(self, card_str = ''):

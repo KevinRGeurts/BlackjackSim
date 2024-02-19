@@ -1,11 +1,11 @@
 import unittest
-from deck import Deck, Stacked_Deck
+from deck import Deck, StackedDeck
 from card import Card
 
-class Test_Stacked_Deck(unittest.TestCase):
+class Test_StackedDeck(unittest.TestCase):
     
     def test_draw_one(self):
-        d = Stacked_Deck()
+        d = StackedDeck()
         
         # Populate the deck with a full 52 card deck in a different order than constructed by the parent.
         # Intent is to have enough cards that we would not likely get a random draw from the parent that matched
@@ -81,7 +81,7 @@ class Test_Stacked_Deck(unittest.TestCase):
         act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the drawn card gone from the deck?
-        self.assertTrue(dc not in d.deck)
+        self.assertTrue(dc not in d._deck)
 
 
 if __name__ == '__main__':

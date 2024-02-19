@@ -32,7 +32,7 @@ class Test_Deck(unittest.TestCase):
         act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the drawn card gone from the deck?
-        self.assertTrue(dc not in d.deck)
+        self.assertTrue(dc not in d._deck)
         
     def test_draw_all_not_infinite(self):
         from random import seed
@@ -58,7 +58,7 @@ class Test_Deck(unittest.TestCase):
         act_val = (dc.get_suit(), dc.get_pips())
         self.assertTupleEqual(exp_val, act_val)
         # Is the drawn card still in the deck?
-        self.assertTrue(dc in d.deck)
+        self.assertTrue(dc in d._deck)
         
     def test_draw_too_many_cards(self):
         from random import seed

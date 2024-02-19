@@ -1,4 +1,4 @@
-from deck import Stacked_Deck
+from deck import StackedDeck
 from card import Card
 from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome
@@ -446,12 +446,12 @@ if __name__ == '__main__':
     # bjs = BlackJackSim()
     # print('Starting a game of black jack with a stacked deck to have player and dealer get blackjack...')
         
-    # # Replace sim's deck with Stacked_Deck
-    # # Create a Stacked_Deck
-    # sd = Stacked_Deck()
+    # # Replace sim's deck with StackedDeck
+    # # Create a StackedDeck
+    # sd = StackedDeck()
     # # It's assumed that BlackJackSim.play_game() will give first two cards in deck to dealer.
     # sd.add_cards([Card('C','A'), Card('D','K'), Card('S','10'), Card('H','A')])
-    # # Replace sim's deck with the Stacked_Deck
+    # # Replace sim's deck with the StackedDeck
     # bjs.switch_deck(sd)
        
     # info = bjs.play_game()

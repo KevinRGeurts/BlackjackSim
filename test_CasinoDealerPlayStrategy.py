@@ -2,7 +2,7 @@ import unittest
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy
 from hand import Hand
-from deck import Stacked_Deck
+from deck import StackedDeck
 from card import Card
 
 class Test_CasinoDealerPlayStrategy(unittest.TestCase):
@@ -21,10 +21,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','8'), Card('D','J'), Card('S','5'), Card('H','2')])
 
         # Assign the created deck to the sim object
@@ -60,10 +60,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('D','J'), Card('S','5'), Card('H','2')])
 
         # Assign the created deck to the sim object
@@ -99,10 +99,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','5'), Card('H','2'), Card('D','J'), Card('C','A')])
 
         # Assign the created deck to the sim object
@@ -138,10 +138,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','7'), Card('H','9'), Card('D','J'), Card('C','A')])
 
         # Assign the created deck to the sim object
@@ -177,10 +177,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','7'), Card('H','8'), Card('D','J'), Card('C','A'), Card('D','3')])
 
         # Assign the created deck to the sim object
@@ -216,10 +216,10 @@ class Test_CasinoDealerPlayStrategy(unittest.TestCase):
                 
         ps = CasinoDealerPlayStrategy()
         
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # Card 1, 2, 4, 5 will end up in the player's hand.
         # Card 3 will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','7'), Card('H','8'), Card('D','J'), Card('C','A'), Card('D','J')])
 
         # Assign the created deck to the sim object

@@ -1,6 +1,6 @@
 import unittest
 from card import Card
-from deck import Stacked_Deck
+from deck import StackedDeck
 from PlayStrategy import InteractiveProbabilityPlayerPlayStrategy, BlackJackPlayStatus
 from BlackJackSim import BlackJackSim
 import io
@@ -19,10 +19,10 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','5'), Card('C','2'), Card('C','8')])
         
         # Assign the created deck to the sim object
@@ -61,11 +61,11 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
         # The 4th cards will be draw as a hit by the player's hand
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','5'), Card('C','2'), Card('C','8'), Card('D','10')])
         
         # Assign the created deck to the sim object
@@ -104,11 +104,11 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
         # The 4th and 5th cards will be draw as hits by the player's hand
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('S','5'), Card('C','2'), Card('C','8'), Card('D','6'), Card('H','K')])
         
         # Assign the created deck to the sim object

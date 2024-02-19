@@ -1,7 +1,7 @@
 import unittest
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, ProbabilityPlayerPlayStrategy
-from deck import Stacked_Deck
+from deck import StackedDeck
 from card import Card
 
 class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
@@ -14,11 +14,11 @@ class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = ProbabilityPlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
         # The rest don't matter as there should be no draws during play.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','10'), Card('S','8'), Card('D','5'), Card('H','2')])
         
         # Assign the created deck to the sim object
@@ -55,10 +55,10 @@ class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
         # Create the desired play strategy for the test
         ps = ProbabilityPlayerPlayStrategy()
        
-        # Create a Stacked_Deck.
+        # Create a StackedDeck.
         # The first two cards (deal), and the fourth card (hit) will end up in the player's hand.
         # The third card will end up in the dealer's hand, so there is a show card available.
-        sd = Stacked_Deck()
+        sd = StackedDeck()
         sd.add_cards([Card('C','A'), Card('S','5'), Card('D','5'), Card('C','5')])
         
         # Assign the created deck to the sim object
