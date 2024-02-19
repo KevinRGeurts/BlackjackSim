@@ -364,7 +364,7 @@ class BlackJackSim:
                     # Execute split
                     
                     # Preserve second of pair to be transferred to split hand, and remove it from the player's hand
-                    xfer_card = self.player_hand.cards.pop()
+                    xfer_card = self.player_hand.remove_card()
                     # Add the preserved card to the split hand
                     self.split_hand.add_cards([xfer_card])
                     # Draw a second card into the split hand

@@ -39,20 +39,20 @@ class Hand:
         Construct an empty hand of playing cards.
         """
         # List of cards in the hand
-        self.cards=[]
+        self._cards=[]
 
     
     def add_cards(self, newCards=[]):
         """
         Add a list of one or more new Card(s), or a single Card to the hand.
         :param newCards: The lisf of new Card(s), or a single Card to be added to the hand
-        :return: A list of the cards in the hand.
+        :return: A list of the cards in the hand, a shallow copy of self._cards, list
         """
         if type(newCards) == type(Card()):
-            self.cards.append(newCards)
+            self._cards.append(newCards)
         elif type(newCards) == type([]):  
-            self.cards.extend(newCards)
-        return self.cards
+            self._cards.extend(newCards)
+        return list(self._cards) # list(list) makes a shallow copy, which is what we want
     
     
     def get_aces(self):
@@ -62,7 +62,7 @@ class Hand:
         """
         # Extract the list of any aces in the hand.
         # Do the extraction using a "list comprehension"
-        aces=[x for x in self.cards if x.get_pips() == 'A']
+        aces=[x for x in self._cards if x.get_pips() == 'A']
         ah = Hand()
         ah.add_cards(aces)
         return ah
@@ -74,7 +74,7 @@ class Hand:
         :return: The integer number of aces in the Hand.
         """
         h = self.get_aces()
-        return len(h.cards)
+        return h.get_num_cards()
     
     
     def get_non_aces(self):
@@ -84,7 +84,7 @@ class Hand:
         """
         # Extract the list of any aces in the hand.
         # Do the extraction using a "list comprehension"
-        non_aces=[x for x in self.cards if x.get_pips() != 'A']
+        non_aces=[x for x in self._cards if x.get_pips() != 'A']
         h = Hand()
         h.add_cards(non_aces)
         return h
@@ -96,25 +96,25 @@ class Hand:
         :return: The integer number of cards that are not aces in the Hand.
         """
         h = self.get_non_aces()
-        return len(h.cards)
+        return h.get_num_cards()
     
    
     def get_num_cards(self):
         """
         Return the total number of cards in the Hand. By convention, this method should be used, rather than 
-        directly accessing the Hand's cards data member and using len(), to insulate the outside world from the details Hand's data model.
+        directly accessing the Hand's _cards data member and using len(), to insulate the outside world from the details Hand's data model.
         "return: Total number of cards in the hand, int
         """
-        return len(self.cards)
+        return len(self._cards)
     
     
     def get_cards(self):
         """
-        Return a list of the cards in the Hand, a shallow copy of self.cards. By convention, this method should be used, rather than 
+        Return a list of the cards in the Hand. By convention, this method should be used, rather than 
         directly accessing the Hand's cards data member, to insulate the outside world from the details Hand's data model.
-        :return: Cards in the hand, list
+        :return: Cards in the hand, a shallow copy of self._cards, list
         """
-        return list(self.cards) # list(list) makes a shallow copy, which is what we want
+        return list(self._cards) # list(list) makes a shallow copy, which is what we want
 
  
     def hand_info(self):
@@ -139,10 +139,10 @@ class Hand:
         count_aces = 0
         if num_aces > 0:
             # There is at least one ace. Add one ace counted "high" (i.e. 11) to the count value of aces in the hand
-            count_aces += self.get_aces().cards[0].count_card(ace_high=True)
+            count_aces += self.get_aces().get_cards()[0].count_card(ace_high=True)
         if (num_aces - 1) > 0:
             # There is more than one ace. Add a "low" (i.e. 1) ace value to the count value of aces in the hand for each ace beyond one
-            count_aces += (num_aces - 1) * self.get_aces().cards[0].count_card(ace_high=False)
+            count_aces += (num_aces - 1) * self.get_aces().get_cards()[0].count_card(ace_high=False)
         info.Count_Max = info.Count_Other + count_aces
 
         return info
@@ -156,7 +156,7 @@ class Hand:
         count = 0
         
         # TODO: Could use a lamda function maybe to compact this?
-        for x in self.cards:
+        for x in self._cards:
             count += x.count_card(ace_high=False)
                 
         return count
@@ -168,12 +168,12 @@ class Hand:
         :parameter index: index of card to remove from the hand (starting at 0), int
         :return: The card that was removed from the had, Card
         """
-        return self.cards.pop(index)
+        return self._cards.pop(index)
     
     
     def __str__(self):
         s = ''
-        for x in self.cards:
+        for x in self._cards:
             s += str(x) + ' '
         # Remove unneeded trailing space
         s = s[0:len(s)-1]
