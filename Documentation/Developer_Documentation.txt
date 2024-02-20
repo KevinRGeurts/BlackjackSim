@@ -289,9 +289,18 @@ So, trying to put all this together into a workflow...
 			Player % BlackJacks: 4.1
 
 
+*** Preserving here an example of using assertRaises in a unit test as a go-by ***
 
-
-
+    def test_draw_too_many_cards(self):
+        from random import seed
+        seed(1234567890)
+        d = Deck()
+        # Note that the second argument to assertRaises(...) must be a callable, with its argument list then following.
+        # Or it might be easier to use the second sytax that has the "with".
+        self.assertRaises(AssertionError, d.draw, 53)
+        # Alternatively, this syntax also works.
+        #with self.assertRaises(AssertionError):
+        #    d.draw(53)
 
 
 

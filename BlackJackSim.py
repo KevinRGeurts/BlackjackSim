@@ -1,4 +1,3 @@
-from turtle import clear
 from deck import Deck
 from hand import Hand
 from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy

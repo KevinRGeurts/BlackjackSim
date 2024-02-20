@@ -64,12 +64,15 @@ class Test_Deck(unittest.TestCase):
         from random import seed
         seed(1234567890)
         d = Deck()
-        # Note that the second argument to assertRaises(...) must be a callable, with its argument list then following.
-        # Or it might be easier to use the second sytax that has the "with".
-        self.assertRaises(AssertionError, d.draw, 53)
-        # Alternatively, this syntax also works.
-        #with self.assertRaises(AssertionError):
-        #    d.draw(53)
+        # Draw one more card than is available in the deck, to force the deck to be rebuilt to provide the last card of the draw
+        dc = d.draw(53)
+        # Deck should have 51 cards
+        self.assertEqual(51, d.cards_remaining())
+        # Has the expected card been drawn last?
+        c = Card('S', '2')
+        exp_val = (c.get_suit(), c.get_pips())
+        act_val = (dc[len(dc)-1].get_suit(), dc[len(dc)-1].get_pips())
+        self.assertTupleEqual(exp_val, act_val)
         
 
 if __name__ == '__main__':
