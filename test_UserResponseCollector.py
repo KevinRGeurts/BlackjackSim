@@ -1,7 +1,10 @@
+# Standard
 import unittest
 from unittest.mock import patch
-from UserResponseCollector import *
 import io
+
+# Local
+from UserResponseCollector import *
 from hand import Hand
 
 

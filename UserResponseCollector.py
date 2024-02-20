@@ -1,4 +1,7 @@
+# Standard
 from enum import Enum
+
+# Local
 from card import Card
 
 

@@ -1,4 +1,7 @@
+# Standard
 import unittest
+
+# Local
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, ProbabilityPlayerPlayStrategy
 from deck import StackedDeck

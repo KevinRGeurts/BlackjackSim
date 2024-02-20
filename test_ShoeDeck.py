@@ -1,4 +1,7 @@
+# Standard
 import unittest
+
+# Local
 from deck import ShoeDeck
 from card import Card
 

@@ -1,5 +1,8 @@
-from card import Card
+# Standard
 from random import randrange
+
+# Local
+from card import Card
 
 class Deck:
     """

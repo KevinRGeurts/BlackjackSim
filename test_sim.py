@@ -1,12 +1,16 @@
+# Standard
 import unittest
+import logging
+from pathlib import Path
+import os
+
+# Local
 from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
 from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from deck import StackedDeck
 from hand import Hand
 from card import Card
-import logging
-from pathlib import Path
-import os
+
 
 class Test_Sim(unittest.TestCase):
 
@@ -290,7 +294,7 @@ class Test_Sim(unittest.TestCase):
         seed(1234567890)
         
         sim = BlackJackSim()
-        (results_list, net_expected) = sim.play_batches_of_games(10, 10)
+        (results_list, net_expected, stats) = sim.play_batches_of_games(10, 10)
         
         # Did we win a net of 1 game the number of times expected?
         exp_val = 3
@@ -307,6 +311,28 @@ class Test_Sim(unittest.TestCase):
         exp_val = -0.4
         act_val = net_expected
         self.assertEqual(exp_val, act_val)
+        
+        # Did we get (almost, to 4 decimal places) the expected values for the batch of games statistics?
+        exp_val = 46.8333
+        self.assertAlmostEqual(exp_val, stats.Dealer_Win_Percent_Mean, 4)
+        exp_val = 4.6776
+        self.assertAlmostEqual(exp_val, stats.Dealer_Win_Percent_StdErr, 4)
+        exp_val = 43.3333
+        self.assertAlmostEqual(exp_val, stats.Player_Win_Percent_Mean, 4)
+        exp_val = 3.8490
+        self.assertAlmostEqual(exp_val, stats.Player_Win_Percent_StdErr, 4)
+        exp_val = 9.8333
+        self.assertAlmostEqual(exp_val, stats.Push_Percent_Mean, 4)
+        exp_val = 2.1148
+        self.assertAlmostEqual(exp_val, stats.Push_Percent_StdErr, 4)
+        exp_val = 3.0000
+        self.assertAlmostEqual(exp_val, stats.Dealer_BlackJack_Percent_Mean, 4)
+        exp_val = 2.1344
+        self.assertAlmostEqual(exp_val, stats.Dealer_BlackJack_Percent_StdErr, 4)
+        exp_val = 5.0000
+        self.assertAlmostEqual(exp_val, stats.Player_BlackJack_Percent_Mean, 4)
+        exp_val = 2.6874
+        self.assertAlmostEqual(exp_val, stats.Player_BlackJack_Percent_StdErr, 4)
         
     
     def test_logging_info(self):

@@ -1,8 +1,13 @@
+# Standard
+from enum import Enum
+import logging
+from statistics import mean, stdev
+from math import sqrt
+
+# Local
 from deck import Deck
 from hand import Hand
 from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
-from enum import Enum
-import logging
 
 
 class BlackJackCheck(Enum):
@@ -86,6 +91,40 @@ class BlackJackStats:
         self.Pushes = 0
         self.Dealer_BlackJacks = 0
         self.Player_BlackJacks = 0
+        
+class BlackJackBatchStats:
+    """
+    This class is a structued way of returning information about the out come of playing batches of blackjack, e.g., from play_batches_of_games().
+    Think of this as a C struct, where it is expected that data members will be direcly accessed, because this class has no methods, beyound __init__().
+    """
+    
+    def __init__(self):
+        """
+        Create the data members of the structured info.
+            The mean values of the win/push/blackjack percents from each batch of games: 
+                Dealer_Win_Percent_Mean
+                Player_Win_Percent_Mean
+                Push_Percent_Mean
+                Dealer_BlackJack_Percent_Mean
+                Player_BlackJack_Percent_Mean
+            The standard error of the mean values of the win/push/blackjack percents from each batch of games:
+            (For definition of standard error: https://en.wikipedia.org/wiki/Standard_error)
+                Dealer_Win_Percent_StdErr
+                Player_Win_Percent_StdErr
+                Push_Percent_StdErr
+                Dealer_BlackJack_Percent_StdErr
+                Player_BlackJack_Percent_StdErr
+        """
+        self.Dealer_Win_Percent_Mean = 0.0
+        self.Dealer_Win_Percent_StdErr = 0.0
+        self.Player_Win_Percent_Mean = 0.0
+        self.Player_Win_Percent_StdErr = 0.0
+        self.Push_Percent_Mean = 0.0
+        self.Push_Percent_StdErr = 0.0
+        self.Dealer_BlackJack_Percent_Mean = 0.0
+        self.Dealer_BlackJack_Percent_StdErr = 0.0
+        self.Player_BlackJack_Percent_Mean = 0.0
+        self.Player_BlackJack_Percent_StdErr = 0.0
 
 
 # TODO: If we only defaulted play strategies to PlayStrategy, we wouldn't need to import the specific implementations, which
@@ -214,14 +253,18 @@ class BlackJackSim:
             is the number of batches that produced this net number of losses or wins, and the third value is the fraction of batches
             that produced this net number of losses or wins.
             Item 2: The expected value of net losses or wins.
+            Item 3: Statistics across the batches, BlackJackBatchStats object
         """
         results = {}
         
         # Accumulate the number of batches using a dictionary, since we don't know which values of net wins or losses will show up
         
+        stats_list = []
         for b in range(num_batches):
             batch_stats = self.play_games(num_games)
             net_wins = batch_stats.Player_Wins - batch_stats.Dealer_Wins
+            # Accumulate the stats for the individual batches in a list, to be returned for additional possible analysis
+            stats_list.append(batch_stats)
             # Look up the results dictionary entry for key of net_wins
             v = results.get(net_wins)
             if v is None:
@@ -244,7 +287,30 @@ class BlackJackSim:
                 results_list.append((b,v,1.0*v/num_batches))
                 expected_value += 1.0*b*v/num_batches
 
-        return (results_list, expected_value)
+        # Compile the BlackJackBatchStats return value from the stats_list (mean and standard error values)
+        stats_return = BlackJackBatchStats()
+        
+        pwlst = [(s.Player_Wins / (s.Player_Wins + s.Dealer_Wins + s.Pushes)) for s in stats_list]
+        stats_return.Player_Win_Percent_Mean = 100.0 * mean(pwlst)
+        stats_return.Player_Win_Percent_StdErr = 100.0 * stdev(pwlst) / sqrt(num_batches)
+
+        dwlst = [(s.Dealer_Wins / (s.Player_Wins + s.Dealer_Wins + s.Pushes)) for s in stats_list]
+        stats_return.Dealer_Win_Percent_Mean = 100.0 * mean(dwlst)
+        stats_return.Dealer_Win_Percent_StdErr = 100.0 * stdev(dwlst) / sqrt(num_batches)
+
+        pushlst = [(s.Pushes / (s.Player_Wins + s.Dealer_Wins + s.Pushes)) for s in stats_list]
+        stats_return.Push_Percent_Mean = 100.0 * mean(pushlst)
+        stats_return.Push_Percent_StdErr = 100.0 * stdev(pushlst) / sqrt(num_batches)
+    
+        pbjlst = [(s.Player_BlackJacks / (s.Player_Wins + s.Dealer_Wins + s.Pushes)) for s in stats_list]
+        stats_return.Player_BlackJack_Percent_Mean = 100.0 * mean(pbjlst)
+        stats_return.Player_BlackJack_Percent_StdErr = 100.0 * stdev(pbjlst) / sqrt(num_batches)
+
+        dbjlst = [(s.Dealer_BlackJacks / (s.Player_Wins + s.Dealer_Wins + s.Pushes)) for s in stats_list]
+        stats_return.Dealer_BlackJack_Percent_Mean = 100.0 * mean(dbjlst)
+        stats_return.Dealer_BlackJack_Percent_StdErr = 100.0 * stdev(dbjlst) / sqrt(num_batches)
+                
+        return (results_list, expected_value, stats_return)
 
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):

@@ -1,8 +1,11 @@
+# Standard
 from enum import Enum
+import logging
+
+# Local
 from hand import Hand
 from card import Card
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
-import logging
 
 
 class BlackJackPlayStatus(Enum):

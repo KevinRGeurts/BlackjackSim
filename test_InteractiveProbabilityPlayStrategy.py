@@ -1,10 +1,13 @@
+# Standard
 import unittest
+import io
+from unittest.mock import patch
+
+# Local
 from card import Card
 from deck import StackedDeck
 from PlayStrategy import InteractiveProbabilityPlayerPlayStrategy, BlackJackPlayStatus
 from BlackJackSim import BlackJackSim
-import io
-from unittest.mock import patch
 
 
 class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):

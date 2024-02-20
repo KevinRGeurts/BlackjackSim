@@ -1,11 +1,14 @@
+# Standard
+import logging
+from pathlib import Path
+
+# Local
 from deck import StackedDeck, Deck
 from card import Card
 from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
 from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
-import logging
-from pathlib import Path
 
 
 def play_debug_3():
@@ -429,12 +432,22 @@ def play_batches():
     # from random import seed
     # seed(1234567890)
 
-    (results_list, net_expected) = sim.play_batches_of_games(num_games, num_batches)
+    (results_list, net_expected, batch_stats) = sim.play_batches_of_games(num_games, num_batches)
 
     for tup in results_list:
         print('net wins: ', tup[0], 'number of times: ', tup[1], 'fraction of times: ', tup[2])
     print('expected value for net wins: ', net_expected)
 
+    print('mean player win %: ', batch_stats.Player_Win_Percent_Mean)
+    print('player win % standard error: ', batch_stats.Player_Win_Percent_StdErr)
+    print('mean dealer win %: ', batch_stats.Dealer_Win_Percent_Mean)
+    print('dealer win % standard error: ', batch_stats.Dealer_Win_Percent_StdErr)
+    print('push %: ', batch_stats.Push_Percent_Mean)
+    print('push % standard error: ', batch_stats.Push_Percent_StdErr)
+    print('mean player blackjack %: ', batch_stats.Player_BlackJack_Percent_Mean)
+    print('player blackjack % standard error: ', batch_stats.Player_BlackJack_Percent_StdErr)
+    print('mean dealer blackjack %: ', batch_stats.Dealer_BlackJack_Percent_Mean)
+    print('dealer blackjack % standard error: ', batch_stats.Dealer_BlackJack_Percent_StdErr)
 
     return None
 

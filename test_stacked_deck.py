@@ -1,5 +1,8 @@
+# Standard
 import unittest
-from deck import Deck, StackedDeck
+
+# Local
+from deck import StackedDeck
 from card import Card
 
 class Test_StackedDeck(unittest.TestCase):
