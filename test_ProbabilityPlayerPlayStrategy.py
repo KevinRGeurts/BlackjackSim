@@ -3,7 +3,7 @@ import unittest
 
 # Local
 from BlackJackSim import BlackJackSim
-from PlayStrategy import BlackJackPlayStatus, ProbabilityPlayerPlayStrategy
+from PlayStrategy import BlackJackPlayStatus, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy
 from deck import StackedDeck
 from card import Card
 
@@ -11,8 +11,8 @@ class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
     
     def test_play_stand(self):
         
-        # Create the sim object which will provide hand and deck for the play strategy
-        bjs = BlackJackSim()
+        # Create the sim object which will provide hand and deck for the play strategy, and play the dealer hand
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create the desired play strategy for the test
         ps = ProbabilityPlayerPlayStrategy()
@@ -52,8 +52,8 @@ class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
 
     def test_play_hit(self):
         
-        # Create the sim object which will provide hand and deck for the play strategy
-        bjs = BlackJackSim()
+        # Create the sim object which will provide hand and deck for the play strategy, and play the dealer hand
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create the desired play strategy for the test
         ps = ProbabilityPlayerPlayStrategy()

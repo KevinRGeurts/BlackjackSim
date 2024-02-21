@@ -7,7 +7,7 @@ from deck import StackedDeck, Deck
 from card import Card
 from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
-from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy
+from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
 
 
@@ -15,7 +15,7 @@ def play_debug_3():
         from random import seed
         seed(1234567890)
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         (results_list, net_expected) = sim.play_batches_of_games(10, 10)
         
         act_val = net_expected
@@ -27,7 +27,7 @@ def play_debug_2():
     """
     Run a debugging scenario coded in this function.
     """
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
 
     dealer_hand = Hand()    
     dealer_hand.add_cards([Card('H','5')])
@@ -43,7 +43,7 @@ def play_debug():
     """
     Run a debugging scenario coded in this function.
     """
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     
     dealer_hand = Hand()    
     dealer_hand.add_cards([Card('D','2')])
@@ -112,7 +112,7 @@ def simulate_blackjack_probability(num_deals = 10000):
     """
     # First, let's deal from an infinite deck
     
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     num_blackjacks = 0
     for deal in range(num_deals):
         sim.clear_hands()
@@ -153,8 +153,7 @@ def play_interactive_probability():
     """
     Use BlackJackSim to play an interactive game, but provid hit/stand win/push probability info to user.
     """
-    sim = BlackJackSim()
-    sim.set_player_play_strategy(InteractiveProbabilityPlayerPlayStrategy())
+    sim = BlackJackSim(player_strategy = InteractiveProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     print('Starting an interactive game of black jack with probability information...')
     info = sim.play_game()
     print('     Winner:', info.Game_Outcome)
@@ -178,8 +177,7 @@ def play_interactive():
     """
     Use BlackJackSim to play an interactive game.
     """
-    sim = BlackJackSim()
-    sim.set_player_play_strategy(InteractivePlayerPlayStrategy())
+    sim = BlackJackSim(player_strategy = InteractivePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     print('Starting an interactive game of black jack...')
     info = sim.play_game()
     print('     Winner:', info.Game_Outcome)
@@ -203,7 +201,7 @@ def play_one_auto():
     """
     Use BlackJackSim to play one game automatically.
     """
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     print('Starting a game of black jack...')
     info = sim.play_game()
     print('     Winner:', info.Game_Outcome)
@@ -232,7 +230,7 @@ def play_many_auto():
     # Get the hit/stand data logger so we can add a file handler to it if needed below
     logger = logging.getLogger('blackjack_logger.hit_stand_logger')
 
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     # sim.set_player_play_strategy(CasinoDealerPlayStrategy())
     print('Starting a bunch of games of black jack to generate win statistics...')
     
@@ -326,8 +324,7 @@ def play_many_probabilities_auto():
     # Get the hit/stand data logger so we can add a file handler to it if needed below
     logger = logging.getLogger('blackjack_logger.hit_stand_logger')
 
-    sim = BlackJackSim()
-    sim.set_player_play_strategy(ProbabilityPlayerPlayStrategy())
+    sim = BlackJackSim(player_strategy = ProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     print('Starting a bunch of games of black jack to generate win statistics, and using win/push probabilities to hit/stand...')
     
     # Ask if hit/stand data should be logged to file
@@ -415,7 +412,7 @@ def play_batches():
     Use BlackJackSim to play a bunch of batches of games automatically.
     Example: Use this to see the distibution of net wins if you play 20 hands of blackjack many times.
     """
-    sim = BlackJackSim()
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     print('Playing batches of blackjack games to determine distribution of net wins for a batch...')
     
     # Ask how many games the user wants to have played in each batch
@@ -503,7 +500,7 @@ if __name__ == '__main__':
       
     # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
 
-    # bjs = BlackJackSim()
+    # bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     # print('Starting a game of black jack with a stacked deck to have player and dealer get blackjack...')
         
     # # Replace sim's deck with StackedDeck

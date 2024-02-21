@@ -15,7 +15,7 @@ from card import Card
 class Test_Sim(unittest.TestCase):
 
     def test_set_player_play_strategy(self):
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         ps = CasinoDealerPlayStrategy()
         bjs.set_player_play_strategy(ps)
         
@@ -28,7 +28,7 @@ class Test_Sim(unittest.TestCase):
         
     
     def test_set_dealer_play_strategy(self):
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         ps = HoylePlayerPlayStrategy()
         bjs.set_dealer_play_strategy(ps)
         
@@ -226,7 +226,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_dealer_hand_hit_to_stand(self):
         
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -258,7 +258,7 @@ class Test_Sim(unittest.TestCase):
     def test_play_games_fixed_player_deal_and_dealer_show(self):
         from random import seed
         seed(1234567890)
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         player_deal=[Card('H','J'), Card('S','9')]
         dealer_show=Card('D','7')
         info = sim.play_games(100, player_deal, dealer_show)
@@ -293,7 +293,7 @@ class Test_Sim(unittest.TestCase):
         from random import seed
         seed(1234567890)
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         (results_list, net_expected, stats) = sim.play_batches_of_games(10, 10)
         
         # Did we win a net of 1 game the number of times expected?
@@ -337,7 +337,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_logging_info(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Set up logging
         sim.setup_logging()
@@ -353,7 +353,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_logging_debug(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Set up logging
         sim.setup_logging()
@@ -369,7 +369,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_logging_hit_stand(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Set up logging
         sim.setup_logging()
@@ -399,7 +399,7 @@ class Test_Sim(unittest.TestCase):
     def test_play_games(self):
         from random import seed
         seed(1234567890)
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         info = sim.play_games(100)
         dw = info.Dealer_Wins
         pw = info.Player_Wins
@@ -430,7 +430,7 @@ class Test_Sim(unittest.TestCase):
         
     def test_play_game_with_dealer_show_specified(self):
             
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -477,7 +477,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_game_with_dealer_show_and_player_deal_all_specified(self):
             
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -525,7 +525,7 @@ class Test_Sim(unittest.TestCase):
         
     def test_play_game_with_dealer_show_and_player_deal_part_specified(self):
             
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -573,7 +573,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_dealer_hand_hit_to_bust_max_stand_min(self):
         
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -604,7 +604,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_dealer_hand_hit_to_bust_max_hit_to_stand_min(self):
         
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -634,7 +634,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_play_dealer_hand_hit_to_bust_max_hit_to_bust_min(self):
         
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -665,7 +665,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_player_hand(self):
         
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -699,7 +699,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_game_dealer_blackjack(self):
 
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -746,7 +746,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_play_game_player_blackjack(self):
 
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -793,7 +793,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_play_game_both_blackjack(self):
 
-        bjs = BlackJackSim()
+        bjs = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Replace sim's deck with StackedDeck
         # Create a StackedDeck
@@ -839,7 +839,7 @@ class Test_Sim(unittest.TestCase):
         
     def test_game_with_split(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         info = GamePlayOutcome()
 
@@ -984,7 +984,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_win_probability_hit_stand_dealer_blackjack(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1008,7 +1008,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_win_probability_hit_push_stand_lose(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1034,7 +1034,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_win_probability_hit_lose_stand_push(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1060,7 +1060,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_win_probability_hit_lose_stand_lose(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1086,7 +1086,7 @@ class Test_Sim(unittest.TestCase):
     
     def test_win_probability_hit_win_stand_win(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1112,7 +1112,7 @@ class Test_Sim(unittest.TestCase):
 
     def test_win_probability_hit_lose_stand_win(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()
@@ -1138,7 +1138,7 @@ class Test_Sim(unittest.TestCase):
         
     def test_win_probability_hit_win_stand_lose(self):
         
-        sim = BlackJackSim()
+        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create a StackedDeck
         sd = StackedDeck()

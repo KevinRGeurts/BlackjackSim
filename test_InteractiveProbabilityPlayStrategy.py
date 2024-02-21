@@ -6,7 +6,7 @@ from unittest.mock import patch
 # Local
 from card import Card
 from deck import StackedDeck
-from PlayStrategy import InteractiveProbabilityPlayerPlayStrategy, BlackJackPlayStatus
+from PlayStrategy import InteractiveProbabilityPlayerPlayStrategy, BlackJackPlayStatus, CasinoDealerPlayStrategy
 from BlackJackSim import BlackJackSim
 
 
@@ -16,8 +16,8 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
     # The patch should result in a stand.
     @patch('sys.stdin', io.StringIO('s\n'))
     def test_stand_on_deal(self):
-        # Create the sim object which will provide hand and deck for the play strategy
-        bjs = BlackJackSim()
+        # Create the sim object which will provide hand and deck for the play strategy, and play the dealer hand
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()
@@ -58,8 +58,8 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
     # The patch should result in one hit, then a stand.
     @patch('sys.stdin', io.StringIO('h\ns\n'))
     def test_hit_to_stand(self):
-        # Create the sim object which will provide hand and deck for the play strategy
-        bjs = BlackJackSim()
+        # Create the sim object which will provide hand and deck for the play strategy, and play the dealer hand
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()
@@ -101,8 +101,8 @@ class Test_InteractiveProbabilityPlayerPlayStrategy(unittest.TestCase):
     # The patch should result in two hits, which will produce a bust.
     @patch('sys.stdin', io.StringIO('h\nh\n'))
     def test_hit_to_bust(self):
-        # Create the sim object which will provide hand and deck for the play strategy
-        bjs = BlackJackSim()
+        # Create the sim object which will provide hand and deck for the play strategy, and play the dealer hand
+        bjs = BlackJackSim(dealer_strategy = CasinoDealerPlayStrategy())
         
         # Create the desired play strategy for the test
         ps = InteractiveProbabilityPlayerPlayStrategy()

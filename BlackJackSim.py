@@ -7,7 +7,7 @@ from math import sqrt
 # Local
 from deck import Deck
 from hand import Hand
-from PlayStrategy import BlackJackPlayStatus, PlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from PlayStrategy import BlackJackPlayStatus, PlayStrategy
 
 
 class BlackJackCheck(Enum):
@@ -133,19 +133,21 @@ class BlackJackSim:
     """
     Logic for playing a game of black jack.\n
     """
-
-    def __init__(self):
+    # def __init__(self, player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy()):
+    def __init__(self, player_strategy = PlayStrategy(), dealer_strategy = PlayStrategy()):
         """
         Construct an infinite deck of Cards (i.e. an infinite deck shute), an empty dealer Hand, an empty player Hand,
         and, to be used if needed, an empty hand for if the player splits a pair. Also set default strategies for
         dealer and player hand play.
+        :parameter player_strategy: PlayStrategy instance used to play player hand, PlayStrategy or child instance
+        :parameter dealerer_strategy: PlayStrategy instance used to play dealer hand, PlayStrategy or child instance
         """
         self._deck = Deck(isInfinite = True)
         self._dealer_hand = Hand()
-        self._dealer_play_strategy = CasinoDealerPlayStrategy()
+        self.set_dealer_play_strategy(dealer_strategy)
         self._player_hand = Hand()
         self._split_hand = Hand() # For if the player splits a pair
-        self._player_play_strategy = HoylePlayerPlayStrategy()
+        self.set_player_play_strategy(player_strategy)
         
     # TODO: Add ability to log detailed results of all individual games in a set to a text file for later analyis.
     
@@ -392,19 +394,21 @@ class BlackJackSim:
         # Clear dealer, player, and split hands of Cards
         self.clear_hands()
         
-        # TODO: Simplify this logic, using 'not (is None)' syntax
         # Build the dealer's initial hand, drawing as needed
-        if dealer_show is None and dealer_down is None:
-            self._dealer_hand.add_cards(self._deck.draw(2))
-        elif dealer_show is None:
-            self._dealer_hand.add_cards(dealer_down)
-            self._dealer_hand.add_cards(self._deck.draw(1))
-        elif dealer_down is None:
-            self._dealer_hand.add_cards(dealer_show)
-            self._dealer_hand.add_cards(self._deck.draw(1))
+        
+        if dealer_show is None:
+            # Draw a card for the dealer's show card
+            self.draw_for_dealer(1)
         else:
-             self._dealer_hand.add_cards(dealer_show)
-             self._dealer_hand.add_cards(dealer_down)
+            # Add the argument show card to the dealer's hand
+            self._dealer_hand.add_cards(dealer_show)
+
+        if dealer_down is None:
+            # Draw a card for the dealer's down card
+            self.draw_for_dealer(1)
+        else:
+            # Add the argument down card to the dealer's hand
+            self._dealer_hand.add_cards(dealer_down)
             
         # Build the player's inital hand, drawing as needed
         assert(len(player_deal) <=2)
@@ -728,8 +732,9 @@ class BlackJackSim:
         stand_win_prob = 0.0
         stand_push_prob = 0.0
 
-        # Create a new BlackJackSim object to be used to play the games needed to compute the probabilites
-        bjs = BlackJackSim()
+        # Create a new BlackJackSim object to be used to play the games needed to compute the probabilites.
+        # Play with the same strategies as self.
+        bjs = BlackJackSim(player_strategy = self._player_play_strategy, dealer_strategy = self._dealer_play_strategy)
 
         # if deck argument is provided, replace the trial BlackJackSim object's deck with it
         if (deck is not None): bjs.switch_deck(deck)
