@@ -1,6 +1,8 @@
 # Standard
 import logging
 from pathlib import Path
+from time import process_time
+from random import seed
 
 # Local
 from deck import StackedDeck, Deck
@@ -12,7 +14,6 @@ from UserResponseCollector import UserResponseCollector_query_user, BlackJackQue
 
 
 def play_debug_3():
-        from random import seed
         seed(1234567890)
         
         sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
@@ -154,8 +155,11 @@ def play_interactive_probability():
     Use BlackJackSim to play an interactive game, but provid hit/stand win/push probability info to user.
     """
     sim = BlackJackSim(player_strategy = InteractiveProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('Starting an interactive game of black jack with probability information...')
+    print('--------------------')
+    print('Starting an interactive game of blackjack with probability information...')
+    print('--------------------')
     info = sim.play_game()
+    print('--------------------')
     print('     Winner:', info.Game_Outcome)
     print('     Player Status:', info.Player_Status)
     print('     Player Count:', info.Player_Count)
@@ -178,8 +182,11 @@ def play_interactive():
     Use BlackJackSim to play an interactive game.
     """
     sim = BlackJackSim(player_strategy = InteractivePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('Starting an interactive game of black jack...')
+    print('--------------------')
+    print('Starting an interactive game of blackjack...')
+    print('--------------------')
     info = sim.play_game()
+    print('--------------------')
     print('     Winner:', info.Game_Outcome)
     print('     Player Status:', info.Player_Status)
     print('     Player Count:', info.Player_Count)
@@ -202,7 +209,9 @@ def play_one_auto():
     Use BlackJackSim to play one game automatically.
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('Starting a game of black jack...')
+    print('--------------------')
+    print('Starting a game of blackjack...')
+    print('--------------------')
     info = sim.play_game()
     print('     Winner:', info.Game_Outcome)
     print('     Player Status:', info.Player_Status)
@@ -232,7 +241,9 @@ def play_many_auto():
 
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     # sim.set_player_play_strategy(CasinoDealerPlayStrategy())
-    print('Starting a bunch of games of black jack to generate win statistics...')
+    print('--------------------')
+    print('Starting a bunch of games of blackjack to generate win statistics...')
+    print('--------------------')
     
     # Ask if hit/stand data should be logged to file
     query_preface = 'Do you want to log hit/stand data to file?'
@@ -282,7 +293,14 @@ def play_many_auto():
     # from random import seed
     # seed(1234567890)
 
+    print('--------------------')
+    tic = process_time()
     info = sim.play_games(num_games, player_deal, dealer_show)
+    toc = process_time()
+    print('--------------------')
+    print('Time to play games (s): ', (toc-tic))
+    print('--------------------')
+    
     dw = info.Dealer_Wins
     pw = info.Player_Wins
     pu = info.Pushes
@@ -325,7 +343,9 @@ def play_many_probabilities_auto():
     logger = logging.getLogger('blackjack_logger.hit_stand_logger')
 
     sim = BlackJackSim(player_strategy = ProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('Starting a bunch of games of black jack to generate win statistics, and using win/push probabilities to hit/stand...')
+    print('--------------------')
+    print('Starting a bunch of games of blackjack to generate win statistics, and using win/push probabilities to hit/stand...')
+    print('--------------------')
     
     # Ask if hit/stand data should be logged to file
     query_preface = 'Do you want to log hit/stand data to file?'
@@ -372,10 +392,15 @@ def play_many_probabilities_auto():
         dealer_show = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)[0]
 
     # If you need repeatability, for example to debug something, then you can set a seed here.
-    # from random import seed
     # seed(1234567890)
 
+    tic = process_time()
     info = sim.play_games(num_games, player_deal, dealer_show)
+    toc = process_time()
+    print('--------------------')
+    print('Time to play games (s): ', (toc-tic))
+    print('--------------------')
+    
     dw = info.Dealer_Wins
     pw = info.Player_Wins
     pu = info.Pushes
@@ -413,7 +438,9 @@ def play_batches():
     Example: Use this to see the distibution of net wins if you play 20 hands of blackjack many times.
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
+    print('--------------------')
     print('Playing batches of blackjack games to determine distribution of net wins for a batch...')
+    print('--------------------')
     
     # Ask how many games the user wants to have played in each batch
     # Build a query to ask how many games the user wants to have played in each batch
@@ -426,15 +453,20 @@ def play_batches():
     num_batches = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
     
     # If you need repeatability, for example to debug something, then you can set a seed here.
-    # from random import seed
     # seed(1234567890)
 
+    tic = process_time()
     (results_list, net_expected, batch_stats) = sim.play_batches_of_games(num_games, num_batches)
-
+    toc = process_time()
+    print('--------------------')
+    print('Time to play batches of games (s): ', (toc-tic))
+    print('--------------------')
+    
     for tup in results_list:
         print('net wins: ', tup[0], 'number of times: ', tup[1], 'fraction of times: ', tup[2])
     print('expected value for net wins: ', net_expected)
 
+    print('--------------------')
     print('mean player win %: ', batch_stats.Player_Win_Percent_Mean)
     print('player win % standard error: ', batch_stats.Player_Win_Percent_StdErr)
     print('mean dealer win %: ', batch_stats.Dealer_Win_Percent_Mean)
@@ -461,8 +493,10 @@ if __name__ == '__main__':
     # Set up logging
     BlackJackSim().setup_logging()
     
+    print('--------------------')
     print('*** Python Blackjack Simulator ***')
-    
+    print('--------------------')
+        
     # Build a query for the user to obtain their choice of how to user the simulator
     query_preface = 'How do you want to use the simulator?'
     query_dic = {'q':'Quit', 'i':'Interactive Game', 'p':'Interactive Game with Probabilities', 'a':'Automatic Game', 'm':'Many Automatic Games', 'u':'Many Automatic Games Using Probabilities'   , 'b':'Batches of Games', 'j':'Blackjack Probability', 'd':'Debug Scenario'}
@@ -496,6 +530,8 @@ if __name__ == '__main__':
             case 'd':
                 play_debug_3()
                 
+        
+        print('--------------------')
         response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
       
     # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***

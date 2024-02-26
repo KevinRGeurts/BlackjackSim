@@ -127,13 +127,10 @@ class BlackJackBatchStats:
         self.Player_BlackJack_Percent_StdErr = 0.0
 
 
-# TODO: If we only defaulted play strategies to PlayStrategy, we wouldn't need to import the specific implementations, which
-# would probably be more consistent with the intent of abstraction
 class BlackJackSim:
     """
     Logic for playing a game of black jack.\n
     """
-    # def __init__(self, player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy()):
     def __init__(self, player_strategy = PlayStrategy(), dealer_strategy = PlayStrategy()):
         """
         Construct an infinite deck of Cards (i.e. an infinite deck shute), an empty dealer Hand, an empty player Hand,
@@ -257,12 +254,23 @@ class BlackJackSim:
             Item 2: The expected value of net losses or wins.
             Item 3: Statistics across the batches, BlackJackBatchStats object
         """
+        
+        # Get the logger 'blackjack_logger'
+        logger = logging.getLogger('blackjack_logger')
+
         results = {}
         
         # Accumulate the number of batches using a dictionary, since we don't know which values of net wins or losses will show up
         
         stats_list = []
         for b in range(num_batches):
+
+            # Occassionally report progress by info logging
+            (report, percent_done) = self.percent_done(num_batches, b+1) # The +1 puts the counting for messaging on a 1...N basis instead of 0...N-1
+            if report:
+                msg = 'Batch playing progress (%): ' + str(percent_done)
+                logger.info(msg)
+
             batch_stats = self.play_games(num_games)
             net_wins = batch_stats.Player_Wins - batch_stats.Dealer_Wins
             # Accumulate the stats for the individual batches in a list, to be returned for additional possible analysis
@@ -339,8 +347,13 @@ class BlackJackSim:
         player_blackjacks = 0
         
         for g in range(num_games):
-            msg = 'Playing game: ' + str(g+1) # The +1 puts the counting for messaging on a 1...N basis instead of 0...N-1
-            logger.info(msg)
+            
+            # Occassionally report progress by info logging
+            (report, percent_done) = self.percent_done(num_games, g+1) # The +1 puts the counting for messaging on a 1...N basis instead of 0...N-1
+            if report:
+                msg = 'Game playing progress (%): ' + str(percent_done)
+                logger.info(msg)
+                
             info = self.play_game(player_deal, dealer_show)
             # Gather and record stats on who won
             if info.Game_Outcome == BlackJackGameOutcome.DEALER_WINS:
@@ -678,6 +691,8 @@ class BlackJackSim:
         fh.setFormatter(formatter)
         # Add the file handler to the logger
         logger.addHandler(fh)
+        # Add "header" information to the hit/stand logging file
+        logger.info('%s,%s,%s', 'HAND', 'SHOW', 'CLASS' )
         
         return fh
     
@@ -846,5 +861,26 @@ class BlackJackSim:
         stand_push_prob = stand_push_count / num_trials
 
         return (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
+    
+    
+    def percent_done(self, total, current):
+        """
+        This is a helper function used by, e.g., play_games() and play_batches_of_games(),to determine if and what percent d: one should be logged.
+        The logic is that a percentage done will always be returned, but a boolean will also be returned if the percentage done is 10, 20, 30, ... 100,
+        so that the calling method can choose to only occassionally report progress.
+        :parameter total: The total number of, e.g., games or batches, to be played, int
+        :parameter current: The current number of, e.g., game or batch being played, int
+        :return: Tuple (report, percent_done)
+            report = True if percent_done is 10, 20, 30, ... 100%, boolean
+            percent_done = int(100 * current / total)
+        """
+        percent_done = 100.0 * current / total
+        if current in [int(0.1*total) , int(0.2*total), int(0.3*total), int(0.4*total), int(0.5*total),
+                       int(0.6*total), int(0.7*total), int(0.8*total), int(0.9*total)
+                      ]:
+            report = True
+        else:
+            report = False
+        return (report, round(percent_done))
     
 

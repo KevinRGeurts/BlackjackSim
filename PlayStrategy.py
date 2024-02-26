@@ -383,14 +383,14 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                 elif info.Count_Min >= 17:
                     # Stand
                     # Log hit/stand training/test data, in CSV format
-                    logger.info('%s, %s, %s', info.String_Rep, str(dealer_show_card), 'STAND' )
+                    logger.info('%s,%s,%s', info.String_Rep, str(dealer_show_card), 'STAND' )
                     # -----
                     hand_status = BlackJackPlayStatus.STAND
                     final_count = info.Count_Min                    
                 elif info.Count_Min <= 12:
                     # Hit
                     # Log hit/stand training/test data, in CSV format
-                    logger.info('%s, %s, %s', info.String_Rep, str(dealer_show_card), 'HIT' )
+                    logger.info('%s,%s,%s', info.String_Rep, str(dealer_show_card), 'HIT' )
                     # -----
                     hand_status = BlackJackPlayStatus.HIT
                     draw_callback(1)
@@ -399,21 +399,21 @@ class HoylePlayerPlayStrategy(PlayStrategy):
                     if dealer_show_callback().count_card(ace_high = True) <= 6:
                         # Dealer shows 2 - 6, so stand (hoping dealer will have to hit and will bust)
                         # Log hit/stand training/test data, in CSV format
-                        logger.info('%s, %s, %s', info.String_Rep, str(dealer_show_card), 'STAND' )
+                        logger.info('%s,%s,%s', info.String_Rep, str(dealer_show_card), 'STAND' )
                         # -----
                         hand_status = BlackJackPlayStatus.STAND
                         final_count = info.Count_Min                        
                     else:
                         # Dealer shows 7 - 10, J, Q, K, or A, so hit
                         # Log hit/stand training/test data, in CSV format
-                        logger.info('%s, %s, %s', info.String_Rep, str(dealer_show_card), 'HIT' )
+                        logger.info('%s,%s,%s', info.String_Rep, str(dealer_show_card), 'HIT' )
                         # -----
                         hand_status = BlackJackPlayStatus.HIT
                         draw_callback(1)
             else:
                 # Stand, because Count_Max is > 17, and we haven't busted
                 # Log hit/stand training/test data, in CSV format
-                logger.info('%s, %s, %s', info.String_Rep, str(dealer_show_card), 'STAND' )
+                logger.info('%s,%s,%s', info.String_Rep, str(dealer_show_card), 'STAND' )
                 # -----
                 hand_status = BlackJackPlayStatus.STAND
                 final_count = info.Count_Max

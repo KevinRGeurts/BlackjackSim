@@ -344,11 +344,11 @@ class Test_Sim(unittest.TestCase):
         
         # Test that logger works as expected
         with self.assertLogs('blackjack_logger', level=logging.INFO) as cm:
-            sim.play_games(2)
+            sim.play_games(10)
         
         # Test that the info messages sent to the logger are as expected
-        self.assertEqual(cm.output[0], 'INFO:blackjack_logger:Playing game: 1')    
-        self.assertEqual(cm.output[1], 'INFO:blackjack_logger:Playing game: 2')
+        self.assertEqual(cm.output[0], 'INFO:blackjack_logger:Game playing progress (%): 10')    
+        self.assertEqual(cm.output[1], 'INFO:blackjack_logger:Game playing progress (%): 20')
         
     
     def test_logging_debug(self):
@@ -385,7 +385,7 @@ class Test_Sim(unittest.TestCase):
             sim.play_game([Card('H','9'), Card('S','K')], Card('C','2'))
         
             # Test that the debug message sent to the logger is as expected
-            self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS, 2C, STAND')
+            self.assertEqual(cm.output[0], 'INFO:blackjack_logger.hit_stand_logger:9H KS,2C,STAND')
         
         # Clean up
         logging.getLogger('blackjack_logger.hit_stand_logger').removeHandler(fh)
@@ -1160,6 +1160,33 @@ class Test_Sim(unittest.TestCase):
         act_val = sim.win_probability_hit_stand(player_hand,dealer_hand,1,sd)
 
         self.assertTupleEqual(exp_val, act_val)
+        
+    def test_percent_done(self):
+        sim = BlackJackSim()
+        
+        (report, percent_done) = sim.percent_done(9546, 954)
+        
+        # Did we get that we should report?
+        act_val = report
+        exp_val = True
+        self.assertEqual(exp_val, act_val)
+        
+        # Did we get 10% ?
+        act_val = percent_done
+        exp_val = 10
+        self.assertEqual(exp_val, act_val)
+        
+        (report, percent_done) = sim.percent_done(9546, 2387)
+        
+        # Did we get that we should not report?
+        act_val = report
+        exp_val = False
+        self.assertEqual(exp_val, act_val)
+        
+        # Did we get 25% ?
+        act_val = percent_done
+        exp_val = 25
+        self.assertEqual(exp_val, act_val)
 
 
 if __name__ == '__main__':
