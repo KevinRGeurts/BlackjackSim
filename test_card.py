@@ -91,6 +91,15 @@ class Test_Card(unittest.TestCase):
         act_val = str(h)
         self.assertEqual(exp_val, act_val)
 
+    def test_dunder_lt(self):
+        exp_val = 'AS 2H 3D 4C 5S 6S 7H 8C 9D 10H JC QH KS'
+        card_list = Card().make_card_list_from_str('AS QH 9D JC 10H KS 2H 4C 6S 3D 5S 8C 7H')
+        card_list.sort()
+        h = Hand()
+        h.add_cards(card_list)
+        act_val = str(h)
+        self.assertEqual(exp_val, act_val)
+
 
 if __name__ == '__main__':
     unittest.main()

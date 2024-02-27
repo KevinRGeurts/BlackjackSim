@@ -32,6 +32,36 @@ class Card:
     
     def __str__(self):
         return self._pips + self._suit
+
+    
+    def __lt__(self, other):
+        """
+        Must be implemented for a sequence of Cards, e.g., a list to be sorted.
+        This was first implemented for cribbage, so the comparison is designed for that, i.e.,
+            A < 2 < 3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K
+        """
+        less_than = False
+        self_count = self._count
+        # Handle J, Q, K by giving them a differnet count
+        match self._pips:
+            case 'J':
+                self_count = 11
+            case 'Q':
+                self_count = 12
+            case 'K':
+                self_count = 13
+        other_count = other.count_card()
+        match other.get_pips():
+            case 'J':
+                other_count = 11
+            case 'Q':
+                other_count = 12
+            case 'K':
+                other_count = 13
+        if self_count < other_count:
+            less_than = True
+
+        return less_than
         
     
     def get_count_from_pips(self, pips=''):
