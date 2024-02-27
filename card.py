@@ -28,6 +28,23 @@ class Card:
         else:
             card_count = self._count
         return card_count
+
+    
+    def get_sequence_count(self):
+        """
+        Return a numeric value that can be used to order a sequence of cards. Specifically A=1, [2...10], J=11, Q=12, K=13
+        """
+        count = self._count
+        # Handle J, Q, K by giving them a differnet count
+        match self._pips:
+            case 'J':
+                count = 11
+            case 'Q':
+                count = 12
+            case 'K':
+                count = 13
+       
+        return count
     
     
     def __str__(self):
@@ -41,23 +58,8 @@ class Card:
             A < 2 < 3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K
         """
         less_than = False
-        self_count = self._count
-        # Handle J, Q, K by giving them a differnet count
-        match self._pips:
-            case 'J':
-                self_count = 11
-            case 'Q':
-                self_count = 12
-            case 'K':
-                self_count = 13
-        other_count = other.count_card()
-        match other.get_pips():
-            case 'J':
-                other_count = 11
-            case 'Q':
-                other_count = 12
-            case 'K':
-                other_count = 13
+        self_count = self.get_sequence_count()
+        other_count = other.get_sequence_count()
         if self_count < other_count:
             less_than = True
 
