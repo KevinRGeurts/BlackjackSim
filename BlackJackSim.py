@@ -134,8 +134,7 @@ class BlackJackSim:
     def __init__(self, player_strategy = PlayStrategy(), dealer_strategy = PlayStrategy()):
         """
         Construct an infinite deck of Cards (i.e. an infinite deck shute), an empty dealer Hand, an empty player Hand,
-        and, to be used if needed, an empty hand for if the player splits a pair. Also set default strategies for
-        dealer and player hand play.
+        and, to be used if needed, an empty hand for if the player splits a pair. Also set strategies for dealer and player hand play.
         :parameter player_strategy: PlayStrategy instance used to play player hand, PlayStrategy or child instance
         :parameter dealerer_strategy: PlayStrategy instance used to play dealer hand, PlayStrategy or child instance
         """
@@ -151,7 +150,7 @@ class BlackJackSim:
     def set_player_play_strategy(self, ps = PlayStrategy()):
         """
         Set the player play strategy.
-        :parameter ps: The player play strategy, PlayerPlayStrategy()
+        :parameter ps: The player play strategy, PlayStrategy()
         :return: None
         """
         assert(isinstance(ps, PlayStrategy))
@@ -162,7 +161,7 @@ class BlackJackSim:
     def set_dealer_play_strategy(self, ps = PlayStrategy()):
         """
         Set the dealer play strategy.
-        :parameter ps: The dealer play strategy, PlayerPlayStrategy()
+        :parameter ps: The dealer play strategy, PlayStrategy()
         :return: None
         """
         assert(isinstance(ps, PlayStrategy))
