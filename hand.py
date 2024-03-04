@@ -178,6 +178,20 @@ class Hand:
             s += str(x) + ' '
         # Remove unneeded trailing space
         s = s[0:len(s)-1]
-        return s       
+        return s
+    
+    # Starting to implement methods so that a Hand can be treated as a container type. See Section 3.3.7. Emulating container types in
+    # https://docs.python.org/3/reference/datamodel.html#classgetitem-versus-getitem
+    
+    def __iter__(self):
+        return iter(self._cards)
+    
+    def __len__(self):
+        return len(self._cards)
+    
+    def __getitem__(self, item):
+        if item >= len(self):
+            raise IndexError("Hand index out of range")
+        return self._cards[item]
 
         

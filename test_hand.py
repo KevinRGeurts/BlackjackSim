@@ -226,6 +226,46 @@ class Test_Hand(unittest.TestCase):
         
         self.assertEqual(exp_val, act_val)
         
+    def test_dunder_iter_dunder(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
+        h.add_cards(cards)
+        
+        exp_val = 20
+        act_val = 0
+        for c in h:
+            act_val += c.count_card()
+        
+        self.assertEqual(exp_val, act_val)
+        
+    def test_dunder_len_dunder(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
+        h.add_cards(cards)
+        
+        exp_val = 5
+        act_val = len(h)
+        
+        self.assertEqual(exp_val, act_val)
+        
+    def test_dunder_getitem_dunder(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
+        h.add_cards(cards)
+        
+        # Test that h[] works with a valid index
+        exp_val = ('S', '5') # Card('S','5')
+        act_val = (h[2].get_suit(), h[2].get_pips())
+        self.assertTupleEqual(exp_val, act_val)
+        
+        # Test that h[] raises an exception with an invalid index
+        self.assertRaises(IndexError, h.__getitem__, 5)
+
+
+        
         
 
 if __name__ == '__main__':
