@@ -253,7 +253,7 @@ class Test_Hand(unittest.TestCase):
     def test_dunder_getitem_dunder(self):
         
         h = Hand()
-        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card("D","A"),  Card("C","A")]
+        cards=[Card('S','J'), Card('H','3'), Card('S','5'), Card('D','A'),  Card('C','A')]
         h.add_cards(cards)
         
         # Test that h[] works with a valid index
@@ -263,11 +263,18 @@ class Test_Hand(unittest.TestCase):
         
         # Test that h[] raises an exception with an invalid index
         self.assertRaises(IndexError, h.__getitem__, 5)
-
-
+        
+    def test_dunder_repr(self):
+        
+        h = Hand()
+        cards=[Card('S','J'), Card('H','3')]
+        h.add_cards(cards)
+        
+        exp_val = f"[Card('S','J'), Card('H','3')]"
+        act_val = h.__repr__()
+        self.assertEqual(exp_val, act_val)
         
         
-
 if __name__ == '__main__':
     unittest.main()
 

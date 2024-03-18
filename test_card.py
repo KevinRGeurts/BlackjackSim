@@ -99,6 +99,12 @@ class Test_Card(unittest.TestCase):
         h.add_cards(card_list)
         act_val = str(h)
         self.assertEqual(exp_val, act_val)
+        
+    def test_dunder_repr(self):
+        c = Card('S','10')
+        exp_val = f"Card('S','10')"
+        act_val = c.__repr__()
+        self.assertEqual(exp_val, act_val)
 
 
 if __name__ == '__main__':

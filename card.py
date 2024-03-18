@@ -64,6 +64,13 @@ class Card:
             less_than = True
 
         return less_than
+    
+    def __repr__(self):
+        """
+        Return a string that would yield an object with the same value when passed to eval().
+        """
+        s = f"Card('{self._suit}','{self._pips}')"
+        return s
         
     
     def get_count_from_pips(self, pips=''):

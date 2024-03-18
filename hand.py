@@ -194,4 +194,16 @@ class Hand:
             raise IndexError("Hand index out of range")
         return self._cards[item]
 
+    def __repr__(self):
+        """
+        Return a string that would yield an object with the same value when passed to eval().
+        """
+        s = '['
+        for c in self._cards:
+            s += repr(c) + ', '
+        # Remove unneeded trailing comma space
+        s = s[0:len(s)-2]
+        s += ']'
+        return s
+
         
