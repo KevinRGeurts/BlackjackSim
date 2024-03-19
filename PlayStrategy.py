@@ -45,6 +45,36 @@ class PlayStrategy:
         play(...) - For playing a hand following the strategy
         split(...) - For answering True or False to the question of if a split is desired when a pair has been dealt
     """
+    
+    def split(self, pair_pips = '', dealer_show_pips = ''):
+        """
+        This is an abstract method that MUST be implemented by children. If called, it will raise NotImplementedError.
+        The method is called in a child class to determine if the strategy calls for a split after a pair of cards is dealt.
+        :parameter pair_pips: The pips string of the pair of Cards dealt to the player, string
+        :parameter dealer_show_pips: The pips string of the dealer's face up show card, string
+        :return: True if should split, False if should NOT split, Boolean
+        """
+        raise NotImplementedError
+        return False
+    
+    def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
+        """
+        This is an abstract method that MUST be implemented by children. If called, it will raise NotImplementedError.
+        The method is called in a child class to invoke its hand playing strategy.
+        Play the hand of black jack, returning a HandPlayOutcome() object with information about the outcome of playing the hand.
+        :parameter hand_info_callback: Bound method used by the strategy to obtain required info about the hand being played, e.g., BlackJackSim.dealer_hand_info
+        :parameter draw_callback: Bound method used by the strategy to draw cards into the hand being played, e.g., BlackJackSim.draw_for_dealer
+        :parameter dealer_show_callback: Bound method used by the strategy to obtain the dealer's face up show card, e.g., BlackJackSim.get_dealer_show
+        :parameter sim_object: Object which is used by the strategy to get win/push probabilites for hit/stand, the calling BlackJackSim object. 
+        :return: Information about the outcome of playing the hand, HandPlayOutcome() class object
+        """
+        # Sanity check the arguments to make sure they are callable. This does not guarantee they are bound methods, e.g., a class is callable
+        # for construction. But it is better than nothing.
+        assert(callable(hand_info_callback))
+        assert(callable(draw_callback))
+        assert(callable(dealer_show_callback))
+        raise NotImplementedError
+        return HandPlayOutcome()
 
 
 class CasinoDealerPlayStrategy(PlayStrategy):
