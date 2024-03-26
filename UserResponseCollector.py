@@ -4,6 +4,8 @@ from enum import Enum
 # Local
 from card import Card
 
+# TODO: Refactor this to make it "generalized" and "extensible". For example, the base version should support MENU and NUMBER query types.
+# And the CARDS query type should be an extension specific to BlackJackSimulator.
 
 # TODO: Objectify the query types as a children of a parent BlackJackUserQuery class.
 # An instance of one of the children would be passed to the UserResponseCollector.query_user() method.
