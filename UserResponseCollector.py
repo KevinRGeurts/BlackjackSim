@@ -4,6 +4,14 @@ from enum import Enum
 # Local
 from card import Card
 
+
+class UserResponseCollectorError(Exception):
+    """
+    Base exception class for all custom exceptions specific to UserResponseCollector.
+    """
+    pass
+
+
 # TODO: Refactor this to make it "generalized" and "extensible". For example, the base version should support MENU and NUMBER query types.
 # And the CARDS query type should be an extension specific to BlackJackSimulator.
 
@@ -30,8 +38,8 @@ class BlackJackQueryType(Enum):
 
 class UserResponseCollector(object):
     """
-    This class follows the Pyton Global Object Pattern, to provide a Singleton Pattern like object that can be used to obtain
-    input from the user.
+    This class follows the Python Global Object Pattern, to provide a Singleton Pattern like object that can be used to obtain
+    input from the user from stdin.
     References:
     (1) Global Object Pattern: https://python-patterns.guide/python/module-globals/
     (2) Prebound Method Pattern: https://python-patterns.guide/python/prebound-methods/
