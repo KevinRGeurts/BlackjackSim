@@ -11,6 +11,15 @@ class UserResponseCollectorError(Exception):
     """
     pass
 
+class UserResponseCollectorTerminateQueryingThreadError(UserResponseCollectorError):
+    """
+    Custom exception to be raised if the UserResonseCollector wants the query requester to terminate.
+    Arguments expected in **kwargs:
+        none at this time    
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args)
+
 
 # TODO: Refactor this to make it "generalized" and "extensible". For example, the base version should support MENU and NUMBER query types.
 # And the CARDS query type should be an extension specific to BlackJackSimulator.
