@@ -1,5 +1,6 @@
 # Standard
 from enum import Enum
+from pathlib import Path
 
 # Local
 from card import Card
@@ -43,6 +44,8 @@ class BlackJackQueryType(Enum):
     MENU = 1 # Expect a response that matches a key in a dictionary of form {'h':'Hit', 's':'Stand'}, where the value are the menu choices.
     NUMBER = 2 # Expect a response of type int
     CARDS = 3 # Expect a response of a list of Card objects
+    PATH_SAVE = 4 # Expect a response that is a valid Path object
+    PATH_OPEN = 5 # Expect a response that is a valid Path object
 
 
 class UserResponseCollector(object):
@@ -78,6 +81,10 @@ class UserResponseCollector(object):
                 processed_response = self.process_number_query(query_preface)
             case BlackJackQueryType.CARDS:
                 processed_response = self.process_cards_query(query_preface)
+            case BlackJackQueryType.PATH_SAVE:
+                processed_response = self.process_path_save_query(query_preface)
+            case BlackJackQueryType.PATH_OPEN:
+                processed_response = self.process_path_open_query(query_preface)
         
         return processed_response
 
@@ -141,8 +148,6 @@ class UserResponseCollector(object):
                 print(msg)
         
         return processed_response
-      
-    
     
     def process_menu_query(self, query_preface = '', query_dic = {}):
         """
@@ -182,7 +187,65 @@ class UserResponseCollector(object):
         
         return processed_response
 
+    def process_path_save_query(self, query_preface = ''):
+        """
+        Query the user (via termainl) to enter a string that can be proccessed into a file path.
+        :parameter query_preface: Text displayed to the user to request their response, string
+        :return: Valid file path, as Path object
+        """
+        processed_response = None
         
+        prompt_text = query_preface + '\n'
+
+        # Add to the prompt, telling the user how to handle directory separaters   
+                
+        prompt_text += 'Enter a valid file system path, without file extension, and with escaped backslashes.'
+                
+        while processed_response is None:
+                
+            # Ask the user for a response, which will be in the form of a string
+            raw_response = input(prompt_text)
+        
+            # Test that the user has provided a valid path
+            # TODO: If the user has provided the path to an existing file, confirm that they wish to overwrite it.
+            try:
+                processed_response = Path(raw_response)
+            except OSError:
+                # Let the user know they provided an invalid response
+                msg = '\n' + '\'' + raw_response + '\'' + ' is not a valid file path. Please try again.' 
+                print(msg)
+        
+        return processed_response        
+
+    def process_path_open_query(self, query_preface = ''):
+        """
+        Query the user (via termainl) to enter a string that can be proccessed into a file path.
+        :parameter query_preface: Text displayed to the user to request their response, string
+        :return: Valid file path, as Path object
+        """
+        processed_response = None
+        
+        prompt_text = query_preface + '\n'
+
+        # Add to the prompt, telling the user how to handle directory separaters   
+                
+        prompt_text += 'Enter a valid file system path, without file extension, and with escaped backslashes.'
+                
+        while processed_response is None:
+                
+            # Ask the user for a response, which will be in the form of a string
+            raw_response = input(prompt_text)
+        
+            # Test that the user has provided a valid path
+            try:
+                processed_response = Path(raw_response)
+            except OSError:
+                # Let the user know they provided an invalid response
+                msg = '\n' + '\'' + raw_response + '\'' + ' is not a valid file path. Please try again.' 
+                print(msg)
+        
+        return processed_response        
+
 
 # Here is the global (intended to be private), single instance
 _instance = UserResponseCollector()

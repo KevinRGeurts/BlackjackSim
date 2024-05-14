@@ -48,6 +48,29 @@ class Test_UserResponseCollector(unittest.TestCase):
         act_val = str(h)
         self.assertEqual(exp_val, act_val)
 
+   
+    # Apply a patch() decorator to replace keyboard input from user with a string.
+    @patch('sys.stdin', io.StringIO('C:\\Users\\krgeu\\Documents\\Cribbage_Output\\path_query_text.txt\n'))
+    def test_path_save_query(self):
+        
+        query_preface = 'Enter a valid file system path.'
+        
+        exp_val = 'C:\\Users\\krgeu\\Documents\\Cribbage_Output\\path_query_text.txt'
+        test_path = UserResponseCollector_query_user(BlackJackQueryType.PATH_SAVE, query_preface)
+        act_val = str(test_path)
+        self.assertEqual(exp_val, act_val)
+
+    # Apply a patch() decorator to replace keyboard input from user with a string.
+    @patch('sys.stdin', io.StringIO('C:\\Users\\krgeu\\Documents\\Cribbage_Output\\path_query_text.txt\n'))
+    def test_path_open_query(self):
+        
+        query_preface = 'Enter a valid file system path.'
+        
+        exp_val = 'C:\\Users\\krgeu\\Documents\\Cribbage_Output\\path_query_text.txt'
+        test_path = UserResponseCollector_query_user(BlackJackQueryType.PATH_OPEN, query_preface)
+        act_val = str(test_path)
+        self.assertEqual(exp_val, act_val)
+
 
 if __name__ == '__main__':
     unittest.main()
