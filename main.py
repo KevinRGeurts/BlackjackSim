@@ -10,7 +10,9 @@ from card import Card
 from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
 from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
-from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
+from UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
+from UserQueryCommandCards import UserQueryCommandCards
+import UserQueryReceiver
 
 
 def play_debug_3():
@@ -246,9 +248,11 @@ def play_many_auto():
     print('--------------------')
     
     # Ask if hit/stand data should be logged to file
+    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'Do you want to log hit/stand data to file?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     fh = None # Because we need to have this variable in the outer scope
     if response == 'y':
             # TODO: Investigate if the generalization below will work on LINUX
@@ -259,7 +263,8 @@ def play_many_auto():
     # Ask how many games the user wants to have played
     # Build a query to ask how many games the user wants to have played
     query_preface = 'How many games do you want to automatically play?'
-    num_games = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
+    command = UserQueryCommandNumberInteger(receiver, query_preface, minimum=1)
+    num_games = command.Execute()
     
     # Ask if the user wants to specify the player's deal?
     player_deal = []
@@ -267,14 +272,16 @@ def play_many_auto():
     # Build a query to ask if the user wants to specify the player's deal
     query_preface = 'Do you want to specify the player''s deal?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     if response == 'y':
         # Build a query to get up to two cards from the user
         query_preface = 'Enter player deal of one or two cards.'
-        player_deal = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)
+        command = UserQueryCommandCards(receiver, query_preface)
+        player_deal = command.Execute()
     
         # Rebuild what should be the input string of cards provided by the user.
-        # This will be printed in the output as proof that the user input as produced the desired result.
+        # This will be printed in the output as proof that the user input has produced the desired result.
         for i in range(len(player_deal)):
             player_init_hand += str(player_deal[i]) + ' '
     
@@ -283,11 +290,13 @@ def play_many_auto():
     # Build a query to ask if the user wants to specify the dealer's show card
     query_preface = 'Do you want to specify the dealer''s show card?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     if response == 'y':
         # Build a query to get one card from the user
         query_preface = 'Enter one dealer show card.'
-        dealer_show = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)[0]
+        command = UserQueryCommandCards(receiver, query_preface)
+        dealer_show = command.Execute()[0]
 
     # If you need repeatability, for example to debug something, then you can set a seed here.
     # from random import seed
@@ -348,9 +357,11 @@ def play_many_probabilities_auto():
     print('--------------------')
     
     # Ask if hit/stand data should be logged to file
+    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'Do you want to log hit/stand data to file?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     fh = None # Because we need to have this variable in the outer scope
     if response == 'y':
             # TODO: Investigate if the generalization below will work on LINUX
@@ -361,7 +372,8 @@ def play_many_probabilities_auto():
     # Ask how many games the user wants to have played
     # Build a query to ask how many games the user wants to have played
     query_preface = 'How many games do you want to automatically play?'
-    num_games = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
+    command = UserQueryCommandNumberInteger(receiver, query_preface, minimum=1)
+    num_games = command.Execute()
     
     # Ask if the user wants to specify the player's deal?
     player_deal = []
@@ -369,11 +381,13 @@ def play_many_probabilities_auto():
     # Build a query to ask if the user wants to specify the player's deal
     query_preface = 'Do you want to specify the player''s deal?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     if response == 'y':
         # Build a query to get up to two cards from the user
         query_preface = 'Enter player deal of one or two cards.'
-        player_deal = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)
+        command = UserQueryCommandCards(receiver, query_preface)
+        player_deal = command.Execute()
     
         # Rebuild what should be the input string of cards provided by the user.
         # This will be printed in the output as proof that the user input as produced the desired result.
@@ -385,11 +399,13 @@ def play_many_probabilities_auto():
     # Build a query to ask if the user wants to specify the dealer's show card
     query_preface = 'Do you want to specify the dealer''s show card?'
     query_dic = {'y':'Yes', 'n':'No'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     if response == 'y':
         # Build a query to get one card from the user
         query_preface = 'Enter one dealer show card.'
-        dealer_show = UserResponseCollector_query_user(BlackJackQueryType.CARDS, query_preface)[0]
+        command = UserQueryCommandCards(receiver, query_preface)
+        dealer_show = command.Execute()[0]
 
     # If you need repeatability, for example to debug something, then you can set a seed here.
     # seed(1234567890)
@@ -444,13 +460,16 @@ def play_batches():
     
     # Ask how many games the user wants to have played in each batch
     # Build a query to ask how many games the user wants to have played in each batch
+    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'How many games per batch do you want to automatically play?'
-    num_games = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
+    command = UserQueryCommandNumberInteger(receiver, query_preface, minimum=1)
+    num_games = command.Execute()
     
     # Ask how many batches the user wants to have played
     # Build a query to ask how many batches the user wants to have played
     query_preface = 'How many batches do you want to automatically play?'
-    num_batches = UserResponseCollector_query_user(BlackJackQueryType.NUMBER, query_preface)
+    command = UserQueryCommandNumberInteger(receiver, query_preface, minimum=1)
+    num_batches = command.Execute()
     
     # If you need repeatability, for example to debug something, then you can set a seed here.
     # seed(1234567890)
@@ -498,9 +517,11 @@ if __name__ == '__main__':
     print('--------------------')
         
     # Build a query for the user to obtain their choice of how to user the simulator
+    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'How do you want to use the simulator?'
     query_dic = {'q':'Quit', 'i':'Interactive Game', 'p':'Interactive Game with Probabilities', 'a':'Automatic Game', 'm':'Many Automatic Games', 'u':'Many Automatic Games Using Probabilities'   , 'b':'Batches of Games', 'j':'Blackjack Probability', 'd':'Debug Scenario'}
-    response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+    command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+    response = command.Execute()
     
     while response != 'q':
         
@@ -532,7 +553,7 @@ if __name__ == '__main__':
                 
         
         print('--------------------')
-        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        response = command.Execute()
       
     # *** Use BlackJackSim to play a game with a stacked deck to produce a desired outcome ***
 

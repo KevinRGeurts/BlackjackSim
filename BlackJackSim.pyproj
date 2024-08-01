@@ -5,7 +5,7 @@
     <ProjectGuid>9c37ad1b-ce58-405c-83c5-fce2af19a4b3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>main.py</StartupFile>
-    <SearchPath>..\BlackJackSim</SearchPath>
+    <SearchPath>..\BlackJackSim;..\UserResponseCollector</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>BlackJackSim</Name>
@@ -37,9 +37,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_InteractiveProbabilityPlayStrategy.py" />
+    <Compile Include="test_UserQueryCommandCards.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test_UserResponseCollector.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UserQueryCommandCards.py" />
     <Compile Include="UserResponseCollector.py">
       <SubType>Code</SubType>
     </Compile>

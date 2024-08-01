@@ -5,7 +5,9 @@ import logging
 # Local
 from hand import Hand
 from card import Card
-from UserResponseCollector import UserResponseCollector_query_user, BlackJackQueryType
+from UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
+from UserQueryCommandCards import UserQueryCommandCards
+import UserQueryReceiver
 
 
 class BlackJackPlayStatus(Enum):
@@ -173,9 +175,11 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         # We're interactive here, so ask the user if they want to split
 
         # Build a query for the user to obtain a decision on whether or not to split
+        receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
         query_preface = 'Do you wish to split your pair of ' + pair_pips + ' ? Dealer shows ' + dealer_show_pips + '.'
         query_dic = {'y':'Yes', 'n':'No'}
-        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+        response = command.Execute()
 
         if response == 'y':
             return True
@@ -212,9 +216,11 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
         info = hand_info_callback()       
         
         # Build a query for the user to obtain a hit or stand decision
+        receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
         query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
         query_dic = {'h':'Hit', 's':'Stand'}
-        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+        response = command.Execute()
         while response == 'h':
             draw_callback(1)
             info = hand_info_callback()
@@ -223,7 +229,8 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
                 final_count = info.Count_Min
                 break
             query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback())
-            response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+            command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+            response = command.Execute()
         
         if hand_status != BlackJackPlayStatus.BUST:
             hand_status = BlackJackPlayStatus.STAND
@@ -279,11 +286,13 @@ class InteractiveProbabilityPlayerPlayStrategy(InteractivePlayerPlayStrategy):
         (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob) = sim_object.win_probability_hit_stand(player_hand, dealer_hand)
     
         # Build a query for the user to obtain a hit or stand decision
+        receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
         query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback()) + '\n'
         query_preface += 'Hit Win Probability: ' + str(hit_win_prob) + ' Stand Win Probability: ' + str(stand_win_prob) + '\n'
         query_preface += 'Hit Push Probability: ' + str(hit_push_prob) + ' Stand Push Probability: ' + str(stand_push_prob)
         query_dic = {'h':'Hit', 's':'Stand'}
-        response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+        command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+        response = command.Execute()
         while response == 'h':
             draw_callback(1)
             info = hand_info_callback()
@@ -301,7 +310,8 @@ class InteractiveProbabilityPlayerPlayStrategy(InteractivePlayerPlayStrategy):
             query_preface = 'Player''s hand: ' + info.String_Rep + '     Dealer shows: ' + str(dealer_show_callback()) + '\n'
             query_preface += 'Hit Win Probability: ' + str(hit_win_prob) + ' Stand Win Probability: ' + str(stand_win_prob) + '\n'
             query_preface += 'Hit Push Probability: ' + str(hit_push_prob) + ' Stand Push Probability: ' + str(stand_push_prob)
-            response = UserResponseCollector_query_user(BlackJackQueryType.MENU, query_preface, query_dic)
+            command = UserQueryCommandMenu(receiver, query_preface, query_dic)
+            response = command.Execute()
         
         if hand_status != BlackJackPlayStatus.BUST:
             hand_status = BlackJackPlayStatus.STAND
