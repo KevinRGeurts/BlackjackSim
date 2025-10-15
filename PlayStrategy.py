@@ -19,7 +19,7 @@ class BlackJackPlayStatus(Enum):
     BUST = 3
     BLACKJACK = 4
     # NONE used if the other game participant blackjacked and this participant didn't.
-    # NONE also used for the second hand of a split pair if their was not split.
+    # NONE also used for the second hand of a split pai,r if their was not split.
     NONE = 5
 
 

@@ -762,10 +762,10 @@ class BlackJackSim:
             bjs.clear_hands()
         
             # Transfer dealer's cards to the dealer's hand in the simulation for this trial
-            # TODO: Should not be directing using _dealer_hand when we are not self
+            # TODO: Should not be directly using _dealer_hand when we are not self
             bjs._dealer_hand.add_cards(dealer_hand.get_cards())
             # If we got only one card from dealer_hand argument then draw the second
-            # TODO: Should not be directing using _dealer_hand when we are not self
+            # TODO: Should not be directly using _dealer_hand when we are not self
             if (bjs._dealer_hand.get_num_cards() == 1):
                 bjs.draw_for_dealer()
                 
@@ -775,7 +775,7 @@ class BlackJackSim:
                 # Dealer didn't draw to blackjack, so we need to run the trial...
             
                 # Transfer player's cards to the player's hand in the simulation for this trial
-                # TODO: Should not be directing using _player_hand when we are not self
+                # TODO: Should not be directly using _player_hand when we are not self
                 bjs._player_hand.add_cards(player_hand.get_cards())
         
                 info = GamePlayOutcome()
@@ -849,7 +849,7 @@ class BlackJackSim:
                 # Log that dealer with a blackjack.
                 msg = 'Probability trial: ' + str(g+1) + ' Dealer drew to blackjack and won.'
                 logger.debug(msg)
-                # TODO: Should not be directing using _dealer_hand when we are not self
+                # TODO: Should not be directly using _dealer_hand when we are not self
                 msg = 'Player Hand: ' + str(player_hand) + ' Dealer Hand: ' + str(bjs._dealer_hand)
                 logger.debug(msg)
                 
