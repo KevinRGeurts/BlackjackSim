@@ -7,6 +7,7 @@ import io
 import UserQueryReceiver
 from UserQueryCommandCards import UserQueryCommandCards
 from hand import Hand
+from card import Card
 
 
 class Test_UserQueryCommandCards(unittest.TestCase):
@@ -34,6 +35,13 @@ class Test_UserQueryCommandCards(unittest.TestCase):
         command = UserQueryCommandCards(receiver, '')
         exp_val = (None, f"\n\'{'AS KH QD JC 10H 2Z'}\' is not a valid list of cards. Please try again.")
         act_val = command._doProcessRawResponse('AS KH QD JC 10H 2Z')
+        self.assertTupleEqual(exp_val, act_val)
+
+    def test_cards_command_doValidateProcessedResponse(self):
+        receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
+        command = UserQueryCommandCards(receiver, '')
+        exp_val = (True, '')
+        act_val = command._doValidateProcessedResponse([Card('S','Q'), Card('D','2')])
         self.assertTupleEqual(exp_val, act_val)
 
     # Apply a patch() decorator to replace keyboard input from user with a string.
