@@ -5,7 +5,7 @@
     <ProjectGuid>9c37ad1b-ce58-405c-83c5-fce2af19a4b3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>main.py</StartupFile>
-    <SearchPath>..\BlackJackSim;..\UserResponseCollector</SearchPath>
+    <SearchPath>..\BlackJackSim;..\UserResponseCollector\src\UserResponseCollector</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>BlackJackSim</Name>
