@@ -435,11 +435,11 @@ class BlackJackSim:
         
             # Neither dealer nor player have blackjack, on deal, so play the hands.
 
-            if self._player_hand.get_cards()[0].get_pips() == self._player_hand.get_cards()[1].get_pips():
+            if self._player_hand.get_cards()[0].pips == self._player_hand.get_cards()[1].pips:
                 # The player has been dealt a pair. Ask the player strategy if we should split.
-                msg = 'Player has a pair and could split: ' + str(self._player_hand) + ' Dealer shows: ' + self.get_dealer_show().get_pips()
+                msg = 'Player has a pair and could split: ' + str(self._player_hand) + ' Dealer shows: ' + self.get_dealer_show().pips
                 logger.debug(msg)
-                if self._player_play_strategy.split(self._player_hand.get_cards()[0].get_pips(), self.get_dealer_show().get_pips()):
+                if self._player_play_strategy.split(self._player_hand.get_cards()[0].pips, self.get_dealer_show().pips):
                     logger.debug('Player chose to split.')
                     # Execute split
                     

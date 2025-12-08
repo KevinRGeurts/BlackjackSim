@@ -50,8 +50,8 @@ class Test_Sim(unittest.TestCase):
         c = Card('S','5')
         sc = bjs.get_dealer_show()
         
-        exp_val = (c.get_suit(), c.get_pips())
-        act_val = (sc.get_suit(), sc.get_pips())
+        exp_val = (c.suit, c.pips)
+        act_val = (sc.suit, sc.pips)
         self.assertTupleEqual(exp_val, act_val)
         
        
@@ -71,8 +71,8 @@ class Test_Sim(unittest.TestCase):
         
         # Did we get the one we expected?
         c = Card('C', 'A')
-        exp_val = (c.get_suit(), c.get_pips())
-        act_val = (dc.get_suit(), dc.get_pips())
+        exp_val = (c.suit, c.pips)
+        act_val = (dc.suit, dc.pips)
         self.assertTupleEqual(exp_val, act_val)
         
 
@@ -92,8 +92,8 @@ class Test_Sim(unittest.TestCase):
         
         # Did we get the one we expected?
         c = Card('C', 'A')
-        exp_val = (c.get_suit(), c.get_pips())
-        act_val = (dc.get_suit(), dc.get_pips())
+        exp_val = (c.suit, c.pips)
+        act_val = (dc.suit, dc.pips)
         self.assertTupleEqual(exp_val, act_val)
  
     
@@ -151,8 +151,8 @@ class Test_Sim(unittest.TestCase):
         
         # Did we get the one we expected?
         c = Card('C', 'A')
-        exp_val = (c.get_suit(), c.get_pips())
-        act_val = (dc.get_suit(), dc.get_pips())
+        exp_val = (c.suit, c.pips)
+        act_val = (dc.suit, dc.pips)
         self.assertTupleEqual(exp_val, act_val)
     
     

@@ -2,7 +2,7 @@
 
 # Local
 from card import Card
-from UserQueryCommand import UserQueryCommand
+from UserResponseCollector.UserQueryCommand import UserQueryCommand
 
 
 class UserQueryCommandCards(UserQueryCommand):

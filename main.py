@@ -10,9 +10,9 @@ from card import Card
 from hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
 from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
-from UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
+from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
 from UserQueryCommandCards import UserQueryCommandCards
-import UserQueryReceiver
+import UserResponseCollector.UserQueryReceiver
 
 
 def play_debug_3():
@@ -248,7 +248,7 @@ def play_many_auto():
     print('--------------------')
     
     # Ask if hit/stand data should be logged to file
-    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
+    receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'Do you want to log hit/stand data to file?'
     query_dic = {'y':'Yes', 'n':'No'}
     command = UserQueryCommandMenu(receiver, query_preface, query_dic)
@@ -357,7 +357,7 @@ def play_many_probabilities_auto():
     print('--------------------')
     
     # Ask if hit/stand data should be logged to file
-    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
+    receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'Do you want to log hit/stand data to file?'
     query_dic = {'y':'Yes', 'n':'No'}
     command = UserQueryCommandMenu(receiver, query_preface, query_dic)
@@ -460,7 +460,7 @@ def play_batches():
     
     # Ask how many games the user wants to have played in each batch
     # Build a query to ask how many games the user wants to have played in each batch
-    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
+    receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'How many games per batch do you want to automatically play?'
     command = UserQueryCommandNumberInteger(receiver, query_preface, minimum=1)
     num_games = command.Execute()
@@ -517,7 +517,7 @@ if __name__ == '__main__':
     print('--------------------')
         
     # Build a query for the user to obtain their choice of how to user the simulator
-    receiver = UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
+    receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
     query_preface = 'How do you want to use the simulator?'
     query_dic = {'q':'Quit', 'i':'Interactive Game', 'p':'Interactive Game with Probabilities', 'a':'Automatic Game', 'm':'Many Automatic Games', 'u':'Many Automatic Games Using Probabilities'   , 'b':'Batches of Games', 'j':'Blackjack Probability', 'd':'Debug Scenario'}
     command = UserQueryCommandMenu(receiver, query_preface, query_dic)
