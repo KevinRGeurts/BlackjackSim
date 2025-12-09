@@ -5,15 +5,14 @@
     <ProjectGuid>9c37ad1b-ce58-405c-83c5-fce2af19a4b3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>main.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\..\tests</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>BlackJackSim</Name>
     <RootNamespace>BlackJackSim</RootNamespace>
     <TestFramework>unittest</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
-    <UnitTestRootDirectory>.</UnitTestRootDirectory>
+    <UnitTestRootDirectory>..\..\tests</UnitTestRootDirectory>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
@@ -27,31 +26,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BlackJackSim.py" />
-    <Compile Include="test_PlayStrategy.py" />
-    <Compile Include="test_ProbabilityPlayerPlayStrategy.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_InteractivePlayStrategy.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_InteractiveProbabilityPlayStrategy.py" />
-    <Compile Include="test_UserQueryCommandCards.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UserQueryCommandCards.py" />
     <Compile Include="PlayStrategy.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_CasinoDealerPlayStrategy.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_HoylePlayerPlayStrategy.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_sim.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
