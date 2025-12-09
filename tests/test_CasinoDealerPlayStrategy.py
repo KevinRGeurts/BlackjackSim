@@ -2,8 +2,8 @@
 import unittest
 
 # Local
-from BlackJackSim import BlackJackSim
-from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy
+from BlackjackSim.BlackJackSim import BlackJackSim
+from BlackjackSim.PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy
 from HandsDecksCards.hand import Hand
 from HandsDecksCards.deck import StackedDeck
 from HandsDecksCards.card import Card

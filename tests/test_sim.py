@@ -5,8 +5,8 @@ from pathlib import Path
 import os
 
 # Local
-from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
-from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from BlackjackSim.BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
+from BlackjackSim.PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from HandsDecksCards.deck import StackedDeck
 from HandsDecksCards.hand import Hand
 from HandsDecksCards.card import Card

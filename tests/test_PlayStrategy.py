@@ -2,8 +2,8 @@
 import unittest
 
 # Local
-from BlackJackSim import BlackJackSim
-from PlayStrategy import PlayStrategy
+from BlackjackSim.BlackJackSim import BlackJackSim
+from BlackjackSim.PlayStrategy import PlayStrategy
 
 
 class Test_PlayStrategy(unittest.TestCase):

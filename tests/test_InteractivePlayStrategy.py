@@ -6,8 +6,8 @@ from unittest.mock import patch
 # Local
 from HandsDecksCards.card import Card
 from HandsDecksCards.deck import StackedDeck
-from PlayStrategy import InteractivePlayerPlayStrategy, BlackJackPlayStatus
-from BlackJackSim import BlackJackSim
+from BlackjackSim.PlayStrategy import InteractivePlayerPlayStrategy, BlackJackPlayStatus
+from BlackjackSim.BlackJackSim import BlackJackSim
 
 
 class Test_InteractivePlayerPlayStrategy(unittest.TestCase):

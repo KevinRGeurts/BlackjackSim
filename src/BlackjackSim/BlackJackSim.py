@@ -7,7 +7,7 @@ from math import sqrt
 # Local
 from HandsDecksCards.deck import Deck
 from HandsDecksCards.hand import Hand
-from PlayStrategy import BlackJackPlayStatus, PlayStrategy
+from BlackjackSim.PlayStrategy import BlackJackPlayStatus, PlayStrategy
 
 
 class BlackJackCheck(Enum):

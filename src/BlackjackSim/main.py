@@ -8,8 +8,8 @@ from random import seed
 from HandsDecksCards.deck import StackedDeck, Deck
 from HandsDecksCards.card import Card
 from HandsDecksCards.hand import Hand
-from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
-from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
+from BlackjackSim.BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
+from BlackjackSim.PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
 from UserQueryCommandCards import UserQueryCommandCards
 import UserResponseCollector.UserQueryReceiver

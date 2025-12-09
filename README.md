@@ -21,7 +21,7 @@ a play strategy described by Hoyle's Rules of Games.
 ## Usage
 To play the game interactively or to run various simulations:
 ```
-python .\main.py
+python -m BlackjackSim.main
 ```
 A menu of options for play and simulation will be presented.
 
