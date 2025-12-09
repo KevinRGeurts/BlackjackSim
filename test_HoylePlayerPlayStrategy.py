@@ -4,8 +4,8 @@ import unittest
 # Local
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, HoylePlayerPlayStrategy
-from deck import StackedDeck
-from card import Card
+from HandsDecksCards.deck import StackedDeck
+from HandsDecksCards.card import Card
 
 class Test_HoylePlayerPlayStrategy(unittest.TestCase):
     # Check Count_Max

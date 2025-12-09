@@ -7,9 +7,9 @@ import os
 # Local
 from BlackJackSim import BlackJackSim, BlackJackCheck, BlackJackGameOutcome, GamePlayOutcome
 from PlayStrategy import BlackJackPlayStatus, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
-from deck import StackedDeck
-from hand import Hand
-from card import Card
+from HandsDecksCards.deck import StackedDeck
+from HandsDecksCards.hand import Hand
+from HandsDecksCards.card import Card
 
 
 class Test_Sim(unittest.TestCase):

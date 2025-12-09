@@ -3,8 +3,8 @@ from enum import Enum
 import logging
 
 # Local
-from hand import Hand
-from card import Card
+from HandsDecksCards.hand import Hand
+from HandsDecksCards.card import Card
 from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu
 import UserResponseCollector.UserQueryReceiver
 

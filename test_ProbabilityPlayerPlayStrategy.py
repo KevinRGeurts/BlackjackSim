@@ -4,8 +4,8 @@ import unittest
 # Local
 from BlackJackSim import BlackJackSim
 from PlayStrategy import BlackJackPlayStatus, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy
-from deck import StackedDeck
-from card import Card
+from HandsDecksCards.deck import StackedDeck
+from HandsDecksCards.card import Card
 
 class Test_ProbabilityPlayerPlayStrategy(unittest.TestCase):
     

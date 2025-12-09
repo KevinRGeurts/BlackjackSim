@@ -5,8 +5,8 @@ from statistics import mean, stdev
 from math import sqrt
 
 # Local
-from deck import Deck
-from hand import Hand
+from HandsDecksCards.deck import Deck
+from HandsDecksCards.hand import Hand
 from PlayStrategy import BlackJackPlayStatus, PlayStrategy
 
 

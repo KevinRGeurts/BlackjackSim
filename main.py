@@ -5,9 +5,9 @@ from time import process_time
 from random import seed
 
 # Local
-from deck import StackedDeck, Deck
-from card import Card
-from hand import Hand
+from HandsDecksCards.deck import StackedDeck, Deck
+from HandsDecksCards.card import Card
+from HandsDecksCards.hand import Hand
 from BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
 from PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger

@@ -1,7 +1,7 @@
 # Standard
 
 # Local
-from card import Card
+from HandsDecksCards.card import Card
 from UserResponseCollector.UserQueryCommand import UserQueryCommand
 
 
