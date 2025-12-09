@@ -162,3 +162,4 @@ cython_debug/
 /.vs.backup/BlackJackSim
 /.vs.backup2/BlackJackSim
 /.vs.backup3/BlackJackSim
+/src/BlackjackSim/.vs/BlackJackSim
