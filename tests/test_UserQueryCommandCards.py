@@ -5,7 +5,7 @@ import io
 
 # Local
 import UserResponseCollector.UserQueryReceiver
-from UserQueryCommandCards import UserQueryCommandCards
+from BlackjackSim.UserQueryCommandCards import UserQueryCommandCards
 from HandsDecksCards.hand import Hand
 from HandsDecksCards.card import Card
 

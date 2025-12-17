@@ -33,7 +33,7 @@ from HandsDecksCards.hand import Hand
 from BlackjackSim.BlackJackSim import BlackJackSim, GamePlayOutcome, BlackJackGameOutcome, BlackJackCheck
 from BlackjackSim.PlayStrategy import InteractivePlayerPlayStrategy, InteractiveProbabilityPlayerPlayStrategy, ProbabilityPlayerPlayStrategy, CasinoDealerPlayStrategy, HoylePlayerPlayStrategy
 from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu, UserQueryCommandNumberInteger
-from UserQueryCommandCards import UserQueryCommandCards
+from BlackjackSim.UserQueryCommandCards import UserQueryCommandCards
 import UserResponseCollector.UserQueryReceiver
 
 
