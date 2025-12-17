@@ -1,13 +1,34 @@
-# Standard
+"""
+Defines the UserQueryCommandCards class, a child of the UserResponseCollector.UserQueryCommand class. It is
+a concrete UserQUeryCommand implementation for turning an input string like 'AS 2H KC 10D' into a list of
+HandsDecksCards.Card objects.
 
-# Local
+Exported Classes:
+    UserQueryCommandCards - Concrete UserQueryCommand class that knows how to convert a string
+                            of text like 'AS 2H KC 10D' into a list of Card objects.     
+
+Exported Exceptions:
+    None    
+ 
+Exported Functions:
+    None
+
+Logging:
+    None
+ """
+
+
+# Standard imports
+
+# Local imports
 from HandsDecksCards.card import Card
 from UserResponseCollector.UserQueryCommand import UserQueryCommand
 
 
 class UserQueryCommandCards(UserQueryCommand):
     """
-    Following the Command design pattern, this is the ConcreateUserQueryCommand class that knows how to exeucte a Cards command.
+    Following the Command design pattern, this is the concrete UserQueryCommand class that knows how to convert a string
+    of text like 'AS 2H KC 10D' into a list of Card objects.
     """
     def __init__(self, receiver=None, query_preface = ''):
         """
@@ -56,4 +77,3 @@ class UserQueryCommandCards(UserQueryCommand):
         :return: Tuple (True, ''), as Tuple (boolean, string)
         """
         return (True, '')
-

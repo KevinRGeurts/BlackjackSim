@@ -1,10 +1,32 @@
-# Standard
+"""
+The functions in this module execute various use cases of the Blackjack game simulator. 
+
+Exported Classes:
+    None
+
+Exported Exceptions:
+    None
+ 
+Exported Functions:
+    simulate_blackjack_probability(...) - Runs simulations to determine how likeley it is to get Blackjack.
+    play_interactive_probability() - Play an interactive game of Blackjack, but provide hit/stand and win/push probability info to user.
+    play_interactive() - Play one interactive game of Blackjack.
+    play_one_auto() - Automatically play one game of Blackjack, using Hoyle play strategy.
+    play_many_auto() - Automatically play many games of Blackjack, using Hoyle play strategy, to generate game-play statistics.
+    play_many_probabilities_auto() - Automatically play many games of Blackjack, using win/push probabilities to determine hit or stand.
+    play_batches() - Automatically play many games of Blackjack in batches, using Hoyle play strategy. Answers question of
+                     how much one might expect to lose after playing X games of Blackjack at a casino.
+    __main__ -- Query user for a use case, and then call the appropriate function.
+"""
+
+
+# Standard imports
 import logging
 from pathlib import Path
 from time import process_time
 from random import seed
 
-# Local
+# Local imports
 from HandsDecksCards.deck import StackedDeck, Deck
 from HandsDecksCards.card import Card
 from HandsDecksCards.hand import Hand
@@ -16,19 +38,24 @@ import UserResponseCollector.UserQueryReceiver
 
 
 def play_debug_3():
-        seed(1234567890)
+    """
+    Run a debugging scenario coded in this function.
+    :return: None
+    """
+    seed(1234567890)
         
-        sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-        (results_list, net_expected) = sim.play_batches_of_games(10, 10)
+    sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
+    (results_list, net_expected) = sim.play_batches_of_games(10, 10)
         
-        act_val = net_expected
+    act_val = net_expected
         
-        return None
+    return None
   
 
 def play_debug_2():
     """
     Run a debugging scenario coded in this function.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
 
@@ -45,6 +72,7 @@ def play_debug_2():
 def play_debug():
     """
     Run a debugging scenario coded in this function.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     
@@ -112,6 +140,8 @@ def play_debug():
 def simulate_blackjack_probability(num_deals = 10000):
     """
     Run simulations to determine how likely it is to get blackjack.
+    :parameter num_deals: How many hands of Blackjack to play to generate probability results, int
+    :return: None
     """
     # First, let's deal from an infinite deck
     
@@ -154,12 +184,13 @@ def simulate_blackjack_probability(num_deals = 10000):
 
 def play_interactive_probability():
     """
-    Use BlackJackSim to play an interactive game, but provid hit/stand win/push probability info to user.
+    Use BlackJackSim to play an interactive game, but provide hit/stand and win/push probability info to user.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = InteractiveProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('-------------------------------------------------------------------------')
     print('Starting an interactive game of blackjack with probability information...')
-    print('--------------------')
+    print('-------------------------------------------------------------------------')
     info = sim.play_game()
     print('--------------------')
     print('     Winner:', info.Game_Outcome)
@@ -182,11 +213,12 @@ def play_interactive_probability():
 def play_interactive():
     """
     Use BlackJackSim to play an interactive game.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = InteractivePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('--------------------------------------------')
     print('Starting an interactive game of blackjack...')
-    print('--------------------')
+    print('--------------------------------------------')
     info = sim.play_game()
     print('--------------------')
     print('     Winner:', info.Game_Outcome)
@@ -208,12 +240,13 @@ def play_interactive():
 
 def play_one_auto():
     """
-    Use BlackJackSim to play one game automatically.
+    Use BlackJackSim to play one game automatically, using Hoyle play strategy.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('-------------------------------')
     print('Starting a game of blackjack...')
-    print('--------------------')
+    print('-------------------------------')
     info = sim.play_game()
     print('     Winner:', info.Game_Outcome)
     print('     Player Status:', info.Player_Status)
@@ -234,8 +267,9 @@ def play_one_auto():
 
 def play_many_auto():
     """
-    Use BlackJackSim to play a bunch of games automatically.
+    Use BlackJackSim to play a bunch of games automatically, using Hoyle play strategy.
     Example: Use this to see how often the player wins if they are dealt JH 9S, and dealer shows 7D.
+    :return: None
     """
 
     # Get the hit/stand data logger so we can add a file handler to it if needed below
@@ -243,9 +277,9 @@ def play_many_auto():
 
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
     # sim.set_player_play_strategy(CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('--------------------------------------------------------------------')
     print('Starting a bunch of games of blackjack to generate win statistics...')
-    print('--------------------')
+    print('--------------------------------------------------------------------')
     
     # Ask if hit/stand data should be logged to file
     receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
@@ -346,15 +380,16 @@ def play_many_probabilities_auto():
     Use BlackJackSim to play a bunch of games automatically.
     But using calculated probabilities of win/push to determine whether to hit or stand.
     Example: Use this to see how often the player wins if they are a savant and can compute probabilities in their head :)
+    :return: None
     """
 
     # Get the hit/stand data logger so we can add a file handler to it if needed below
     logger = logging.getLogger('blackjack_logger.hit_stand_logger')
 
     sim = BlackJackSim(player_strategy = ProbabilityPlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('-------------------------------------------------------------------------------------------------------------------')
     print('Starting a bunch of games of blackjack to generate win statistics, and using win/push probabilities to hit/stand...')
-    print('--------------------')
+    print('-------------------------------------------------------------------------------------------------------------------')
     
     # Ask if hit/stand data should be logged to file
     receiver = UserResponseCollector.UserQueryReceiver.UserQueryReceiver_GetCommandReceiver()
@@ -452,11 +487,12 @@ def play_batches():
     """
     Use BlackJackSim to play a bunch of batches of games automatically.
     Example: Use this to see the distibution of net wins if you play 20 hands of blackjack many times.
+    :return: None
     """
     sim = BlackJackSim(player_strategy = HoylePlayerPlayStrategy(), dealer_strategy = CasinoDealerPlayStrategy())
-    print('--------------------')
+    print('---------------------------------------------------------------------------------------')
     print('Playing batches of blackjack games to determine distribution of net wins for a batch...')
-    print('--------------------')
+    print('---------------------------------------------------------------------------------------')
     
     # Ask how many games the user wants to have played in each batch
     # Build a query to ask how many games the user wants to have played in each batch
@@ -582,5 +618,3 @@ if __name__ == '__main__':
     #     print('     Split Status:', info.Split_Status)
     #     print('     Split Count:', info.Split_Count)
     #     print('     Split Hand:', info.Split_Final_Hand)
-
-

@@ -15,7 +15,7 @@ a play strategy described by Hoyle's Rules of Games.
 - The ```HoylePlayerPlayStrategy``` class implements the player strategy as described in "Hoyle's Rules of Games," by A.H. Morehead and G. Mott-Smith, second revised edition, published by Signet, 1983.
 
 ## Requirements
-- UserResponseCollector>=0.1.4: [GitHub](https://github.com/KevinRGeurts/UserResponseCollector), [PyPi](https://pypi.org/project/UserResponseCollector/)
+- UserResponseCollector>=1.0.4: [GitHub](https://github.com/KevinRGeurts/UserResponseCollector), [PyPi](https://pypi.org/project/UserResponseCollector/)
 - HandsDecksCards>=1.0.0: [GitHub](https://github.com/KevinRGeurts/HandsDecksCards), [PyPi](https://pypi.org/project/HandsDecksCards/)
 
 ## Usage

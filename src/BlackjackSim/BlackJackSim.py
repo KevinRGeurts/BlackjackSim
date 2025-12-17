@@ -1,10 +1,34 @@
-# Standard
+"""
+Defines the BlackJackSim class, which represents a Blackjack game to be played by one player (human or computer)
+and one dealer (always computer).
+
+Exported Classes:
+    BlackJackCheck - An enumeration returned by BlackJackSim._check_for_blackjack().
+    BlackJackGameOutcome - An enumeration representing outcomes of playing a game of Blackjack, that is, who won.
+    GamePlayOutcome - A structured way of returning detailed information about the outcome of a game of BlackJack.
+    BlackJackStats - A structured way of returning statistical information about the results of playing many games of Blackjack.
+    BlackJackBatchStats - A structured way of returning information about the results of playing batches of games of BlackJack.
+    BlackJackSim - Represents a Blackjack game and contains the game playing logic.
+
+Exported Exceptions:
+    None    
+ 
+Exported Functions:
+    None
+
+Logging:
+    Uses a logger named 'blackjack_logger' for providing game output to the user. This logger is configured
+    by calling BlackJackSim.setup_logging(...).
+ """
+
+
+# Standard imports
 from enum import Enum
 import logging
 from statistics import mean, stdev
 from math import sqrt
 
-# Local
+# Local imports
 from HandsDecksCards.deck import Deck
 from HandsDecksCards.hand import Hand
 from BlackjackSim.PlayStrategy import BlackJackPlayStatus, PlayStrategy
@@ -12,7 +36,7 @@ from BlackjackSim.PlayStrategy import BlackJackPlayStatus, PlayStrategy
 
 class BlackJackCheck(Enum):
     """
-    An enumeration returned by BlackJackSim.chack_for_blackjack().
+    An enumeration returned by BlackJackSim.check_for_blackjack().
     """
     PLAY_ON = 1
     DEALER_BLACKJACK = 2
@@ -91,6 +115,7 @@ class BlackJackStats:
         self.Pushes = 0
         self.Dealer_BlackJacks = 0
         self.Player_BlackJacks = 0
+
         
 class BlackJackBatchStats:
     """
@@ -129,7 +154,7 @@ class BlackJackBatchStats:
 
 class BlackJackSim:
     """
-    Logic for playing a game of black jack.\n
+    Logic for playing a game of black jack.
     """
     def __init__(self, player_strategy = PlayStrategy(), dealer_strategy = PlayStrategy()):
         """
@@ -157,7 +182,6 @@ class BlackJackSim:
         self._player_play_strategy = ps
         return None
             
-    
     def set_dealer_play_strategy(self, ps = PlayStrategy()):
         """
         Set the dealer play strategy.
@@ -167,8 +191,7 @@ class BlackJackSim:
         assert(isinstance(ps, PlayStrategy))
         self._dealer_play_strategy = ps
         return None
-                
-    
+                    
     def switch_deck(self, new_deck = Deck(isInfinite = True)):
         """
         Replace the current deck with a new deck. Intended mainly to faciliatate testing, where it is helpful to use a StackedDeck().
@@ -177,8 +200,7 @@ class BlackJackSim:
         """
         self._deck = new_deck
         return None
-        
-    
+            
     def draw_for_dealer(self, number=1):
         """
         Draw one or more cards from deck into dealer's hand.
@@ -186,8 +208,7 @@ class BlackJackSim:
         :return: A list of Card(s) in the hand after the draw
         """
         return self._dealer_hand.add_cards(self._deck.draw(number))
-    
-    
+        
     def dealer_hand_info(self):
         """
         Call Hand.hand_info on the dealer's hand.
@@ -195,14 +216,12 @@ class BlackJackSim:
         """
         return self._dealer_hand.hand_info()
     
-
     def player_hand_info(self):
         """
         Call Hand.hand_info on the player's hand.
         :return: Hand.HandInfo object with useful information about the player's hand.
         """
         return self._player_hand.hand_info()
-
 
     def split_hand_info(self):
         """
@@ -211,7 +230,6 @@ class BlackJackSim:
         """
         return self._split_hand.hand_info()    
         
-    
     def draw_for_player(self, number=1):
         """
         Draw one or more cards from deck into player's hand.
@@ -219,7 +237,6 @@ class BlackJackSim:
         :return: A list of Card(s) in the hand after the draw
         """
         return self._player_hand.add_cards(self._deck.draw(number))
-    
     
     def draw_for_split(self, number=1):
         """
@@ -229,14 +246,12 @@ class BlackJackSim:
         """
         return self._split_hand.add_cards(self._deck.draw(number))   
     
-    
     def get_dealer_show(self):
         """
         Return the dealer's face up (show) card that can be seen by the player.
         :return: The first card in the dealer's hand, Card()
         """
         return self._dealer_hand.get_cards()[0]
-    
     
     def play_batches_of_games(self, num_games = 1, num_batches = 1):
         """
@@ -252,8 +267,7 @@ class BlackJackSim:
             that produced this net number of losses or wins.
             Item 2: The expected value of net losses or wins.
             Item 3: Statistics across the batches, BlackJackBatchStats object
-        """
-        
+        """        
         # Get the logger 'blackjack_logger'
         logger = logging.getLogger('blackjack_logger')
 
@@ -320,7 +334,6 @@ class BlackJackSim:
         stats_return.Dealer_BlackJack_Percent_StdErr = 100.0 * stdev(dbjlst) / sqrt(num_batches)
                 
         return (results_list, expected_value, stats_return)
-
     
     def play_games(self, num_games = 1, player_deal = [], dealer_show = None):
         """
@@ -332,8 +345,7 @@ class BlackJackSim:
             drawn to complete the dealer's initial hand. This is intended to enable fixing the part of the dealer's hand which
             is visible to the player.
         :return: Statistics for the set of games, as a BlackJackStats() object
-        """
-        
+        """        
         # Get the logger 'blackjack_logger'
         logger = logging.getLogger('blackjack_logger')
         
@@ -383,7 +395,6 @@ class BlackJackSim:
         game_stats.Player_BlackJacks = player_blackjacks
                
         return game_stats
-
     
     def play_game(self, player_deal = [], dealer_show = None, dealer_down = None):
         """
@@ -396,8 +407,7 @@ class BlackJackSim:
         :parameter dealer_down: If specified, it is the face down Card() for the dealer. This is intended to fix the part of the
             dealer's deal that is invisible to the player.
         :return: Information about the outcome of the game or games (if their is a split), GamePlayOutcome() object
-        """
-        
+        """        
         # Get the logger 'blackjack_logger'
         logger = logging.getLogger('blackjack_logger')
         
@@ -514,8 +524,7 @@ class BlackJackSim:
                 info.Dealer_Count = 0
 
         return info
-        
-    
+            
     def split_has_blackjack(self):
         """
         Return True if split hand has blackjack, otherwise return False.
@@ -526,15 +535,13 @@ class BlackJackSim:
             return True
         else:
             return False
-        
-    
+            
     def check_for_blackjack(self):
         """
         Check the dealer's ane player's, hands for blackjack.
         And, based on dealer's and player's hands, declare a winner (one hand has blackjack) or a push (both hands have blackjack).
         :return: The outcome of the black jack check, BlackJackCheck() enum
-        """      
-        
+        """              
         # Note that this will be the default return, that is, if none of the if/elif below are true
         check_info = BlackJackCheck.PLAY_ON
         
@@ -549,8 +556,7 @@ class BlackJackSim:
             check_info = BlackJackCheck.PLAYER_BLACKJACK
             
         return check_info
-    
-    
+        
     def play_dealer_hand(self):
         """
         Play the dealer's hand of black jack, using the dealer play strategy, and returning a HandPlayOutcome() object with
@@ -560,8 +566,7 @@ class BlackJackSim:
         outcome_info = self._dealer_play_strategy.play(hand_info_callback=self.dealer_hand_info, draw_callback=self.draw_for_dealer, dealer_show_callback=self.get_dealer_show)
                   
         return outcome_info
-        
- 
+         
     def play_player_hand(self):
         """
         Play the player's hand of black jack, using the player play strategy, and returning a HandPlayOutcome() object with
@@ -571,8 +576,7 @@ class BlackJackSim:
         outcome_info = self._player_play_strategy.play(hand_info_callback=self.player_hand_info, draw_callback=self.draw_for_player, dealer_show_callback=self.get_dealer_show, sim_object = self)
                     
         return outcome_info
-    
-    
+        
     def play_split_hand(self):
         """
         Play the player's split hand of black jack, using the player play strategy, and returning a HandPlayOutcome() object with
@@ -583,7 +587,6 @@ class BlackJackSim:
 
         return outcome_info
     
-
     def determine_game_outcome(self, info = GamePlayOutcome()):
         """
         Complete the argument info dictionary after determing the game winner.
@@ -632,7 +635,6 @@ class BlackJackSim:
                     info.Split_Game_Outcome = BlackJackGameOutcome.PUSH         
        
         return None
-
     
     def setup_logging(self):
         """
@@ -667,7 +669,6 @@ class BlackJackSim:
         
         return None
     
-
     def setup_hit_stand_logging_file_handler(self, logpath):
         """
         This method configures a file handler for logger 'blackjack_logger.hit_stand_logger'.
@@ -694,8 +695,7 @@ class BlackJackSim:
         logger.info('%s,%s,%s', 'HAND', 'SHOW', 'CLASS' )
         
         return fh
-    
-    
+        
     def clear_hands(self, clear_dealer = True, clear_player = True, clear_split = True):
         """
         Clear the Hand()s used for the simulation.
@@ -709,7 +709,6 @@ class BlackJackSim:
         if (clear_split): self._split_hand = Hand()
 
         return None
-
     
     def win_probability_hit_stand(self, player_hand = Hand(), dealer_hand = Hand(), num_trials = 1000, deck = None):
         """
@@ -861,7 +860,6 @@ class BlackJackSim:
 
         return (hit_win_prob, stand_win_prob, hit_push_prob, stand_push_prob)
     
-    
     def percent_done(self, total, current):
         """
         This is a helper function used by, e.g., play_games() and play_batches_of_games(),to determine if and what percent d: one should be logged.
@@ -882,4 +880,3 @@ class BlackJackSim:
             report = False
         return (report, round(percent_done))
     
-

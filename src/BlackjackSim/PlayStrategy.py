@@ -1,8 +1,40 @@
-# Standard
+"""
+This module defines playing strategies for Blackjack games, by defining the abstract base class PlayStrategy,
+which follows a Strategy design pattern. It also defines several concrete child implementations.
+
+Concrete implementation child classes must:
+    (1) Implement the method play(...) for playing a hand of Blackjackby making hit or stand decisions.
+    (2) Implement the method split(...) for answering True or False to the question of if a split is desired when a pair has been dealt.
+
+Exported Classes:
+    BlackJackPlayStatus - An enumration that represents the outcome of a hand in a game, e.g. Stand, Bust, Blackjack
+    HandPlayOutcome - A structured way of returning detailed information about the outcome of a hand of Blackjack
+    PlayStrategy - Interface (abstract base) class for all playing strategies.
+    CasinoDealerPlayStrategy - Implements the playing strategy (rules) followed by a casino dealer.
+    InteractivePlayerPlayStrategy - Asks a human player through console input if they wish to split, hit, stand.
+    InteractiveProbabilityPlayerPlayStrategy - Asks a human player through console input if they wish to split, hit, stand.
+                                               But provides Hit/Stand Win/Push probability statistics to assist the human in their decisions.
+    HoylePlayerPlayStrategy - Implements the playing strategy recommended by Hoyle's Rules of Games
+    ProbabilityPlayerPlayStrategy - Implements a playing srategy for automatic play based on probabilities of hit/stand
+                                    resulting in a win/push.
+
+Exported Exceptions:
+    None    
+ 
+Exported Functions:
+    None
+
+Logging:
+    Uses a logger named 'blackjack_logger' for providing game output to the user. This logger is configured
+    by calling BlackJackSim.setup_logging(...).
+"""
+
+
+# Standard imports
 from enum import Enum
 import logging
 
-# Local
+# Local imports
 from HandsDecksCards.hand import Hand
 from HandsDecksCards.card import Card
 from UserResponseCollector.UserQueryCommand import UserQueryCommandMenu
@@ -46,7 +78,6 @@ class PlayStrategy:
         play(...) - For playing a hand following the strategy
         split(...) - For answering True or False to the question of if a split is desired when a pair has been dealt
     """
-    
     def split(self, pair_pips = '', dealer_show_pips = ''):
         """
         This is an abstract method that MUST be implemented by children. If called, it will raise NotImplementedError.
@@ -80,9 +111,8 @@ class PlayStrategy:
 
 class CasinoDealerPlayStrategy(PlayStrategy):
     """
-    Implements strategy for (casino) dealer play.
+    Implements strategy (rules) for (casino) dealer play.
     """
-    
     def split(self, pair_pips = '', dealer_show_pips = ''):
         """
         The method called to determine if the strategy calls for a split after a pair of cards is dealt. This should always return False.
@@ -92,8 +122,7 @@ class CasinoDealerPlayStrategy(PlayStrategy):
         """
         # No splits for this play strategy, so return False
         return False
-    
-    
+        
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
@@ -163,7 +192,6 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
     Implements strategy for player play, based on asking a human whether to hit or stand.
     Human is also asked if the want to split a dealt pair.
     """
-    
     def split(self, pair_pips = '', dealer_show_pips = ''):
         """
         The method called to determine if the strategy calls for a split after a pair of cards is dealt. This should
@@ -184,8 +212,7 @@ class InteractivePlayerPlayStrategy(PlayStrategy):
             return True
         else:
             return False
-    
-    
+        
     # Note: First attempt was the following argument list, but having to import BlackJackSim caused a circular import problem.
     # def play(self, hand_info_callback = BlackJackSim.player_hand_info, draw_callback = BlackJackSim.draw_for_player, dealer_show_callback = BlackJackSim.get_dealer_show):
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
@@ -251,7 +278,6 @@ class InteractiveProbabilityPlayerPlayStrategy(InteractivePlayerPlayStrategy):
     But here player is provided information on the probability of winning or pushing if the hit or stand.
     Human is also asked if the want to split a dealt pair.
     """
-    
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
@@ -330,7 +356,6 @@ class HoylePlayerPlayStrategy(PlayStrategy):
     """
     Implements strategy for player play and splitting a dealt pair, based on recommendations in Hoyle's Rules of Games.
     """
-
     def split(self, pair_pips = '', dealer_show_pips = ''):
         """
         The method called to determine if the strategy calls for a split after a pair of cards is dealt.
@@ -470,7 +495,6 @@ class ProbabilityPlayerPlayStrategy(CasinoDealerPlayStrategy):
     Implements strategy for player play, where player decisions to hit or stand are based on probabilities of winning/pushing,
     when hitting/standing. The probabilities include the impact only of the show card in the dealer's hand.
     """
-    
     def play(self, hand_info_callback, draw_callback, dealer_show_callback, sim_object = None):
         """
         The method called to invoke the hand playing strategy.
@@ -531,5 +555,3 @@ class ProbabilityPlayerPlayStrategy(CasinoDealerPlayStrategy):
         outcome_info.Count = final_count
             
         return outcome_info
-
-

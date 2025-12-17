@@ -301,7 +301,3 @@ So, trying to put all this together into a workflow...
         # Alternatively, this syntax also works.
         #with self.assertRaises(AssertionError):
         #    d.draw(53)
-
-
-
-
